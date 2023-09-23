@@ -12,12 +12,11 @@
 
 #include "libft.h"
 
-
 char	*ft_strnstr(const char *big, const char *little, size_t len)
 {
-	int	i;
-	int	lil;
-	int	lil_len;
+	size_t	i;
+	size_t	lil;
+	size_t	lil_len;
 
 	lil_len = 0;
 	i = 0;
