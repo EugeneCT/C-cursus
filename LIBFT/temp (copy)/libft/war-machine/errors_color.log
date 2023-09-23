@@ -1,0 +1,8 @@
+[1;31mErrors[0m in [0;34mmemchr[0m: [1;37m/home/cliew/francinette/temp/libft/war-machine/tests/Part1_functions/ft_memchr[0m
+[0;34mTest 6[0m:
+    int tab[7] = {-49, 49, 1, -1, 0, -2, 2};
+    printf("%s", (char *)ft_memchr(tab, -1, 7));
+[0;33mExpected[0m (cat -e test06.output):
+M-^?M-^?M-^?1
+[0;31mYour result[0m (cat -e user_output_test06):
+(null)

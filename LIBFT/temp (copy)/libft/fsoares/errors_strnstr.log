@@ -1,0 +1,1 @@
+[1;31mError[0m in test 25: [0;36mft_strnstr(0x7ffe0af3d05a: "", "xx", 4294967295)[0m: [1;31mSegmentation fault![0m
