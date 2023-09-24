@@ -13,7 +13,7 @@
 
 #include <stdio.h>
 
-int	check_negative(long m)
+static int	check_negative(long m)
 {
 	if (m < 0)
 		return (-1);
@@ -21,7 +21,7 @@ int	check_negative(long m)
 		return (1);
 }
 
-int	check_len(long n)
+static int	check_len(long n)
 {
 	int	len;
 
@@ -38,7 +38,7 @@ int	check_len(long n)
 	return (len + 3);
 }
 
-int	itoa_helper(char *ret, long n, int i)
+static int	itoa_helper(char *ret, long n, int i)
 {
 
 	while (n >=10)

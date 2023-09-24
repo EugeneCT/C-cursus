@@ -1,24 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_calloc.c                                        :+:      :+:    :+:   */
+/*   ft_lstnew.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/20 21:00:07 by cliew             #+#    #+#             */
-/*   Updated: 2023/09/20 21:00:07 by cliew            ###   ########.fr       */
+/*   Created: 2023/09/24 09:57:16 by cliew             #+#    #+#             */
+/*   Updated: 2023/09/24 09:57:16 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "libft.h"
+// #include <stdio.h>
 
-void	*ft_calloc(size_t count, size_t size)
+t_list *ft_lstnew(void *content){
+
+   
+    t_list *ret;
+
+    ret = (t_list *)malloc(sizeof(t_list) * 2 );
+    ret->content = content;
+    ret->next=NULL;
+    return (ret->next);
+
+
+
+}
+
+int main()
 {
-	void	*ptr;
+    t_list* get;
 
-	if (count == 0 || size == 0)
-		return (malloc(0));
-	if ((ptr = malloc(count * size)) == NULL)
-		return (NULL);
-	ft_memset((unsigned char *)ptr, 0, count * size);
-	return (ptr);
+    get= ft_lstnew("hello");
+    printf(:get);
 }

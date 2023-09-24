@@ -15,5 +15,25 @@
 
 void	ft_putnbr_fd(int n, int fd)
 {
-	ft_putstr_fd(ft_itoa((long)n), fd);
+	long	out;
+	long	lnum;
+
+	lnum = (long)n;
+	if (lnum < 0)
+	{
+		write(fd, "-", 1);
+		lnum *= -1;
+	}
+	if (lnum < 10)
+	{
+		out = lnum % 10 + '0';
+		write(fd, &out, 1);
+		return ;
+	}
+	else
+	{
+		ft_putnbr_fd(lnum / 10, fd);
+		out = lnum % 10 + '0';
+		write(fd, &out, 1);
+	}
 }
