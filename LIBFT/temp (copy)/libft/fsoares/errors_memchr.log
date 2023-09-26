@@ -1,7 +1,0 @@
-[1;31mError[0m in test 8: [0;36mft_memchr(0x7ffcd88a2610, 985(d9): '\331', 29)[0m: expected: 0x7ffcd88a2628, yours: (nil)
-[0;33mMemory content:
-[0mat 0x0x7ffcd88a2610: 258f 9ce8 8603 8ec8 f00e ba23 3eab 5787 ->  %..........#>.W.
-at 0x0x7ffcd88a2620: ba89 b587 86f0 c7e7 d932 2747 f064 2015 ->  .........2'G.d .
-at 0x0x7ffcd88a2630: f3bc fe79 bf8c 41af 9afb d2d8 a729 5f61 ->  ...y..A......)_a
-
-

@@ -1,4 +1,0 @@
-[1;31mError[0m in test 5: [0;36mft_strrchr(0x555a6890f0a7: "teste", 1125: 'e')[0m: expected: 0x555a6890f0ab, yours: (nil)
-[1;31mError[0m in test 6: [0;36mft_strrchr(0x555a6890f0a7: "teste", 1024: '\0')[0m: expected: 0x555a6890f0ac, yours: (nil)
-[1;31mError[0m in test 7: [0;36mft_strrchr(0x555a6890f0b4: "pepe y cparlos", 99: 'c')[0m: expected: 0x555a6890f0bb, yours: (nil)
-

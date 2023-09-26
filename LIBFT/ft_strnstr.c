@@ -6,12 +6,11 @@
 /*   By: eugene <eugene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/19 15:21:19 by cliew             #+#    #+#             */
-/*   Updated: 2023/09/24 22:35:24 by eugene           ###   ########.fr       */
+/*   Updated: 2023/09/26 21:47:07 by eugene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-
 
 char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
 {
@@ -36,6 +35,7 @@ char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
 	}
 	return (NULL);
 }
+
 // int	main(void)
 // {
 // 	char str1[] = "This is an apple";

@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strlcat.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: eugene <eugene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/19 15:17:32 by cliew             #+#    #+#             */
-/*   Updated: 2023/09/19 15:17:32 by cliew            ###   ########.fr       */
+/*   Updated: 2023/09/26 21:48:45 by eugene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "libft.h"
-
 
 size_t
 	ft_strlcat(char *dst, const char *src, size_t size)
@@ -40,5 +38,3 @@ size_t
 		dest_length = size;
 	return (dest_length + src_length);
 }
-
-
