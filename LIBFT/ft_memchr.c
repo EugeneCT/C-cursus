@@ -1,28 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strrchar.c                                      :+:      :+:    :+:   */
+/*   ft_memchr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/19 15:21:32 by cliew             #+#    #+#             */
-/*   Updated: 2023/09/19 15:21:32 by cliew            ###   ########.fr       */
+/*   Created: 2023/09/19 15:20:09 by cliew             #+#    #+#             */
+/*   Updated: 2023/09/19 15:20:09 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-
-char	*ft_strrchr(const char *s, int c)
+#include <stdio.h>
+void	*ft_memchr(const void *str, int c, size_t n)
 {
-	int			i;
-	const char	*ret;
+	size_t			i;
+	unsigned char	*s;
+	unsigned char	character;
 
-	ret = s;
-	i = ft_strlen(s);
-	s = (s + i);
-	while (*s != *ret && c != *s)
-		s--;
-	if (c == *s)
-		return ((char *)s);
-	return (0);
+	s = (unsigned char *)str;
+	character = (unsigned char)c;
+	i = 0;
+	while (i < n)
+	{
+		if (*s == character)
+		{
+			return (s);
+		}
+		s++;
+		i++;
+	}
+	return (NULL);
 }
+

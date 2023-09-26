@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strchar.c                                       :+:      :+:    :+:   */
+/*   ft_strchr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,15 +12,18 @@
 
 
 #include "libft.h"
+#include <stdio.h>
 
-
-char	*ft_strchr(const char *str, int c)
+char	*ft_strchr(const char *str, int chr)
 {
 	int		i;
 	char	*ret;
+	unsigned char c;
 
+	c = ((unsigned char) chr);
 	ret = (char *)str;
 	i = 0;
+	
 	while (str[i] != '\0')
 	{
 		if (str[i] == c)
@@ -29,5 +32,19 @@ char	*ft_strchr(const char *str, int c)
 		}
 		i++;
 	}
-	return (0);
+
+	if (str[i]=='\0' && c =='\0')
+	{
+		return (ret+i);
+	}
+	return ((char*)NULL);
 }
+// int main(){
+
+// 	char *ret;
+// 	char s[]="tripouille";
+
+// 	ret=ft_strchr(s, 't' + 256);
+// 	printf(ret);
+
+// }

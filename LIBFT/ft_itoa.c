@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: eugene <eugene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/22 16:31:20 by cliew             #+#    #+#             */
-/*   Updated: 2023/09/23 16:47:07 by cliew            ###   ########.fr       */
+/*   Updated: 2023/09/24 22:40:03 by eugene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "libft.h"
 
-#include <stdio.h>
+#include "libft.h"
 
 static int	check_negative(long m)
 {
@@ -24,18 +23,20 @@ static int	check_negative(long m)
 static int	check_len(long n)
 {
 	int	len;
-
+	
+	len = 0;
 	if (n < 0)
 	{
 		n=(n*-1);
+		len = len + 1;
 	}
-	len = 0;
+
 	while (n >= 10)
 	{
 		n = n / 10;
 		len++;
 	}
-	return (len + 3);
+	return (len + 2);
 }
 
 static int	itoa_helper(char *ret, long n, int i)

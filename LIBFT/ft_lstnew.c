@@ -27,10 +27,3 @@ t_list *ft_lstnew(void *content){
 
 }
 
-int main()
-{
-    t_list* get;
-
-    get= ft_lstnew("hello");
-    printf(:get);
-}

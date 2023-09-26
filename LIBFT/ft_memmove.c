@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: eugene <eugene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/19 15:20:28 by cliew             #+#    #+#             */
-/*   Updated: 2023/09/19 15:20:28 by cliew            ###   ########.fr       */
+/*   Updated: 2023/09/24 18:10:28 by eugene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,31 @@ void	*ft_memmove(void *to, const void *from, size_t numBytes)
 	size_t	i;
 
 	i = 0;
-	while (i < numBytes)
+	if (to > from)
 	{
-		((unsigned char *)to)[i] = ((unsigned char *)from)[i];
-		i++;
+		i = numBytes;
+		while (i-- > 0)
+		{
+			((char *)to)[i] = ((char *)from)[i];
+		}
 	}
-	((unsigned char *)to)[i] = '\0';
+	else
+	{
+		while (i < numBytes)
+		{
+			((char *)to)[i] = ((char *)from)[i];
+			i++;
+		}
+	}
 	return (to);
 }
+
+// int	main(void)
+// {
+// 	char	*b;
+
+// 	char a[] = "lorem ipsum dolor sit amet";
+// 	b = a + 1;
+// 	ft_memmove(b, a, 8);
+// 	// printf(b);
+// }

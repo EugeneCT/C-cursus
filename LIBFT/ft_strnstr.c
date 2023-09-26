@@ -3,54 +3,51 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strnstr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: eugene <eugene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/19 15:21:19 by cliew             #+#    #+#             */
-/*   Updated: 2023/09/19 15:21:19 by cliew            ###   ########.fr       */
+/*   Updated: 2023/09/24 22:35:24 by eugene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strnstr(const char *big, const char *little, size_t len)
-{
-	size_t	i;
-	size_t	lil;
-	size_t	lil_len;
 
-	lil_len = 0;
+char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
+{
+	unsigned long	i;
+	int				j;
+
+	j = 0;
 	i = 0;
-	lil = 0;
-	while (little[lil_len])
-		lil_len++;
-	while (i < len && i + lil < len && lil != lil_len)
+	if (!*needle)
+		return ((char *)haystack);
+	while (haystack[i])
 	{
-		if (big[i + lil] == little[lil])
-			lil++;
-		else
+		j = 0;
+		while (haystack[i] == needle[j] && haystack[i] && i < len)
 		{
 			i++;
-			lil = 0;
+			j++;
 		}
+		if (!needle[j])
+			return ((char *)&haystack[i - j]);
+		i = (i - j) + 1;
 	}
-	if (lil_len == 0)
-		return ((char *)big);
-	else if (lil == lil_len)
-		return ((char *)big + i);
-	else
-		return ((char *)(NULL));
+	return (NULL);
 }
-
 // int	main(void)
 // {
 // 	char str1[] = "This is an apple";
 // 	char str2[] = "an";
 // 	char str3[] = "";
 // 	char str4[] = "lala";
-
+// 	char * empty = (char*)"";
 // 	char *ret;
+
+// 	ft_strnstr(empty, "coucou", -1);
 // 	// ret = strnstr(str1,str2,12);
 // 	// printf(ret);
-// 	ret = strnstr(str1, str2, 12);
-// 	printf(ret);
+// 	// ret = strnstr(str1, str2, 12);
+// 	// printf(ret);
 // }
