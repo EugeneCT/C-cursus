@@ -3,20 +3,21 @@
 #include <stdio.h>
 #include "printf.h"
 
-	int main()
-	{
-		int a = 12;
-        // char c[] = "hello";
-		int b = 9;
-        unsigned int u = 100;
-        int *p = &a;
-        float d = 3.14256789;
-
-		char str[] = "This is Great";
-        char c = 's';
-        printf("I am testing %-5.4u",u);
-		// func(str, a,c, b);
-	}
+	// int main()
+	// {
+	// 	int a = 12;
+    //     // char c[] = "hello";
+	// 	int b = 9;
+    //     unsigned int u = 100;
+    //     int *p = &a;
+    //     float d = 3.14256789;
+	// 	// int u = -17;
+	// 	int x = 17;
+	// 	char str[] = "This is Great";
+    //     char c = 's';
+    //     printf("I am testing %i %% %i",a,b);
+	// 	// func(str, a,c, b);
+	// }
 
 
 /// test case -    printf("I am testing %05.3d",a) ->  I am testing   012
