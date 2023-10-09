@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 NAME = libftprintf.a
-SRCS = ft_printf.c printf_func.c
+SRCS = ft_printf.c printf_func.c specifier1.c specifier2.c bonus_func.c
 OBJS = $(SRCS:.c=.o)
 CC = cc -Wall -Wextra -Werror -c
 LIBC = ar rcs

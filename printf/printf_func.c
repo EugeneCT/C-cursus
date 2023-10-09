@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   printf_func.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
+/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 17:06:31 by cliew             #+#    #+#             */
-/*   Updated: 2023/10/09 17:06:58 by cliew            ###   ########.fr       */
+/*   Updated: 2023/10/09 22:48:05 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,7 @@ void	ft_dectohex(unsigned long long number, char *base, int *output)
 	if (number > 15)
 		ft_dectohex(number / 16, base, output);
 	*output += write(1, &base[number % 16], 1);
-
 }
-
 
 void	ft_putstr(char *str, int *output)
 {
@@ -54,6 +52,7 @@ void	ft_putint(int number, int *output)
 	c = temp_number % 10 + 48;
 	*output += write(1, &c, 1);
 }
+
 void	ft_putuint(unsigned int number, int *output)
 {
 	char	c;
