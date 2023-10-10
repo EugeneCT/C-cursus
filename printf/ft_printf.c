@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 11:00:16 by cliew             #+#    #+#             */
-/*   Updated: 2023/10/09 22:39:44 by cliew            ###   ########.fr       */
+/*   Updated: 2023/10/10 10:32:12 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "ft_printf.h"
 #include <stdarg.h>
 #include <stdio.h>
-
+#include <limits.h>
 // Sequence does matter in printf
 // Flags can be more than 1
 // gcc -o printf  ft_printf.c libft/*.c   && ./printf
@@ -34,26 +34,26 @@
 // flags [3][0] = 1 if specifier declared
 // flags [3][1] = specifier in int
 
-int	put_formatted_args(int flags[][5], va_list argv, int *output)
+int	put_formatted_args(int flags[][5], va_list *argv, int *output)
 {
 	if (flags[3][0])
 	{
 		if (flags[3][1] == 'c')
-			specifier_c(flags, va_arg(argv, int), output);
+			specifier_c(flags, va_arg(*argv, int), output);
 		if (flags[3][1] == 's')
-			specifier_s(flags, va_arg(argv, char *), output);
+			specifier_s(flags, va_arg(*argv, char *), output);
 		if (flags[3][1] == 'p')
-			specifier_p(flags, va_arg(argv, void *), output);
+			specifier_p(flags, va_arg(*argv, void *), output);
 		if (flags[3][1] == 'd')
-			specifier_d(flags, va_arg(argv, int), output);
+			specifier_d(flags, va_arg(*argv, int), output);
 		if (flags[3][1] == 'i')
-			specifier_i(flags, va_arg(argv, int), output);
+			specifier_i(flags, va_arg(*argv, int), output);
 		if (flags[3][1] == 'u')
-			specifier_u(flags, va_arg(argv, unsigned int), output);
+			specifier_u(flags, va_arg(*argv, unsigned int), output);
 		if (flags[3][1] == 'x')
-			specifier_x(flags, va_arg(argv, int), output);
+			specifier_x(flags, va_arg(*argv, int), output);
 		if (flags[3][1] == 'X')
-			specifier_bigx(flags, va_arg(argv, int), output);
+			specifier_bigx(flags, va_arg(*argv, int), output);
 		if (flags[3][1] == '%')
 			*output += write(1, "%%", 1);
 	}
@@ -63,6 +63,7 @@ int	put_formatted_args(int flags[][5], va_list argv, int *output)
 int	form_dict(char **str, int flags[][5])
 {
 	(*str)++;
+    ft_memset(flags, 0,100);
 	check_flags(str, flags);
 	check_min_width(str, flags);
 	check_precision(str, flags);
@@ -90,7 +91,7 @@ int	ft_printf(const char *str, ...)
 			else
 			{
 				form_dict(&str_ptr, flags);
-				put_formatted_args(flags, argv, &output);
+				put_formatted_args(flags, &argv, &output);
 			}
 		}
 		va_end(argv);
@@ -98,6 +99,21 @@ int	ft_printf(const char *str, ...)
 	return (output);
 }
 
+int main(){
+	char c = 'c';
+	int imin = INT_MIN;
+	char s[] = "ley";
+	// ft_printf("Hello % -13c",c);
+	// printf("\n");
+	// printf("Hello % -13c",c);
+	printf("\n");
+	ft_printf("Hello %- 10.10s Baby",s);
+	printf("\n");
+	printf("Hello %- 10.10s Baby",s);
+	printf("\n");
+
+
+}
 // int	main(void)
 // {
 // 	int				a;

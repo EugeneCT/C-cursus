@@ -6,23 +6,25 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 17:03:57 by cliew             #+#    #+#             */
-/*   Updated: 2023/10/09 21:19:02 by cliew            ###   ########.fr       */
+/*   Updated: 2023/10/10 09:40:51 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	specifier_c(int flags[][5], int arg, int *output)
-{
-	output += write(1, &arg, 1);
-	flags[0][0] = 1;
-	return (1);
-}
 
-int	specifier_s(int flags[][5], char *arg, int *output)
+int	specifier_p(int flags[][5], void *arg, int *output)
 {
+	unsigned long long	arg_long;
+
 	flags[0][0] = 1;
-	ft_putstr(arg, (output));
+	arg_long = (unsigned long long)arg;
+	if (!arg_long)
+	{
+		*output += write(1, "(nil)", 5);
+		return (1);
+	}
+	ft_dectohex(arg_long, "0123456789abcdef", output);
 	return (1);
 }
 

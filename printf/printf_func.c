@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 17:06:31 by cliew             #+#    #+#             */
-/*   Updated: 2023/10/09 22:48:05 by cliew            ###   ########.fr       */
+/*   Updated: 2023/10/10 10:13:41 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	ft_dectohex(unsigned long long number, char *base, int *output)
 	*output += write(1, &base[number % 16], 1);
 }
 
-void	ft_putstr(char *str, int *output)
+void	ft_putstr(char *str, int *output,int len)
 {
 	int	i;
 
@@ -29,10 +29,20 @@ void	ft_putstr(char *str, int *output)
 		*output += write(1, "(null)", 6);
 		return ;
 	}
-	while (str[i])
-	{
-		*output += write(1, &str[i], 1);
-		i++;
+	if (len ==0){
+		while (str[i])
+		{
+			*output += write(1, &str[i], 1);
+			i++;
+		}
+	}
+	else{
+
+		while (i < len)
+		{
+			*output += write(1, &str[i], 1);
+			i++;
+		}
 	}
 }
 
