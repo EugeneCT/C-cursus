@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 17:10:32 by cliew             #+#    #+#             */
-/*   Updated: 2023/10/10 10:14:46 by cliew            ###   ########.fr       */
+/*   Updated: 2023/10/11 23:02:11 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int		specifier_x(int flags[][5], int arg, int *output);
 int		specifier_bigx(int flags[][5], int arg, int *output);
 
 void	ft_dectohex(unsigned long long number, char *base, int *output);
-void	ft_putstr(char *str, int *output,int len);
+void	ft_putstr(char *str,int len);
 void	ft_putint(int number, int *output);
 void	ft_putuint(unsigned int number, int *output);
 
