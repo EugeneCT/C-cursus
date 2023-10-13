@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 11:00:16 by cliew             #+#    #+#             */
-/*   Updated: 2023/10/12 00:00:26 by cliew            ###   ########.fr       */
+/*   Updated: 2023/10/13 17:36:12 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,30 +34,33 @@
 // flags [3][0] = 1 if specifier declared
 // flags [3][1] = specifier in int
 
-int	put_formatted_args(int flags[][5], va_list *argv, int *output)
+int	put_formatted_args(int flags[][5], va_list *argv)
 {
+	int count;
+
+	count = 0;
 	if (flags[3][0])
 	{
 		if (flags[3][1] == 'c')
-			specifier_c(flags, va_arg(*argv, int), output);
+			count = specifier_c(flags, va_arg(*argv, int));
 		if (flags[3][1] == 's')
-			specifier_s(flags, va_arg(*argv, char *), output);
+			count = specifier_s(flags, va_arg(*argv, char *));
 		if (flags[3][1] == 'p')
-			specifier_p(flags, va_arg(*argv, void *), output);
+			specifier_p(flags, va_arg(*argv, void *));
 		if (flags[3][1] == 'd')
-			specifier_d(flags, va_arg(*argv, int), output);
+			count = specifier_d(flags, va_arg(*argv, int));
 		if (flags[3][1] == 'i')
-			specifier_i(flags, va_arg(*argv, int), output);
+			count = specifier_i(flags, va_arg(*argv, int));
 		if (flags[3][1] == 'u')
-			specifier_u(flags, va_arg(*argv, unsigned int), output);
+			specifier_u(flags, va_arg(*argv, unsigned int));
 		if (flags[3][1] == 'x')
-			specifier_x(flags, va_arg(*argv, int), output);
+			specifier_x(flags, va_arg(*argv, int));
 		if (flags[3][1] == 'X')
-			specifier_bigx(flags, va_arg(*argv, int), output);
+			specifier_bigx(flags, va_arg(*argv, int));
 		if (flags[3][1] == '%')
-			*output += write(1, "%%", 1);
+			write(1, "%%", 1);
 	}
-	return (1);
+	return (count);
 }
 
 int	form_dict(char **str, int flags[][5])
@@ -74,296 +77,331 @@ int	form_dict(char **str, int flags[][5])
 int	ft_printf(const char *str, ...)
 {
 	int		flags[5][5];
+	int		count;	
 	char	*str_ptr;
 	va_list	argv;
-	int		output;
-
+	
+	count = 0;
 	str_ptr = (char *)str;
+	ft_memset(flags, 0,25*sizeof(int));
+	// for (int i=0;i<5;i++)
+	// {
+	// 	for (int j=0;j<5;j++)
+	// 		printf("%d",flags[i][j]);	2
+	// }
+	
 	va_start(argv, str);
 	while (*str_ptr != '\0')
 	{
 		{
 			if (*str_ptr != '%')
 			{
-				output += write(1, str_ptr, 1);
+				count+=write(1, str_ptr, 1);
 				str_ptr++;
 			}
 			else
 			{
 				form_dict(&str_ptr, flags);
-				put_formatted_args(flags, &argv, &output);
+				count+=put_formatted_args(flags, &argv);
 			}
 		}
 		va_end(argv);
 	}
-	return (output);
+	// printf("count is %d",count);
+
+	return (count);
 }
 
-int main(){
-	char c = 'c';
-	int d = 923;
-	int dzero = 0;
-	int dmin=INT_MIN;
-	int dmax = INT_MAX;
-	unsigned int u= 932131274;
-	int imin = INT_MIN;
-	char s[] = "ley";
-	// test d
-	printf("Hello %-+010d Baby",d);
-	printf("\n");
-	ft_printf("Hello %-+010d Baby",d);
-	printf("\n");
-
-	printf("Hello %-+10.5d Baby",d);
-	printf("\n");
-	ft_printf("Hello %-+10.5d Baby",d);
-	printf("\n");
-
-	printf("Hello % 3.2d Baby",d);
-	printf("\n");
-	ft_printf("Hello % 3.2d Baby",d);
-	printf("\n");
-
-	printf("Hello % +05.5d Baby",d);
-	printf("\n");
-	ft_printf("Hello % +05.5d Baby",d);
-	printf("\n");
-
-	printf("Hello %5d Baby",d);
-	printf("\n");
-	ft_printf("Hello %5d Baby",d);
-	printf("\n");
-
-	printf("Hello %-5d Baby",d);
-	printf("\n");
-	ft_printf("Hello %-5d Baby",d);
-	printf("\n");
-
-
-	printf("Hello %-5.7d Baby",dmin);
-	printf("\n");
-	ft_printf("Hello %-5.7d Baby",dmin);
-	printf("\n");
-
-
-	printf("Hello %+ 5.7d Baby",dmax);
-	printf("\n");
-	ft_printf("Hello %+ 5.7d Baby",dmax);
-	printf("\n");
-
-	printf("Hello %+ 022.7d Baby",dzero);
-	printf("\n");
-	ft_printf("Hello %+ 022.7d Baby",dzero);
-	printf("\n");
-
-	printf("Hello %- 022.7d Baby",dzero);
-	printf("\n");
-	ft_printf("Hello %- 022.7d Baby",dzero);
-	printf("\n");
-
-	printf("Hello %-022d Baby",dzero);
-	printf("\n");
-	ft_printf("Hello %-022d Baby",dzero);
-	printf("\n");
-
-	printf("Hello %-022d Baby",dmax);
-	printf("\n");
-	ft_printf("Hello %-022d Baby",dmax);
-	printf("\n");
-
-
-	printf("Hello %-022d Baby",dmin);
-	printf("\n");
-	ft_printf("Hello %-022d Baby",dmin);
-	printf("\n");
-
-	// test i
-	printf("Hello %-22i World",dmin);
-	printf("\n");
-	ft_printf("Hello %-22i World",dmin);
-	printf("\n");
-
-	printf("Hello %-+010d World",d);
-	printf("\n");
-	ft_printf("Hello %-+010d World",d);
-	printf("\n");
-
-	printf("Hello %-+10.5d World",d);
-	printf("\n");
-	ft_printf("Hello %-+10.5d World",d);
-	printf("\n");
-
-	printf("Hello % 3.2d World",d);
-	printf("\n");
-	ft_printf("Hello % 3.2d World",d);
-	printf("\n");
-
-	printf("Hello % +05.5d World",d);
-	printf("\n");
-	ft_printf("Hello % +05.5d World",d);
-	printf("\n");
 
-	printf("Hello %5d World",d);
-	printf("\n");
-	ft_printf("Hello %5d World",d);
-	printf("\n");
+// int main(){
+	
 
-	printf("Hello %-5d World",d);
-	printf("\n");
-	ft_printf("Hello %-5d World",d);
-	printf("\n");
+// 	char c = 'c';
+// 	char s[]="By";
+// 	int d = -12;
 
 
-	printf("Hello %-5.7d World",dmin);
-	printf("\n");
-	ft_printf("Hello %-5.7d World",dmin);
-	printf("\n");
+// 	ft_printf(" NULL %s NULL ", NULL);
 
+// 	// printf("\n NULL %s NULL ", NULL);
+// 	// ft_printf(" NULL %s NULL ", NULL);
 
-	printf("Hello %+ 5.7d World",dmax);
-	printf("\n");
-	ft_printf("Hello %+ 5.7d World",dmax);
-	printf("\n");
+// 	// printf("\n NULL %s NULL ", NULL);
 
-	printf("Hello %+ 022.7d World",dzero);
-	printf("\n");
-	ft_printf("Hello %+ 022.7d World",dzero);
-	printf("\n");
+// 	// printf("\n %c ", '0');
 
-	printf("Hello %- 022.7d World",dzero);
-	printf("\n");
-	ft_printf("Hello %- 022.7d World",dzero);
-	printf("\n");
+// 	// ft_printf(" %c", '0' - 256);
+// 	// printf("\n %c", '0' - 256);
 
-	printf("Hello %-22i World",dzero);
-	printf("\n");
-	ft_printf("Hello %-22i World",dzero);
-	printf("\n");
 
-	printf("Hello %-22i World",dmax);
-	printf("\n");
-	ft_printf("Hello %-22i World",dmax);
-	printf("\n");
+// }
 
 
-	printf("Hello %-22i World",dmin);
-	printf("\n");
-	ft_printf("Hello %-22i World",dmin);
-	printf("\n");
+// int main(){
+// 	char c = 'c';
+// 	int d = 923;
+// 	int dzero = 0;
+// 	int dmin=INT_MIN;
+// 	int dmax = INT_MAX;
+// 	unsigned int u= 932131274;
+// 	int imin = INT_MIN;
+// 	char s[] = "ley";
+// 	// test d
+// 	printf("Hello %-+010d Baby",d);
+// 	printf("\n");
+// 	ft_printf("Hello %-+010d Baby",d);
+// 	printf("\n");
 
-	printf("Hello %-22i World",dmin);
-	printf("\n");
-	ft_printf("Hello %-22i World",dmin);
-	printf("\n");
+// 	printf("Hello %-+10.5d Baby",d);
+// 	printf("\n");
+// 	ft_printf("Hello %-+10.5d Baby",d);
+// 	printf("\n");
 
-	// test u
-	printf("Hello %-22u unsigned",u);
-	printf("\n");
-	ft_printf("Hello %-22u unsigned",u);
-	printf("\n");
+// 	printf("Hello % 3.2d Baby",d);
+// 	printf("\n");
+// 	ft_printf("Hello % 3.2d Baby",d);
+// 	printf("\n");
 
-	printf("Hello %-22u unsigned",dmin);
-	printf("\n");
-	ft_printf("Hello %-22u unsigned",dmin);
-	printf("\n");
+// 	printf("Hello % +05.5d Baby",d);
+// 	printf("\n");
+// 	ft_printf("Hello % +05.5d Baby",d);
+// 	printf("\n");
 
-	printf("Hello %-22u unsigned",dmin);
-	printf("\n");
-	ft_printf("Hello %-22u unsigned",dmin);
-	printf("\n");
+// 	printf("Hello %5d Baby",d);
+// 	printf("\n");
+// 	ft_printf("Hello %5d Baby",d);
+// 	printf("\n");
 
+// 	printf("Hello %-5d Baby",d);
+// 	printf("\n");
+// 	ft_printf("Hello %-5d Baby",d);
+// 	printf("\n");
 
+
+// 	printf("Hello %-5.7d Baby",dmin);
+// 	printf("\n");
+// 	ft_printf("Hello %-5.7d Baby",dmin);
+// 	printf("\n");
+
 
-	printf("Hello %0 22u unsigned",dmin);
-	printf("\n");
-	ft_printf("Hello %0 22u unsigned",dmin);
-	printf("\n");
+// 	printf("Hello %+ 5.7d Baby",dmax);
+// 	printf("\n");
+// 	ft_printf("Hello %+ 5.7d Baby",dmax);
+// 	printf("\n");
 
-	printf("Hello %-22.9u unsigned",dmin);
-	printf("\n");
-	ft_printf("Hello %-22.9u unsigned",dmin);
-	printf("\n");
+// 	printf("Hello %+ 022.7d Baby",dzero);
+// 	printf("\n");
+// 	ft_printf("Hello %+ 022.7d Baby",dzero);
+// 	printf("\n");
+
+// 	printf("Hello %- 022.7d Baby",dzero);
+// 	printf("\n");
+// 	ft_printf("Hello %- 022.7d Baby",dzero);
+// 	printf("\n");
+
+// 	printf("Hello %-022d Baby",dzero);
+// 	printf("\n");
+// 	ft_printf("Hello %-022d Baby",dzero);
+// 	printf("\n");
+
+// 	printf("Hello %-022d Baby",dmax);
+// 	printf("\n");
+// 	ft_printf("Hello %-022d Baby",dmax);
+// 	printf("\n");
+
+
+// 	printf("Hello %-022d Baby",dmin);
+// 	printf("\n");
+// 	ft_printf("Hello %-022d Baby",dmin);
+// 	printf("\n");
+
+// 	// test i
+// 	printf("Hello %-22i World",dmin);
+// 	printf("\n");
+// 	ft_printf("Hello %-22i World",dmin);
+// 	printf("\n");
+
+// 	printf("Hello %-+010d World",d);
+// 	printf("\n");
+// 	ft_printf("Hello %-+010d World",d);
+// 	printf("\n");
+
+// 	printf("Hello %-+10.5d World",d);
+// 	printf("\n");
+// 	ft_printf("Hello %-+10.5d World",d);
+// 	printf("\n");
 
+// 	printf("Hello % 3.2d World",d);
+// 	printf("\n");
+// 	ft_printf("Hello % 3.2d World",d);
+// 	printf("\n");
 
+// 	printf("Hello % +05.5d World",d);
+// 	printf("\n");
+// 	ft_printf("Hello % +05.5d World",d);
+// 	printf("\n");
 
-	printf("Hello %+1u unsigned",dmin);
-	printf("\n");
-	ft_printf("Hello %+1u unsigned",dmin);
-	printf("\n");
+// 	printf("Hello %5d World",d);
+// 	printf("\n");
+// 	ft_printf("Hello %5d World",d);
+// 	printf("\n");
 
+// 	printf("Hello %-5d World",d);
+// 	printf("\n");
+// 	ft_printf("Hello %-5d World",d);
+// 	printf("\n");
 
-	printf("Hello %+0 #-13.21u unsigned",dmin);
-	printf("\n");
-	ft_printf("Hello %+0 #-13.21u unsigned",dmin);
-	printf("\n");
 
+// 	printf("Hello %-5.7d World",dmin);
+// 	printf("\n");
+// 	ft_printf("Hello %-5.7d World",dmin);
+// 	printf("\n");
 
-	printf("Hello %+0 #15.14u unsigned",dmin);
-	printf("\n");
-	ft_printf("Hello %+0 #15.14u unsigned",dmin);
-	printf("\n");
 
+// 	printf("Hello %+ 5.7d World",dmax);
+// 	printf("\n");
+// 	ft_printf("Hello %+ 5.7d World",dmax);
+// 	printf("\n");
 
+// 	printf("Hello %+ 022.7d World",dzero);
+// 	printf("\n");
+// 	ft_printf("Hello %+ 022.7d World",dzero);
+// 	printf("\n");
 
-	printf("Hello %+-0 #15.14u unsigned",dmin);
-	printf("\n");
-	ft_printf("Hello %+-0 #15.14u unsigned",dmin);
-	printf("\n");
+// 	printf("Hello %- 022.7d World",dzero);
+// 	printf("\n");
+// 	ft_printf("Hello %- 022.7d World",dzero);
+// 	printf("\n");
 
+	// printf("Hello %-22i World",dzero);
+	// printf("\n");
+	// ft_printf("Hello %-22i World",dzero);
+	// printf("\n");
 
+	// printf("Hello %-22i World",dmax);
+	// printf("\n");
+	// ft_printf("Hello %-22i World",dmax);
+	// printf("\n");
 
 
+	// printf("Hello %-22i World",dmin);
+	// printf("\n");
+	// ft_printf("Hello %-22i World",dmin);
+	// printf("\n");
 
-	printf("Hello %+-0 #15.14u unsigned",u);
-	printf("\n");
-	ft_printf("Hello %+-0 #15.14u unsigned",u);
-	printf("\n");
+	// printf("Hello %-22i World",dmin);
+	// printf("\n");
+	// ft_printf("Hello %-22i World",dmin);
+	// printf("\n");
 
-	printf("Hello %+0 #15.14u unsigned",u);
-	printf("\n");
-	ft_printf("Hello %+0 #15.14u unsigned",u);
-	printf("\n");
+	// // test u
+	// printf("Hello %-22u unsigned",u);
+	// printf("\n");
+	// ft_printf("Hello %-22u unsigned",u);
+	// printf("\n");
 
+	// printf("Hello %-22u unsigned",dmin);
+	// printf("\n");
+	// ft_printf("Hello %-22u unsigned",dmin);
+	// printf("\n");
 
-	printf("Hello %- 2.23u unsigned",u);
-	printf("\n");
-	ft_printf("Hello %- 2.23u unsigned",u);
-	printf("\n");
+	// printf("Hello %-22u unsigned",dmin);
+	// printf("\n");
+	// ft_printf("Hello %-22u unsigned",dmin);
+	// printf("\n");
 
-	printf("Hello %-022.16u unsigned",u);
-	printf("\n");
-	ft_printf("Hello %-022.16u unsigned",u);
-	printf("\n");
 
-	printf("Hello %3.44u unsigned",u);
-	printf("\n");
-	ft_printf("Hello %3.44u unsigned",u);
-	printf("\n");
 
-	printf("Hello %+022u unsigned",u);
-	printf("\n");
-	ft_printf("Hello %+022u unsigned",u);
-	printf("\n");
+	// printf("Hello %0 22u unsigned",dmin);
+	// printf("\n");
+	// ft_printf("Hello %0 22u unsigned",dmin);
+	// printf("\n");
 
-	printf("Hello %-+22u unsigned",u);
-	printf("\n");
-	ft_printf("Hello %-+22u unsigned",u);
-	printf("\n");
+	// printf("Hello %-22.9u unsigned",dmin);
+	// printf("\n");
+	// ft_printf("Hello %-22.9u unsigned",dmin);
+	// printf("\n");
 
-	printf("Hello %022.14u unsigned",u);
-	printf("\n");
-	ft_printf("Hello %022.14u unsigned",u);
-	printf("\n");
 
 
+	// printf("Hello %+1u unsigned",dmin);
+	// printf("\n");
+	// ft_printf("Hello %+1u unsigned",dmin);
+	// printf("\n");
 
 
+	// printf("Hello %+0 #-13.21u unsigned",dmin);
+	// printf("\n");
+	// ft_printf("Hello %+0 #-13.21u unsigned",dmin);
+	// printf("\n");
 
 
+	// printf("Hello %+015.14u unsigned",dmin);
+	// printf("\n");
+	// ft_printf("Hello %+015.14u unsigned",dmin);
+	// printf("\n");
 
 
 
-}
+	// printf("Hello %+-0 #15.14u unsigned",dmin);
+	// printf("\n");
+	// ft_printf("Hello %+-0 #15.14u unsigned",dmin);
+	// printf("\n");
+
+
+
+
+
+	// printf("Hello %+-0 #15.14u unsigned",u);
+	// printf("\n");
+	// ft_printf("Hello %+-0 #15.14u unsigned",u);
+	// printf("\n");
+
+	// printf("Hello %+0 #15.14u unsigned",u);
+	// printf("\n");
+	// ft_printf("Hello %+0 #15.14u unsigned",u);
+	// printf("\n");
+
+
+	// printf("Hello %- 2.23u unsigned",u);
+	// printf("\n");
+	// ft_printf("Hello %- 2.23u unsigned",u);
+	// printf("\n");
+
+	// printf("Hello %-022.16u unsigned",u);
+	// printf("\n");
+	// ft_printf("Hello %-022.16u unsigned",u);
+	// printf("\n");
+
+	// printf("Hello %3.44u unsigned",u);
+	// printf("\n");
+	// ft_printf("Hello %3.44u unsigned",u);
+	// printf("\n");
+
+	// printf("Hello %+022u unsigned",u);
+	// printf("\n");
+	// ft_printf("Hello %+022u unsigned",u);
+	// printf("\n");
+
+	// printf("Hello %-+22u unsigned",u);
+	// printf("\n");
+	// ft_printf("Hello %-+22u unsigned",u);
+	// printf("\n");
+
+	// printf("Hello %022.14u unsigned",u);
+	// printf("\n");
+	// ft_printf("Hello %022.14u unsigned",u);
+	// printf("\n");
+
+
+
+
+
+
+
+
+
+
 // int	main(void)
 // {
 // 	int				a;
