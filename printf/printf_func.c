@@ -3,20 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   printf_func.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
+/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 17:06:31 by cliew             #+#    #+#             */
-/*   Updated: 2023/10/13 13:40:29 by cliew            ###   ########.fr       */
+/*   Updated: 2023/10/14 00:06:37 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void	ft_dectohex(unsigned long long number, char *base)
+int	ft_dectohex(unsigned int number, char *base)
 {
+	int count;
+	count=0;
 	if (number > 15)
-		ft_dectohex(number / 16, base);
-	write(1, &base[number % 16], 1);
+		count+=ft_dectohex(number / 16, base);
+	count+=write(1, &base[number % 16], 1);
+	return count;
 }
 
 void	ft_putstr(char *str,int len)
@@ -63,12 +66,15 @@ void	ft_putint(int number)
 	write(1, &c, 1);
 }
 
-void	ft_putuint(unsigned int number)
+int	ft_putuint(unsigned int number)
 {
 	char	c;
+	int count;
 
+	count =0;
 	if (number > 9)
-		ft_putuint(number / 10);
+		count+=ft_putuint(number / 10);
 	c = number % 10 + 48;
-	write(1, &c, 1);
+	count+=write(1, &c, 1);
+	return count;
 }

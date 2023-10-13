@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
+/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 17:10:32 by cliew             #+#    #+#             */
-/*   Updated: 2023/10/13 13:38:30 by cliew            ###   ########.fr       */
+/*   Updated: 2023/10/14 00:06:31 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,10 @@ int		specifier_u(int flags[][5], unsigned int arg);
 int		specifier_x(int flags[][5], int arg);
 int		specifier_bigx(int flags[][5], int arg);
 
-void	ft_dectohex(unsigned long long number, char *base);
+int	ft_dectohex(unsigned int number, char *base);
 void	ft_putstr(char *str,int len);
 void	ft_putint(int number);
-void	ft_putuint(unsigned int number);
+int	ft_putuint(unsigned int number);
 
 int		check_flags(char **str, int flags[][5]);
 int		check_min_width(char **str, int flags[][5]);
