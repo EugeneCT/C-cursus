@@ -6,20 +6,33 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 17:06:31 by cliew             #+#    #+#             */
-/*   Updated: 2023/10/14 00:06:37 by cliew            ###   ########.fr       */
+/*   Updated: 2023/10/15 16:33:18 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	ft_dectohex(unsigned int number, char *base)
+int	ft_dectohex(unsigned int number, char *base,int *count)
 {
-	int count;
-	count=0;
+
+	// printf("%lld",number);
+	// count=0;
 	if (number > 15)
-		count+=ft_dectohex(number / 16, base);
-	count+=write(1, &base[number % 16], 1);
-	return count;
+		ft_dectohex(number / 16, base,count);
+	*count+=write(1, &base[number % 16], 1);
+	return 1;
+}
+
+
+int	ft_udectohex(unsigned long long number, char *base,int *count)
+{
+
+	// printf("%lld",number);
+	// count=0;
+	if (number > 15)
+		ft_udectohex(number / 16, base,count);
+	*count+=write(1, &base[number % 16], 1);
+	return 1;
 }
 
 void	ft_putstr(char *str,int len)

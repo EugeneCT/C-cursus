@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 11:00:16 by cliew             #+#    #+#             */
-/*   Updated: 2023/10/14 00:04:17 by cliew            ###   ########.fr       */
+/*   Updated: 2023/10/15 16:23:35 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ int	ft_printf(const char *str, ...)
 // int main(){
 	
 
-// 	int d = -1;
+// 	int d = -2;
 // 	ft_printf("%x",d);
 // 	printf("\n%x",d);
 

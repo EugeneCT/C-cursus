@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 17:10:32 by cliew             #+#    #+#             */
-/*   Updated: 2023/10/14 00:06:31 by cliew            ###   ########.fr       */
+/*   Updated: 2023/10/15 16:34:02 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,12 @@ int		specifier_p(int flags[][5], void *arg);
 int		specifier_d(int flags[][5], int arg);
 int		specifier_i(int flags[][5], int arg);
 int		specifier_u(int flags[][5], unsigned int arg);
-int		specifier_x(int flags[][5], int arg);
-int		specifier_bigx(int flags[][5], int arg);
+int		specifier_x(int flags[][5], unsigned int arg);
+int		specifier_bigx(int flags[][5], unsigned int arg);
 
-int	ft_dectohex(unsigned int number, char *base);
+int	ft_dectohex(unsigned int number, char *base,int *count);
+int	ft_udectohex(unsigned long long number, char *base,int *count);
+
 void	ft_putstr(char *str,int len);
 void	ft_putint(int number);
 int	ft_putuint(unsigned int number);
