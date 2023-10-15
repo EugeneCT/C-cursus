@@ -6,33 +6,35 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 17:03:07 by cliew             #+#    #+#             */
-/*   Updated: 2023/10/13 23:40:58 by cliew            ###   ########.fr       */
+/*   Updated: 2023/10/16 03:54:02 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	repeat_char(char char_to_repeat, int repeat_time)
+int	repeat_char(char char_to_repeat, int repeat_time,int *count)
 {
 	int	i;
 
 	i = 0;
+	if (repeat_time < 0)
+		return -1;
 	// printf("repeat time is %d",repeat_time);
 	while (i < repeat_time)
 	{
-		write(1, &char_to_repeat, sizeof(char_to_repeat));
+		*count +=write(1, &char_to_repeat, sizeof(char_to_repeat));
 		i++;
 	}
 	return (repeat_time);
 }
-int	putchar_output(char c)
+int	putchar_output(char c,int* count)
 {
-	write(1, &c, 1);
+	*count+=write(1, &c, 1);
 	return (1);
 
 }
 
-int	specifier_c(int flags[][5], int arg)
+int	specifier_c(int flags[][5], int arg,int *count)
 {
 	int	width;
 	int	len;
@@ -44,47 +46,57 @@ int	specifier_c(int flags[][5], int arg)
 	if (flags[0][0] == 1 || ((width < len) && (width!=0)))
 	{
 		// printf("trigger first");
-		write(1, &arg, 1);
+		*count+=write(1, &arg, 1);
 	}
 	if (width > len)
 	{
-		repeat_char(' ', width - len);
+		repeat_char(' ', width - len,count);
 	}
 	if (flags[0][0] == 0)
 	{
-		write(1, &arg, 1);
+		*count+=write(1, &arg, 1);
 		// printf("trigger second");
 
 	}
 	return (1);
 }
 
-int	specifier_s(int flags[][5], char *arg)
+int	specifier_s(int flags[][5], char *args,int *count)
 {
 	int	width;
 	int	len;
+	char *arg =(char*) args;
 	
-	if (!arg){
-		write(1,"(null)",6);
-		return 6;
+	if (!arg && flags[2][0]==0){
+		arg="(null)";
+		// *count+=write(1,"(null)",6);
+		// len = 6;
 	}
-	if (flags[2][0] == 1 && flags[2][1] < (int)(ft_strlen(arg)))
+	else if (!arg && flags[2][0]==1 && flags[2][1] < 6 )
+		arg="";
+	else if (!arg && flags[2][0]==1 )
+		arg="(null)";
+	if (arg && flags[2][0] == 1 && flags[2][1] < (int)(ft_strlen(arg)))
 		len = flags[2][1];
-	else
+	else if (arg)
 		len = ft_strlen(arg);
-	width = 0;
+	width = len;
 	if (flags[1][0] == 1)
 		width = flags[1][1];
-	if (flags[0][0] == 1 || ((width < len) && (width !=0)))
-		ft_putstr(arg, len);
-	if (width > len)
-		len+=repeat_char(' ', (width - len));
-	if (flags[0][0] == 0)
-		ft_putstr(arg, len);
+	if (flags[0][0] == 1 && arg){
+		ft_putstr(arg, len,count);
+
+	}
+	repeat_char(' ', (width - len),count);
+
+	if (flags[0][0] == 0 && arg)
+	{
+		ft_putstr(arg, len,count);
+	}
 	return (len);
 }
 
-int	put_sign(int flags[][5], ...)
+int	put_sign(int *count,int flags[][5],...)
 {
 	va_list			args;
 	int				integer;
@@ -98,15 +110,15 @@ int	put_sign(int flags[][5], ...)
 		if (flags[0][1] == 1)
 		{
 			if (integer >= 0)
-				putchar_output('+');
+				putchar_output('+',count);
 			else if (integer < 0)
-				putchar_output('-');
+				putchar_output('-',count);
 		}
 		else if (flags[0][2] == 1)
-			putchar_output(' ');
+			putchar_output(' ',count);
 	}
 	else if (un_integer && flags[0][2] == 1)
-		putchar_output(' ');
+		putchar_output(' ',count);
 	return (1);
 
 }
@@ -156,7 +168,7 @@ int	check_filler(int flags[][5])
 	return (1);
 
 }
-int	specifier_d(int flags[][5], int arg)
+int	specifier_d(int flags[][5], int arg,int* count)
 {
 	int		width;
 	int		len;
@@ -173,16 +185,16 @@ int	specifier_d(int flags[][5], int arg)
 	if (flags[0][0] != 1)
 	{
 		if (width > len)
-			repeat_char(filler, width - len);
+			repeat_char(filler, width - len,count);
 	}
-	put_sign(flags, arg);
+	put_sign(count,flags ,arg);
 	if (flags[2][0] == 1 && flags[2][1] > (int)(ft_strlen(str)) )
-		repeat_char('0', flags[2][1] - (int)(ft_strlen(str)));
-	ft_putint(arg);
+		repeat_char('0', flags[2][1] - (int)(ft_strlen(str)),count);
+	ft_putint(arg,count);
 	if (flags[0][0] == 1)
 	{
 		if (width > len)
-			repeat_char(' ', width - len);
+			repeat_char(' ', width - len,count);
 	}
 	free(str);
 	return (len);
@@ -217,7 +229,7 @@ int	specifier_d(int flags[][5], int arg)
 
 // }
 
-int	specifier_u(int flags[][5], unsigned int arg)
+int	specifier_u(int flags[][5], unsigned int arg,int * count)
 {
 	int		width;
 	int		len;
@@ -246,18 +258,18 @@ int	specifier_u(int flags[][5], unsigned int arg)
 	if (flags[0][0] != 1)
 	{
 		if (width > len)
-			repeat_char(filler, width - len);
+			repeat_char(filler, width - len,count);
 	}
 	if (flags[2][0] == 1 && flags[2][1] > strlen)
-		repeat_char('0', flags[2][1] - strlen);
-	int count = ft_putuint(arg);
+		repeat_char('0', flags[2][1] - strlen,count);
+	ft_putuint(arg,count);
 	if (flags[0][0] == 1)
 	{
 		if (width > len)
-			repeat_char(' ', width - len);
+			repeat_char(' ', width - len,count);
 	}
 	free(str);
 
-	return (count);
+	return (1);
 
 }

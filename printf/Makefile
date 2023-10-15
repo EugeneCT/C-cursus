@@ -23,6 +23,12 @@ $(NAME): $(OBJS) $(LIBFT)
 	make -C libft
 	mv libft/libft.a $(NAME)
 	$(LIBC) $(NAME) $(OBJS)
+	
+bonus: $(OBJS) $(LIBFT)
+	make -C libft
+	mv libft/libft.a $(NAME)
+	$(LIBC) $(NAME) $(OBJS)
+
 
 .c.o:
 	$(CC) $< -o $(<:.c=.o)

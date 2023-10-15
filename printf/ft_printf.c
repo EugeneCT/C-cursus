@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 11:00:16 by cliew             #+#    #+#             */
-/*   Updated: 2023/10/15 16:23:35 by cliew            ###   ########.fr       */
+/*   Updated: 2023/10/16 03:55:41 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,31 +34,29 @@
 // flags [3][0] = 1 if specifier declared
 // flags [3][1] = specifier in int
 
-int	put_formatted_args(int flags[][5], va_list *argv)
+int	put_formatted_args(int flags[][5], va_list *argv,int*count)
 {
-	int count;
 
-	count = 0;
 	if (flags[3][0])
 	{
 		if (flags[3][1] == 'c')
-			count = specifier_c(flags, va_arg(*argv, int));
+			specifier_c(flags, va_arg(*argv, int),count);
 		if (flags[3][1] == 's')
-			count = specifier_s(flags, va_arg(*argv, char *));
+			specifier_s(flags, va_arg(*argv, char *),count);
 		if (flags[3][1] == 'p')
-			count=specifier_p(flags, va_arg(*argv, void *));
+			specifier_p(flags, va_arg(*argv, void *),count);
 		if (flags[3][1] == 'd' || flags[3][1] == 'i')
-			count = specifier_d(flags, va_arg(*argv, int));
+			specifier_d(flags, va_arg(*argv, int),count);
 		if (flags[3][1] == 'u')
-			count=specifier_u(flags, va_arg(*argv, unsigned int));
+			specifier_u(flags, va_arg(*argv, unsigned int),count);
 		if (flags[3][1] == 'x')
-			count=specifier_x(flags, va_arg(*argv, int));
+			specifier_x(flags, va_arg(*argv, int),count);
 		if (flags[3][1] == 'X')
-			count=specifier_bigx(flags, va_arg(*argv, int));
+			specifier_bigx(flags, va_arg(*argv, int),count);
 		if (flags[3][1] == '%')
-			count+=write(1, "%%", 1);
+			*count+=write(1, "%%", 1);
 	}
-	return (count);
+	return (1);
 }
 
 int	form_dict(char **str, int flags[][5])
@@ -82,12 +80,7 @@ int	ft_printf(const char *str, ...)
 	count = 0;
 	str_ptr = (char *)str;
 	ft_memset(flags, 0,25*sizeof(int));
-	// for (int i=0;i<5;i++)
-	// {
-	// 	for (int j=0;j<5;j++)
-	// 		printf("%d",flags[i][j]);	2
-	// }
-	
+
 	va_start(argv, str);
 	while (*str_ptr != '\0')
 	{
@@ -100,7 +93,7 @@ int	ft_printf(const char *str, ...)
 			else
 			{
 				form_dict(&str_ptr, flags);
-				count+=put_formatted_args(flags, &argv);
+				put_formatted_args(flags, &argv,&count);
 			}
 		}
 		va_end(argv);
@@ -115,9 +108,9 @@ int	ft_printf(const char *str, ...)
 // int main(){
 	
 
-// 	int d = -2;
-// 	ft_printf("%x",d);
-// 	printf("\n%x",d);
+// 	char s[]= "hello";
+// 	ft_printf("%3.6s",NULL);
+// 	printf("\n%3.6s",NULL);
 
 // }
 
@@ -145,89 +138,89 @@ int	ft_printf(const char *str, ...)
 // }
 
 
-// int main(){
-// 	char c = 'c';
-// 	int d = 923;
-// 	int dzero = 0;
-// 	int dmin=INT_MIN;
-// 	int dmax = INT_MAX;
-// 	unsigned int u= 932131274;
-// 	int imin = INT_MIN;
-// 	char s[] = "ley";
-// 	// test d
-// 	printf("Hello %-+010d Baby",d);
-// 	printf("\n");
-// 	ft_printf("Hello %-+010d Baby",d);
-// 	printf("\n");
+int main(){
+	char c = 'c';
+	int d = 923;
+	int dzero = 0;
+	int dmin=INT_MIN;
+	int dmax = INT_MAX;
+	unsigned int u= 932131274;
+	int imin = INT_MIN;
+	char s[] = "ley";
+	// test d
+	printf("Hello %-+010d Baby",d);
+	printf("\n");
+	ft_printf("Hello %-+010d Baby",d);
+	printf("\n");
 
-// 	printf("Hello %-+10.5d Baby",d);
-// 	printf("\n");
-// 	ft_printf("Hello %-+10.5d Baby",d);
-// 	printf("\n");
+	printf("Hello %-+10.5d Baby",d);
+	printf("\n");
+	ft_printf("Hello %-+10.5d Baby",d);
+	printf("\n");
 
-// 	printf("Hello % 3.2d Baby",d);
-// 	printf("\n");
-// 	ft_printf("Hello % 3.2d Baby",d);
-// 	printf("\n");
+	printf("Hello % 3.2d Baby",d);
+	printf("\n");
+	ft_printf("Hello % 3.2d Baby",d);
+	printf("\n");
 
-// 	printf("Hello % +05.5d Baby",d);
-// 	printf("\n");
-// 	ft_printf("Hello % +05.5d Baby",d);
-// 	printf("\n");
+	printf("Hello % +05.5d Baby",d);
+	printf("\n");
+	ft_printf("Hello % +05.5d Baby",d);
+	printf("\n");
 
-// 	printf("Hello %5d Baby",d);
-// 	printf("\n");
-// 	ft_printf("Hello %5d Baby",d);
-// 	printf("\n");
+	printf("Hello %5d Baby",d);
+	printf("\n");
+	ft_printf("Hello %5d Baby",d);
+	printf("\n");
 
-// 	printf("Hello %-5d Baby",d);
-// 	printf("\n");
-// 	ft_printf("Hello %-5d Baby",d);
-// 	printf("\n");
-
-
-// 	printf("Hello %-5.7d Baby",dmin);
-// 	printf("\n");
-// 	ft_printf("Hello %-5.7d Baby",dmin);
-// 	printf("\n");
+	printf("Hello %-5d Baby",d);
+	printf("\n");
+	ft_printf("Hello %-5d Baby",d);
+	printf("\n");
 
 
-// 	printf("Hello %+ 5.7d Baby",dmax);
-// 	printf("\n");
-// 	ft_printf("Hello %+ 5.7d Baby",dmax);
-// 	printf("\n");
-
-// 	printf("Hello %+ 022.7d Baby",dzero);
-// 	printf("\n");
-// 	ft_printf("Hello %+ 022.7d Baby",dzero);
-// 	printf("\n");
-
-// 	printf("Hello %- 022.7d Baby",dzero);
-// 	printf("\n");
-// 	ft_printf("Hello %- 022.7d Baby",dzero);
-// 	printf("\n");
-
-// 	printf("Hello %-022d Baby",dzero);
-// 	printf("\n");
-// 	ft_printf("Hello %-022d Baby",dzero);
-// 	printf("\n");
-
-// 	printf("Hello %-022d Baby",dmax);
-// 	printf("\n");
-// 	ft_printf("Hello %-022d Baby",dmax);
-// 	printf("\n");
+	printf("Hello %-5.7d Baby",dmin);
+	printf("\n");
+	ft_printf("Hello %-5.7d Baby",dmin);
+	printf("\n");
 
 
-// 	printf("Hello %-022d Baby",dmin);
-// 	printf("\n");
-// 	ft_printf("Hello %-022d Baby",dmin);
-// 	printf("\n");
+	printf("Hello %+ 5.7d Baby",dmax);
+	printf("\n");
+	ft_printf("Hello %+ 5.7d Baby",dmax);
+	printf("\n");
 
-// 	// test i
-// 	printf("Hello %-22i World",dmin);
-// 	printf("\n");
-// 	ft_printf("Hello %-22i World",dmin);
-// 	printf("\n");
+	printf("Hello %+ 022.7d Baby",dzero);
+	printf("\n");
+	ft_printf("Hello %+ 022.7d Baby",dzero);
+	printf("\n");
+
+	printf("Hello %- 022.7d Baby",dzero);
+	printf("\n");
+	ft_printf("Hello %- 022.7d Baby",dzero);
+	printf("\n");
+
+	printf("Hello %-022d Baby",dzero);
+	printf("\n");
+	ft_printf("Hello %-022d Baby",dzero);
+	printf("\n");
+
+	printf("Hello %-022d Baby",dmax);
+	printf("\n");
+	ft_printf("Hello %-022d Baby",dmax);
+	printf("\n");
+
+
+	printf("Hello %-022d Baby",dmin);
+	printf("\n");
+	ft_printf("Hello %-022d Baby",dmin);
+	printf("\n");
+
+	// test i
+	printf("Hello %-22i World",dmin);
+	printf("\n");
+	ft_printf("Hello %-22i World",dmin);
+	printf("\n");
 
 // 	printf("Hello %-+010d World",d);
 // 	printf("\n");
@@ -301,7 +294,7 @@ int	ft_printf(const char *str, ...)
 // 	printf("\n");
 // 	ft_printf("Hello %-22i World",dmin);
 // 	printf("\n");
-
+}
 // 	// test u
 // 	printf("Hello %-22u unsigned",u);
 // 	printf("\n");/ int main(){

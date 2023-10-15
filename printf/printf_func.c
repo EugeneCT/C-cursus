@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 17:06:31 by cliew             #+#    #+#             */
-/*   Updated: 2023/10/15 16:33:18 by cliew            ###   ########.fr       */
+/*   Updated: 2023/10/16 03:38:01 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,34 +35,34 @@ int	ft_udectohex(unsigned long long number, char *base,int *count)
 	return 1;
 }
 
-void	ft_putstr(char *str,int len)
+void	ft_putstr(char *str,int len,int *count)
 {
 	int	i;
 
 	i = 0;
 	if (!str)
 	{
-		write(1, "(null)", 6);
+		*count+=write(1, "(null)", 6);
 		return ;
 	}
-	if (len ==0){
-		while (str[i])
-		{
-			write(1, &str[i], 1);
-			i++;
-		}
-	}
-	else{
+	// if (len ==0){
+	// 	while (str[i])
+	// 	{
+	// 		*count+=write(1, &str[i], 1);
+	// 		i++;
+	// 	}
+	// }
+	// else{
 
-		while (i < len)
-		{
-			write(1, &str[i], 1);
-			i++;
-		}
+	while (i < len)
+	{
+		*count+=write(1, &str[i], 1);
+		i++;
 	}
+	
 }
 
-void	ft_putint(int number)
+void	ft_putint(int number,int *count)
 {
 	char	c;
 	long	temp_number;
@@ -70,24 +70,22 @@ void	ft_putint(int number)
 	temp_number = number;
 	if (temp_number < 0)
 	{
-		write(1, "-", 1);
+		*count+=write(1, "-", 1);
 		temp_number *= -1;
 	}
 	if (temp_number > 9)
-		ft_putint(temp_number / 10);
+		ft_putint(temp_number / 10,count);
 	c = temp_number % 10 + 48;
-	write(1, &c, 1);
+	*count+=write(1, &c, 1);
 }
 
-int	ft_putuint(unsigned int number)
+int	ft_putuint(unsigned int number,int *count)
 {
 	char	c;
-	int count;
-
-	count =0;
+	
 	if (number > 9)
-		count+=ft_putuint(number / 10);
+		ft_putuint(number / 10,count);
 	c = number % 10 + 48;
-	count+=write(1, &c, 1);
-	return count;
+	*count+=write(1, &c, 1);
+	return 1;
 }

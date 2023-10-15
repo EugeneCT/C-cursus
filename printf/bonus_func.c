@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 17:08:08 by cliew             #+#    #+#             */
-/*   Updated: 2023/10/09 21:20:28 by cliew            ###   ########.fr       */
+/*   Updated: 2023/10/16 03:36:08 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,13 +56,19 @@ int	check_precision(char **str, int flags[][5])
 	{
 		flags[2][0] = 1;
 		(*str)++;
-		while (ft_strchr("0123456789", (**str)))
-		{
-			width = width * 10;
-			width = width + (**str - '0');
-			(*str)++;
+		if (ft_strchr("0123456789", (**str))){
+
+			while (ft_strchr("0123456789", (**str)))
+				{
+					width = width * 10;
+					width = width + (**str - '0');
+					(*str)++;
+				}
+			flags[2][1] = width;
 		}
-		flags[2][1] = width;
+		else
+			flags[2][1] = 0;
+	
 	}
 	return (1);
 }
