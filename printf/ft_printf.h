@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 17:10:32 by cliew             #+#    #+#             */
-/*   Updated: 2023/10/15 17:51:51 by cliew            ###   ########.fr       */
+/*   Updated: 2023/10/16 21:36:45 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	ft_udectohex(unsigned long long number, char *base,int *count);
 
 void	ft_putstr(char *str,int len,int *count);
 void	ft_putint(int number,int *count);
-int	ft_putuint(unsigned int number,int *count);
+int	ft_putuint(unsigned int number,int *count,int flags[][5]);
 
 int		check_flags(char **str, int flags[][5]);
 int		check_min_width(char **str, int flags[][5]);

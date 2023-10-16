@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 10:37:41 by cliew             #+#    #+#             */
-/*   Updated: 2023/10/13 22:24:19 by cliew            ###   ########.fr       */
+/*   Updated: 2023/10/16 07:50:51 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ char	*ft_itoa(int n)
 	int		i;
 
 	i = 0;
-	m = n;
+	m = (long)n;
 	sign = check_negative(m);
 	len = check_len(m);
 	ret = (char *)malloc(sizeof(char) * len);

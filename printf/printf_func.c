@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 17:06:31 by cliew             #+#    #+#             */
-/*   Updated: 2023/10/16 03:38:01 by cliew            ###   ########.fr       */
+/*   Updated: 2023/10/16 21:59:17 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,12 +79,26 @@ void	ft_putint(int number,int *count)
 	*count+=write(1, &c, 1);
 }
 
-int	ft_putuint(unsigned int number,int *count)
+int	ft_putuint(unsigned int number,int *count,int flags[][5])
 {
 	char	c;
-	
+
+
+	if (flags[2][0]==1 && flags[2][1]==0 && flags[1][0]==0 && number ==0)
+	{
+		// c=' ';
+		// *count+=write(1, &c, 1);
+		return 1;
+	}
+	if (flags[2][0]==1 && flags[2][1]==0 && number ==0)
+	{
+		c=' ';
+		*count+=write(1, &c, 1);
+		return 1;
+	}
+
 	if (number > 9)
-		ft_putuint(number / 10,count);
+		ft_putuint(number / 10,count,flags);
 	c = number % 10 + 48;
 	*count+=write(1, &c, 1);
 	return 1;
