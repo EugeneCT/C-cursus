@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 17:10:32 by cliew             #+#    #+#             */
-/*   Updated: 2023/10/16 21:36:45 by cliew            ###   ########.fr       */
+/*   Updated: 2023/10/16 22:08:24 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ int		check_min_width(char **str, int flags[][5]);
 int		check_precision(char **str, int flags[][5]);
 int		check_specifier(char **str, int flags[][5]);
 
+int	repeat_char(char char_to_repeat, int repeat_time, int *count);
 
 
 #endif

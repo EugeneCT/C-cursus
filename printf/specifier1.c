@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 17:03:07 by cliew             #+#    #+#             */
-/*   Updated: 2023/10/16 21:37:38 by cliew            ###   ########.fr       */
+/*   Updated: 2023/10/16 23:27:33 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,27 +108,28 @@ int	put_sign(int *count, int flags[][5], ...)
 	return (1);
 }
 
-int	check_len(int flags[][5], int arg)
+int	check_len(int flags[][5], int arg, int p_arg)
 {
 	int		len;
+	int		p_len;
 	char	*str;
+	char	*p_str;
 
 	str = ft_itoa(arg);
 	len = ft_strlen(str);
-
-
-	if ((flags[0][1] == 1 || flags[0][2] == 1) && arg>=0)
-		len = len + 1;
-
-	if (flags[2][0] == 1 && flags[2][1] > len)
+	p_str = ft_itoa(p_arg);
+	p_len = ft_strlen(p_str);
+	if (flags[2][0] == 1 && flags[2][1] > p_len)
 	{
 		len = flags[2][1];
-		if (arg <0)
-			len=len+1;
+		if (arg < 0)
+			len = len + 1;
 	}
-
-	
+	if ((flags[0][1] == 1 || flags[0][2] == 1) && arg >= 0)
+		len = len + 1;
 	free(str);
+	free(p_str);
+
 	return (len);
 }
 
@@ -175,34 +176,51 @@ int	handle_negative(int arg)
 		return (pos);
 }
 
+int	check_width(int flags[][5])
+{
+	int	width;
+
+	if (flags[1][0] == 1)
+		width = flags[1][1];
+	else
+		width = 0;
+	return (width);
+}
+
+int	d_logic(int flags[][5], int width, int arg, char filler, int *count)
+{
+	char	*str;
+	int		p_int;
+	int		len;
+
+	p_int = handle_negative(arg);
+	str = ft_itoa(p_int);
+	len = check_len(flags, arg, p_int);
+	if (flags[0][0] != 1 && filler == ' ')
+		repeat_char(filler, width - len, count);
+	put_sign(count, flags, arg);
+	if (flags[0][0] != 1 && filler == '0')
+		repeat_char(filler, width - len, count);
+	if (flags[2][0] == 1 && flags[2][1] > (int)(ft_strlen(str)))
+		repeat_char('0', flags[2][1] - (int)(ft_strlen(str)), count);
+	ft_putuint(p_int, count, flags);
+	if (flags[0][0] == 1)
+		repeat_char(' ', width - len, count);
+	free(str);
+	return (len);
+}
+
 int	specifier_d(int flags[][5], int arg, int *count)
 {
 	int		width;
 	int		len;
 	char	filler;
-	char	*str;
-	int		p_int;
 
-	p_int = handle_negative(arg);
-	str = ft_itoa(p_int);
 	filler = check_filler(flags);
-	len = check_len(flags, arg);
 	// printf("len is %d",len);
-	width = 0;
-	if (flags[1][0] == 1)
-		width = flags[1][1];
-	if (flags[0][0] != 1 && filler==' ')
-		repeat_char(filler, width - len, count);
-	put_sign(count, flags, arg);
-	if (flags[0][0] != 1 && filler=='0')
-		repeat_char(filler, width - len, count);
-	if (flags[2][0] == 1 && flags[2][1] > (int)(ft_strlen(str)))
-		repeat_char('0', flags[2][1] - (int)(ft_strlen(str)), count);
+	width = check_width(flags);
 	
-	ft_putuint(p_int, count,flags);
-	if (flags[0][0] == 1)
-		repeat_char(' ', width - len, count);
-	free(str);
+	len = d_logic(flags, width, arg, filler, count);
 	return (len);
 }
 
@@ -216,30 +234,23 @@ int	specifier_d(int flags[][5], int arg, int *count)
 
 // 	p_int = handle_negative(arg);
 // 	str = ft_itoa(p_int);
-// 	printf("str is %s",str);
-// 	width = 0;
-// 	len = check_len(flags, p_int);
-// 	printf("\nlen is %d",len);
-
 // 	filler = check_filler(flags);
+// 	len = check_len(flags, arg);
+// 	// printf("len is %d",len);
+// 	width = 0;
 // 	if (flags[1][0] == 1)
 // 		width = flags[1][1];
-// 	printf("\nwidth is %d",width);
-
-// 	if (flags[0][0] != 1)
-// 	{
-// 		if (width > len)
-// 			repeat_char(filler, width - len, count);
-// 	}
+// 	if (flags[0][0] != 1 && filler==' ')
+// 		repeat_char(filler, width - len, count);
 // 	put_sign(count, flags, arg);
+// 	if (flags[0][0] != 1 && filler=='0')
+// 		repeat_char(filler, width - len, count);
 // 	if (flags[2][0] == 1 && flags[2][1] > (int)(ft_strlen(str)))
 // 		repeat_char('0', flags[2][1] - (int)(ft_strlen(str)), count);
-// 	ft_putuint(p_int, count);
+
+// 	ft_putuint(p_int, count,flags);
 // 	if (flags[0][0] == 1)
-// 	{
-// 		if (width > len)
-// 			repeat_char(' ', width - len, count);
-// 	}
+// 		repeat_char(' ', width - len, count);
 // 	free(str);
 // 	return (len);
 // }
@@ -273,34 +284,71 @@ int	specifier_d(int flags[][5], int arg, int *count)
 
 // }
 
-int	specifier_u(int flags[][5], unsigned int arg, int *count)
-{
-	int				width;
-	int				len;
-	char			filler;
-	char			*str;
-	unsigned int	p_int;
+// int	specifier_u(int flags[][5], unsigned int arg, int *count)
+// {
+// 	int				width;
+// 	int				len;
+// 	char			filler;
+// 	char			*str;
+// 	unsigned int	p_int;
 
-	width = 0;
-	len = check_ulen(flags, arg);
+// 	width = 0;
+// 	len = check_ulen(flags, arg);
+// 	p_int = handle_negative(arg);
+// 	str = ft_itoa(p_int);
+// 	filler = check_filler(flags);
+// 	if (flags[1][0] == 1)
+// 		width = flags[1][1];
+// 	if (flags[0][0] != 1)
+// 	{
+// 		if (width > len)
+// 			repeat_char(filler, width - len, count);
+// 	}
+// 	if (flags[2][0] == 1 && flags[2][1] > (int)ft_strlen(str))
+// 		repeat_char('0', flags[2][1] - (int)ft_strlen(str), count);
+// 	ft_putuint(arg, count, flags);
+// 	if (flags[0][0] == 1)
+// 	{
+// 		if (width > len)
+// 			repeat_char(' ', width - len, count);
+// 	}
+// 	free(str);
+// 	return (1);
+// }
+int	u_logic(int flags[][5], int width, int arg, char filler, int *count)
+{
+	char	*str;
+	int		p_int;
+	int		len;
+
 	p_int = handle_negative(arg);
 	str = ft_itoa(p_int);
-	filler = check_filler(flags);
-	if (flags[1][0] == 1)
-		width = flags[1][1];
-	if (flags[0][0] != 1)
-	{
-		if (width > len)
-			repeat_char(filler, width - len, count);
-	}
-	if (flags[2][0] == 1 && flags[2][1] > (int)ft_strlen(str))
-		repeat_char('0', flags[2][1] - (int)ft_strlen(str), count);
-	ft_putuint(arg, count,flags);
+	len = check_len(flags, arg, p_int);
+	if (flags[0][0] != 1 && filler == ' ')
+		repeat_char(filler, width - len, count);
+	put_sign(count, flags, arg);
+	if (flags[0][0] != 1 && filler == '0')
+		repeat_char(filler, width - len, count);
+	if (flags[2][0] == 1 && flags[2][1] > (int)(ft_strlen(str)))
+		repeat_char('0', flags[2][1] - (int)(ft_strlen(str)), count);
+	ft_putuint(p_int, count, flags);
 	if (flags[0][0] == 1)
-	{
-		if (width > len)
-			repeat_char(' ', width - len, count);
-	}
+		repeat_char(' ', width - len, count);
 	free(str);
-	return (1);
+	return (len);
+}
+
+int	specifier_u(int flags[][5], unsigned int arg, int *count)
+{
+
+	int		width;
+	int		len;
+	char	filler;
+
+	filler = check_filler(flags);
+	// printf("len is %d",len);
+	width = check_width(flags);
+	
+	len = d_logic(flags, width, arg, filler, count);
+	return (len);
 }
