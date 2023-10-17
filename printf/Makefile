@@ -19,7 +19,7 @@ RM = rm -rf
 
 all: $(NAME)
 
-$(NAME): $(OBJS) $(LIBFT)
+$(NAME): $(OBJS)
 	make -C libft
 	mv libft/libft.a $(NAME)
 	$(LIBC) $(NAME) $(OBJS)
