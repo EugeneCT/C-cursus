@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 NAME = libftprintf.a
-SRCS = ft_printf.c printf_func.c specifier1.c specifier2.c bonus_func.c
+SRCS = ft_printf.c utilities.c
 OBJS = $(SRCS:.c=.o)
 CC = cc -Wall -Wextra -Werror -c
 LIBC = ar rcs
@@ -24,10 +24,6 @@ $(NAME): $(OBJS) $(LIBFT)
 	mv libft/libft.a $(NAME)
 	$(LIBC) $(NAME) $(OBJS)
 	
-bonus: $(OBJS) $(LIBFT)
-	make -C libft
-	mv libft/libft.a $(NAME)
-	$(LIBC) $(NAME) $(OBJS)
 
 
 .c.o:
