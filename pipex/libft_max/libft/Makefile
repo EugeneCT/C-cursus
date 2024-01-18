@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+         #
+#    By: cliew <cliew@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/29 10:54:58 by cliew             #+#    #+#              #
-#    Updated: 2023/09/29 10:55:15 by cliew            ###   ########.fr        #
+#    Updated: 2024/01/15 13:59:52 by cliew            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,6 +18,7 @@ SRCS = ft_isalpha.c ft_isdigit.c ft_isalnum.c ft_isascii.c ft_isprint.c \
 			 ft_atoi.c ft_calloc.c ft_strdup.c ft_substr.c ft_strjoin.c \
 			 ft_strtrim.c ft_split.c ft_itoa.c ft_strmapi.c ft_striteri.c \
 			 ft_putchar_fd.c ft_putstr_fd.c ft_putendl_fd.c ft_putnbr_fd.c \
+			 ft_strndup.c
 			
 
 

@@ -36,6 +36,22 @@ char	*ft_strchr(const char *str, int chr)
 	return ((char *) NULL);
 }
 
+
+int	ft_strchr_count(const char *s, int c)
+{
+	int	count;
+
+	if (s == NULL)
+		return (0);
+	count = 0;
+	while (*s)
+	{
+		if (*s == c)
+			count++;
+		s++;
+	}
+	return (count);
+}
 // int main(){
 
 // 	char *ret;

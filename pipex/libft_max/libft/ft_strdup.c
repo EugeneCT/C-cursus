@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 10:39:42 by cliew             #+#    #+#             */
-/*   Updated: 2023/09/29 11:17:22 by cliew            ###   ########.fr       */
+/*   Updated: 2024/01/15 14:02:54 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,4 +32,29 @@ char	*ft_strdup(const char *s)
 	}
 	ret[i] = '\0';
 	return (ret);
+}
+
+char	*ft_strdup_ignore(const char *s, char ignore)
+{
+	char	*dup;
+	size_t	slen;
+	size_t	i;
+
+	slen = ft_strlen(s);
+	i = ft_strchr_count(s, ignore);
+	dup = (char *)malloc((slen - i + 1) * sizeof(char));
+	if (dup == NULL)
+		return (NULL);
+	i = 0;
+	while (*s)
+	{
+		if (*s != ignore)
+		{
+			dup[i] = *s;
+			i++;
+		}
+		s++;
+	}
+	dup[i] = 0;
+	return (dup);
 }
