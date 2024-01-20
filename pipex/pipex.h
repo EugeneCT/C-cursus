@@ -18,7 +18,7 @@
 // Error Handiling
 # define ERR_INVALID_PARAMS "pipex: invalid parameters"
 # define ERR_INVALID_FILE "pipex: no such file or directory"
-# define ERR_INVALID_CMD "pipex: command not found"
+# define ERR_INVALID_CMD "\n pipex: command not found \n"
 # define ERR_SOMETHING_WENT_WRONG "pipex: something went wrong"
 # define ERR_PIPE "pipex: pipe error"
 # define ERR_FORK "pipex: fork error"
@@ -31,12 +31,13 @@ struct		cmd_store
     int valid;
 	char	*flags;
 };
-// typedef struct s_params
-// {
-// 	int		fin;
-// 	int		fout;
-// 	char	**argv;
-// 	char	**envp;
-// 	int		pipefd[2];
-// }	t_params;
+typedef struct s_params
+{
+	int		fin;
+	int		fout;
+	int		argc;
+	char	**argv;
+	char	**envp;
+	int		pipefd[2];
+}	in_params;
 #endif

@@ -157,6 +157,105 @@ char	**ft_split_cmd_args(char *s)
 
   // } 
 
+char	*find_env_path(char **envp)
+{
+	while (envp && *envp)
+	{
+		if (strncmp(*envp, "PATH=", 5) == 0)
+		{
+			return (ft_strdup(&(*envp)[5]));
+		}
+		envp++;
+	}
+	return (NULL);
+}
+
+void	free2(char **v)
+{
+	char	**p;
+
+	if (!v)
+		return ;
+	p = v;
+	while (*v)
+	{
+		free(*v);
+		v++;
+	}
+	free(p);
+}
+
+char	**find_cmd_paths(char **envp)
+{
+	char	**paths;
+	char	*path;
+
+	path = find_env_path(envp);
+	paths = ft_split(path, ':');
+	if (path)
+		free(path);
+	return (paths);
+}
+
+
+char	*locate_cmd(char **paths, char *cmd)
+{
+	char	*_cmd;
+	char	*cmd_path;
+
+	if (access(cmd, X_OK) >= 0)
+		return (ft_strdup(cmd));
+	_cmd = ft_strjoin("/", cmd);
+	cmd_path = NULL;
+	while (paths && *paths)
+	{
+		cmd_path = ft_strjoin(*paths, _cmd);
+		if (access(cmd_path, X_OK) >= 0)
+			break ;
+		free(cmd_path);
+		cmd_path = NULL;
+		paths++;
+	}
+	free(_cmd);
+	return (cmd_path);
+}
+
+int	run_cmd(char *cmd, int infd, int outfd, char **envp)
+{
+	char	**cmd_args;
+	char	*cmd_name;
+	char	*cmd_path;
+	char	**paths;
+	int		status;
+	// ft_putstr(ft_itoa(*i),NULL);
+  dup2(infd, 0);
+	dup2(outfd, 1);
+	paths = find_cmd_paths(envp);
+	cmd_args = ft_split_cmd_args(cmd);
+	cmd_name = cmd_args[0];
+	cmd_path = locate_cmd(paths, cmd_name);
+	free(paths);
+	status = 0;
+	if (cmd_path)
+  {
+  
+		status = execve(cmd_path, cmd_args, NULL);
+  }
+  else
+    {
+      printf("%s",cmd);
+		// ft_puterr(ERR_INVALID_CMD);
+    }
+	if (cmd_path)
+		free(cmd_path);
+	free2(cmd_args);
+	return (status);
+}
+
+
+
+
+
 char* check_path(char** envp)
 
 {
@@ -175,72 +274,194 @@ char* check_path(char** envp)
 //  TEST EXECV  //
 /////////////////
 
+// 5 var, 4 parameter
+
+
+int	pipex(in_params in)
+{
+	pid_t	pid;
+	int		status;
+  int   i;
+
+	status = 0;
+  i=2;
+ 
+  while (i < (in.argc -1))
+  {
+    pid = fork();
+	  if (pid < 0)
+		    ft_puterr(ERR_FORK);
+
+    if (i==2 && pid==0)
+    { 
+
+		  status=run_cmd(in.argv[i], in.fin, in.pipefd[1], in.envp);
+    }
+    else if (i == (in.argc-2) && pid==0)
+    {
+
+    	status=run_cmd(in.argv[i], in.pipefd[0], in.fout, in.envp);
+    }
+    else if (pid==0)
+    {
+
+      status=run_cmd(in.argv[i], in.pipefd[0], in.pipefd[1], in.envp);
+    }
+    wait(NULL);
+    i++;
+    close(in.pipefd[1]);
+
+
+  }
+  wait(NULL);
+
+  close(in.fin);
+  close(in.fout);
+
+
+  return status;
+}
+	// else if (pid == 0)
+	// 	run_cmd(g.argv[2], g.fin, g.pipefd[1], g.envp);
+	// else
+	// {
+	// 	close(g.pipefd[1]);
+	// 	status = run_cmd(g.argv[3], g.pipefd[0], g.fout, g.envp);
+	// }
+	// close(g.fin);
+	// close(g.fout);
+	// return (status);
+// }
+
+
+
 
 int main(int argc, char**argv, char**envp)
 {
-	char	**cmd_args;
-  char *path;
-  char	**paths;
-  char	*cmd_path;
-	char	*_cmd;
-  int status;
-  int fout;
-  int fin;
+  in_params	in;
 
-  if (argc <1)
-    printf("argc error");
+	if (argc < 5)
+		return (ft_puterr(ERR_INVALID_PARAMS));
+	// if (pipe(g.pipefd) < 0)
+	// 	return (ft_puterr(ERR_PIPE));
+	in.fin = open(argv[1], O_RDONLY);
+	in.fout = open(argv[argc-1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if ((in.fout < 0 )|| (in.fin < 0) )
+		return (ft_puterr(ERR_INVALID_FILE));	
+	in.argv = argv;
+	in.envp = envp;
+  in.argc=  argc;
+  // char *ret = get_next_line(in.fin);
+  // printf("%s",ret);
+  // int max = 5;
+  // int i = 0;
+	// pid_t	pid;
+  // char *b[] = {"echo",ft_itoa(i),NULL};
 
-  printf("argv1 is %s \n",argv[1]);
+  // while (i < max)
+  // {
+  //   pid = fork();
+  //   // dup2(in.fin, 0);
 
-  printf("envp is %s \n",*envp);
+  //   if (pid==0)
+  //   {
+  //    execv("/usr/bin/echo",b);
+  //   }
+  //   i++;
+
+  // }
+  // wait(NULL);
+  // printf("End of parent");
+	if (pipex(in) < 0)
+	{
+		// unlink(argv[argc-1]);
+		return (ft_puterr(ERR_SOMETHING_WENT_WRONG));
+	}
+	return (0);
+}
+
+
+
+
+
+  // int i =0;
+  // printf("in.fin is %d \n",in.fin);
+  // printf("in.fout is %d \n",in.fout);
+  // while (in.argv[i])
+  // {
+  //   printf("argv %d is %s \n",i,in.argv[i]);
+  //   i++;
+  // }
+
+// Pipex
+	// char	**cmd_args;
+  // char *path;
+  // char	**paths;
+  // char	*cmd_path;
+	// char	*_cmd;
+  // // int status;
+  // int fout;
+  // int fin;
+
+
+
+  // if (argc <1)
+  //   printf("argc error");
+
+  // printf("argv1 is %s \n",argv[1]);
+
+  // printf("envp is %s \n",*envp);
   
-  cmd_args = ft_split_cmd_args(argv[2]);
+  // cmd_args = ft_split_cmd_args(argv[2]);
+  // // printf("cmd_args is %s \n",*cmd_args);
+
+
+  // path=check_path(envp);
+  // paths=ft_split(path,':');
+  // // if (access(cmd_args, X_OK) >= 0)
+	// // 	return (ft_strdup(cmd));
+	// _cmd = ft_strjoin("/", *cmd_args);
+	// cmd_path = NULL;
+  // while (path && *paths)
+  // {
+  //   cmd_path = ft_strjoin(*paths, _cmd);
+	// 	if (access(cmd_path, X_OK) >= 0)
+	// 		break ;
+	// 	free(cmd_path);
+	// 	cmd_path = NULL;
+	// 	paths++;
+  // }
+  // printf("cmd_path is %s \n",cmd_path);
   // printf("cmd_args is %s \n",*cmd_args);
+  // // printf("cmd_path is %s \n",cmd_path);
+  // // cmd_path="/usr/bin/";
+  // // printf("cmd_path is %s \n",cmd_path);
+  // char* argss[]={"wc" ,NULL};
+  // printf("argss is %s \n",argss[1]);
+	// if (cmd_path)
+
+  // {  
+  //       fout = open("./pipex_output", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+  //        fin = open("./test1", O_RDONLY);
+  //       dup2(fin, 0);
+  //       dup2(fout, 1);
+  //     pid_t p =fork();
+  //       printf("Im in child process1!");
+
+  //     if (p==0)
+  //     {
 
 
-  path=check_path(envp);
-  paths=ft_split(path,':');
-  // if (access(cmd_args, X_OK) >= 0)
-	// 	return (ft_strdup(cmd));
-	_cmd = ft_strjoin("/", *cmd_args);
-	cmd_path = NULL;
-  while (path && *paths)
-  {
-    cmd_path = ft_strjoin(*paths, _cmd);
-		if (access(cmd_path, X_OK) >= 0)
-			break ;
-		free(cmd_path);
-		cmd_path = NULL;
-		paths++;
-  }
-  printf("cmd_path is %s \n",cmd_path);
-  printf("cmd_args is %s \n",*cmd_args);
-  // printf("cmd_path is %s \n",cmd_path);
-  // cmd_path="/usr/bin/";
-  // printf("cmd_path is %s \n",cmd_path);
-  char* argss[]={"wc" ,NULL};
-  printf("argss is %s \n",argss[1]);
-	if (cmd_path)
+	// 	    execve(cmd_path, argss, NULL);
+  //       		    // status = execve(cmd_path, argss, NULL);
+   
+  //       close(fin);
+	//       close(fout);
+  //       return(0);
 
-  {  
-          fout = open("/pipex_output", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-         fin = open("./test1", O_RDONLY);
-        dup2(fin, 0);
-        dup2(fout, 1);
-      pid_t p =fork();
-      if (p==0)
-      {
+  //     }
+  // }
 
-        printf("Im in child process!");
+  // printf("This is the end of process");
 
-		    status = execve(cmd_path, argss, NULL);
-        close(fin);
-	      close(fout);
-        return(0);
-
-      }
-  }
-
-  printf("This is the end of process");
-
-  } 
+  // } 

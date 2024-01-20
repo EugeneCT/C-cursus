@@ -6,31 +6,31 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 09:27:41 by cliew             #+#    #+#             */
-/*   Updated: 2024/01/10 23:00:22 by cliew            ###   ########.fr       */
+/*   Updated: 2024/01/19 16:46:51 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gnl.h"
 
-void	*ft_calloc(size_t nmemb, size_t size)
-{
-	void	*res;
-	size_t	n;
-	size_t	i;
+// void	*ft_calloc(size_t nmemb, size_t size)
+// {
+// 	void	*res;
+// 	size_t	n;
+// 	size_t	i;
 
-	n = nmemb * size;
-	res = malloc(n);
-	if (res)
-	{
-		i = 0;
-		while (i < n)
-		{
-			((unsigned char *)res)[i] = 0;
-			i++;
-		}
-	}
-	return (res);
-}
+// 	n = nmemb * size;
+// 	res = malloc(n);
+// 	if (res)
+// 	{
+// 		i = 0;
+// 		while (i < n)
+// 		{
+// 			((unsigned char *)res)[i] = 0;
+// 			i++;
+// 		}
+// 	}
+// 	return (res);
+// }
 
 char	*ft_strjoin_nconst(char *s1, char *s2)
 {
