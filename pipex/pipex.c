@@ -293,8 +293,8 @@ int	pipex(in_params in)
 		    ft_puterr(ERR_FORK);
 
     if (i==2 && pid==0)
-    { 
-
+    {   
+     
 		  status=run_cmd(in.argv[i], in.fin, in.pipefd[1], in.envp);
     }
     else if (i == (in.argc-2) && pid==0)
@@ -342,8 +342,8 @@ int main(int argc, char**argv, char**envp)
 
 	if (argc < 5)
 		return (ft_puterr(ERR_INVALID_PARAMS));
-	// if (pipe(g.pipefd) < 0)
-	// 	return (ft_puterr(ERR_PIPE));
+	if (pipe(in.pipefd) < 0)
+		return (ft_puterr(ERR_PIPE));
 	in.fin = open(argv[1], O_RDONLY);
 	in.fout = open(argv[argc-1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if ((in.fout < 0 )|| (in.fin < 0) )
