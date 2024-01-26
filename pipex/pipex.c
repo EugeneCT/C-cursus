@@ -220,7 +220,7 @@ char	*locate_cmd(char **paths, char *cmd)
 	return (cmd_path);
 }
 
-int	run_cmd(char *cmd, int infd, int outfd, char **envp)
+int	run_cmd(char *cmd, char **envp)
 {
 	char	**cmd_args;
 	char	*cmd_name;
@@ -228,8 +228,7 @@ int	run_cmd(char *cmd, int infd, int outfd, char **envp)
 	char	**paths;
 	int		status;
 	// ft_putstr(ft_itoa(*i),NULL);
-  dup2(infd, 0);
-	dup2(outfd, 1);
+
 	paths = find_cmd_paths(envp);
 	cmd_args = ft_split_cmd_args(cmd);
 	cmd_name = cmd_args[0];
@@ -243,8 +242,8 @@ int	run_cmd(char *cmd, int infd, int outfd, char **envp)
   }
   else
     {
-      printf("%s",cmd);
-		// ft_puterr(ERR_INVALID_CMD);
+      // printf("%s",cmd);
+		ft_puterr(ERR_INVALID_CMD);
     }
 	if (cmd_path)
 		free(cmd_path);
@@ -282,38 +281,45 @@ int	pipex(in_params in)
 	pid_t	pid;
 	int		status;
   int   i;
-
+  int prev_pipe = in.fin;
 	status = 0;
   i=2;
  
-  while (i < (in.argc -1))
+  while (i < (in.argc -2))
   {
+    if (pipe(in.pipefd) < 0)
+		    return (ft_puterr(ERR_PIPE));
     pid = fork();
 	  if (pid < 0)
 		    ft_puterr(ERR_FORK);
 
-    if (i==2 && pid==0)
-    {   
-     
-		  status=run_cmd(in.argv[i], in.fin, in.pipefd[1], in.envp);
-    }
-    else if (i == (in.argc-2) && pid==0)
-    {
+    if (pid==0){   
+      if (prev_pipe != STDIN_FILENO) 
+      {
+        dup2(prev_pipe, STDIN_FILENO);
+        close(prev_pipe);
+      }
+      
+      dup2(in.pipefd[1], STDOUT_FILENO);
+      close(in.pipefd[1]);
+      status=run_cmd(in.argv[i], in.envp);
+   
 
-    	status=run_cmd(in.argv[i], in.pipefd[0], in.fout, in.envp);
     }
-    else if (pid==0)
-    {
 
-      status=run_cmd(in.argv[i], in.pipefd[0], in.pipefd[1], in.envp);
-    }
-    wait(NULL);
-    i++;
+    close(prev_pipe);
     close(in.pipefd[1]);
-
-
+    prev_pipe = in.pipefd[0];
+    i++;
   }
   wait(NULL);
+   if (prev_pipe != STDIN_FILENO) {
+        dup2(prev_pipe, STDIN_FILENO);
+        dup2(in.fout, STDOUT_FILENO);
+
+        close(prev_pipe);
+    }
+    status=run_cmd(in.argv[i], in.envp);
 
   close(in.fin);
   close(in.fout);
@@ -342,8 +348,7 @@ int main(int argc, char**argv, char**envp)
 
 	if (argc < 5)
 		return (ft_puterr(ERR_INVALID_PARAMS));
-	if (pipe(in.pipefd) < 0)
-		return (ft_puterr(ERR_PIPE));
+
 	in.fin = open(argv[1], O_RDONLY);
 	in.fout = open(argv[argc-1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if ((in.fout < 0 )|| (in.fin < 0) )
@@ -374,7 +379,7 @@ int main(int argc, char**argv, char**envp)
   // printf("End of parent");
 	if (pipex(in) < 0)
 	{
-		// unlink(argv[argc-1]);
+		unlink(argv[argc-1]);
 		return (ft_puterr(ERR_SOMETHING_WENT_WRONG));
 	}
 	return (0);

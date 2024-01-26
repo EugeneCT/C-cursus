@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 # INCLUDE:=./include
-# TARGET:=pipex
+# TARGET:=pipex.a
 # SRC:= project.c
 # OBJS:=${SRCS:=.o}
 # LIB:=./libft_max/libft_max.a
@@ -37,7 +37,7 @@
 # 	@$(RM) $(TARGET)
 # re: fclean all
 INCLUDE := ./include
-TARGET := pipex
+TARGET := pipex.a
 SRC := pipex.c
 SRCS := $(SRC)
 OBJS := $(SRCS:.c=.o)
