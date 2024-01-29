@@ -17,7 +17,7 @@
 # include <fcntl.h>
 // Error Handiling
 # define ERR_INVALID_PARAMS "pipex: invalid parameters"
-# define ERR_INVALID_FILE "pipex: no such file or directory"
+# define ERR_INVALID_FILE "pipex: No such file or directory"
 # define ERR_INVALID_CMD "\n pipex: command not found \n"
 # define ERR_SOMETHING_WENT_WRONG "pipex: something went wrong"
 # define ERR_PIPE "pipex: pipe error"

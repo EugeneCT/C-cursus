@@ -37,7 +37,7 @@
 # 	@$(RM) $(TARGET)
 # re: fclean all
 INCLUDE := ./include
-TARGET := pipex.a
+NAME := pipex
 SRC := pipex.c
 SRCS := $(SRC)
 OBJS := $(SRCS:.c=.o)
@@ -50,11 +50,11 @@ RM := rm -rf
 
 .PHONY: all clean fclean re
 
-all: $(TARGET)
+all: $(NAME)
 
-$(TARGET): $(OBJS) $(LIB)
+$(NAME): $(OBJS) $(LIB)
 
-	@$(CC) $(CFLAGS) $(OBJS) $(LIB) -o ${TARGET}
+	@$(CC) $(CFLAGS) $(OBJS) $(LIB) -o ${NAME}
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@

@@ -114,8 +114,8 @@ char	**ft_split_cmd_args(char *s)
 	cmd_args = (char **)malloc(size * sizeof(char *));
 	cmd_args[size - 1] = 0;
 	cmd_args[0] = ft_strndup(s, p - s);
-	// if (*p && p[1])
-	// 	cmd_args[1] = ft_strdup_ignore(p + 1, '"');
+	if (*p && p[1])
+		cmd_args[1] = ft_strdup_ignore(p + 1, '"');
   if (*p && p[1])
 		cmd_args[1] = ft_strdup(p + 1);
 	return (cmd_args);
@@ -229,24 +229,27 @@ int	run_cmd(char *cmd, char **envp)
 	int		status;
 	// ft_putstr(ft_itoa(*i),NULL);
 
-	paths = find_cmd_paths(envp);
+	  paths = find_cmd_paths(envp);
+
 	cmd_args = ft_split_cmd_args(cmd);
 	cmd_name = cmd_args[0];
 	cmd_path = locate_cmd(paths, cmd_name);
-	free(paths);
+	free2(paths);
 	status = 0;
 	if (cmd_path)
   {
   
-		status = execve(cmd_path, cmd_args, NULL);
+		status = execve(cmd_path, cmd_args, envp);
+    // free(cmd_path); 
   }
   else
     {
       // printf("%s",cmd);
-		ft_puterr(ERR_INVALID_CMD);
+    status=-1;
+		ft_puterr(ERR_INVALID_CMD,1);
     }
-	if (cmd_path)
-		free(cmd_path);
+	// if (cmd_path)
+	free(cmd_path);
 	free2(cmd_args);
 	return (status);
 }
@@ -281,50 +284,51 @@ int	pipex(in_params in)
 	pid_t	pid;
 	int		status;
   int   i;
-  int prev_pipe = in.fin;
+  int prev_pipe;
 	status = 0;
   i=2;
- 
+  
   while (i < (in.argc -2))
   {
     if (pipe(in.pipefd) < 0)
-		    return (ft_puterr(ERR_PIPE));
+		    return (ft_puterr(ERR_PIPE,1));
+
     pid = fork();
 	  if (pid < 0)
-		    ft_puterr(ERR_FORK);
+		    ft_puterr(ERR_FORK,1);
 
     if (pid==0){   
+      prev_pipe=in.fin;
       if (prev_pipe != STDIN_FILENO) 
       {
         dup2(prev_pipe, STDIN_FILENO);
-        close(prev_pipe);
+        close(in.fin);
+   
       }
       
       dup2(in.pipefd[1], STDOUT_FILENO);
-      close(in.pipefd[1]);
+      close(prev_pipe);
       status=run_cmd(in.argv[i], in.envp);
-   
 
     }
+  
 
     close(prev_pipe);
     close(in.pipefd[1]);
     prev_pipe = in.pipefd[0];
     i++;
+    if (status <0)
+      exit(-1);
   }
-  wait(NULL);
+  // wait(NULL);
+    waitpid(-1,NULL,WNOHANG|WUNTRACED);
    if (prev_pipe != STDIN_FILENO) {
         dup2(prev_pipe, STDIN_FILENO);
         dup2(in.fout, STDOUT_FILENO);
-
-        close(prev_pipe);
     }
-    status=run_cmd(in.argv[i], in.envp);
-
+  status=run_cmd(in.argv[i], in.envp);
   close(in.fin);
   close(in.fout);
-
-
   return status;
 }
 	// else if (pid == 0)
@@ -347,40 +351,26 @@ int main(int argc, char**argv, char**envp)
   in_params	in;
 
 	if (argc < 5)
-		return (ft_puterr(ERR_INVALID_PARAMS));
+		return (ft_puterr(ERR_INVALID_PARAMS,1));
 
 	in.fin = open(argv[1], O_RDONLY);
+  if (in.fin < 0)
+		return (ft_puterr(ERR_INVALID_FILE,0));
 	in.fout = open(argv[argc-1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if ((in.fout < 0 )|| (in.fin < 0) )
-		return (ft_puterr(ERR_INVALID_FILE));	
+    if (in.fout < 0)
+		  return (ft_puterr(ERR_INVALID_FILE,1));
+	// if ((in.fout < 0 )|| (in.fin < 0) )
+	// 	return (ft_puterr(ERR_INVALID_FILE));	
 	in.argv = argv;
 	in.envp = envp;
   in.argc=  argc;
-  // char *ret = get_next_line(in.fin);
-  // printf("%s",ret);
-  // int max = 5;
-  // int i = 0;
-	// pid_t	pid;
-  // char *b[] = {"echo",ft_itoa(i),NULL};
 
-  // while (i < max)
-  // {
-  //   pid = fork();
-  //   // dup2(in.fin, 0);
-
-  //   if (pid==0)
-  //   {
-  //    execv("/usr/bin/echo",b);
-  //   }
-  //   i++;
-
-  // }
-  // wait(NULL);
-  // printf("End of parent");
 	if (pipex(in) < 0)
 	{
-		unlink(argv[argc-1]);
-		return (ft_puterr(ERR_SOMETHING_WENT_WRONG));
+    		return (1);
+
+		// unlink(argv[argc-1]);
+		// return (ft_puterr(ERR_SOMETHING_WENT_WRONG,1));
 	}
 	return (0);
 }
