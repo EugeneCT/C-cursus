@@ -116,8 +116,8 @@ char	**ft_split_cmd_args(char *s)
 	cmd_args[0] = ft_strndup(s, p - s);
 	if (*p && p[1])
 		cmd_args[1] = ft_strdup_ignore(p + 1, '"');
-  if (*p && p[1])
-		cmd_args[1] = ft_strdup(p + 1);
+  // if (*p && p[1])
+	// 	cmd_args[1] = ft_strdup(p + 1);
 	return (cmd_args);
 }
 
@@ -287,18 +287,22 @@ int	pipex(in_params in)
   int prev_pipe;
 	status = 0;
   i=2;
-  
+  prev_pipe=in.fin;
+
   while (i < (in.argc -2))
   {
     if (pipe(in.pipefd) < 0)
 		    return (ft_puterr(ERR_PIPE,1));
+
+    // in.pipefd[1]=in.fin;
+    // close(in.fin);
+    // prev_pipe=in.pipefd[0];
 
     pid = fork();
 	  if (pid < 0)
 		    ft_puterr(ERR_FORK,1);
 
     if (pid==0){   
-      prev_pipe=in.fin;
       if (prev_pipe != STDIN_FILENO) 
       {
         dup2(prev_pipe, STDIN_FILENO);
@@ -307,7 +311,8 @@ int	pipex(in_params in)
       }
       
       dup2(in.pipefd[1], STDOUT_FILENO);
-      close(prev_pipe);
+          close(in.pipefd[0]);
+
       status=run_cmd(in.argv[i], in.envp);
 
     }
@@ -315,13 +320,15 @@ int	pipex(in_params in)
 
     close(prev_pipe);
     close(in.pipefd[1]);
+
     prev_pipe = in.pipefd[0];
+
     i++;
     if (status <0)
       exit(-1);
   }
   // wait(NULL);
-    waitpid(-1,NULL,WNOHANG|WUNTRACED);
+    waitpid(0,NULL,WNOHANG|WUNTRACED);
    if (prev_pipe != STDIN_FILENO) {
         dup2(prev_pipe, STDIN_FILENO);
         dup2(in.fout, STDOUT_FILENO);
@@ -331,17 +338,6 @@ int	pipex(in_params in)
   close(in.fout);
   return status;
 }
-	// else if (pid == 0)
-	// 	run_cmd(g.argv[2], g.fin, g.pipefd[1], g.envp);
-	// else
-	// {
-	// 	close(g.pipefd[1]);
-	// 	status = run_cmd(g.argv[3], g.pipefd[0], g.fout, g.envp);
-	// }
-	// close(g.fin);
-	// close(g.fout);
-	// return (status);
-// }
 
 
 
@@ -355,7 +351,14 @@ int main(int argc, char**argv, char**envp)
 
 	in.fin = open(argv[1], O_RDONLY);
   if (in.fin < 0)
-		return (ft_puterr(ERR_INVALID_FILE,0));
+
+  {
+	ft_putstr_fd("pipex: line 1: ", 2);
+		ft_putstr_fd(argv[1], 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
+    return (0);
+  }
+		// return (ft_puterr(ERR_INVALID_FILE,0));
 	in.fout = open(argv[argc-1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
     if (in.fout < 0)
 		  return (ft_puterr(ERR_INVALID_FILE,1));
@@ -372,7 +375,7 @@ int main(int argc, char**argv, char**envp)
 		// unlink(argv[argc-1]);
 		// return (ft_puterr(ERR_SOMETHING_WENT_WRONG,1));
 	}
-	return (0);
+	return (1);
 }
 
 

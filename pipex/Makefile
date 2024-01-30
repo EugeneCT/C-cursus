@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+         #
+#    By: cliew < cliew@student.42singapore.sg>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/09 12:18:06 by cliew             #+#    #+#              #
-#    Updated: 2024/01/11 15:21:38 by cliew            ###   ########.fr        #
+#    Updated: 2024/01/30 15:12:45 by cliew            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,13 +48,17 @@ CFLAGS := -g -std=c99 -Wall -Wextra -Werror -I$(INCLUDE)
 AR := ar crs
 RM := rm -rf
 
-.PHONY: all clean fclean re
+.PHONY: all bonus clean fclean re
 
 all: $(NAME)
+bonus: $(NAME)
 
 $(NAME): $(OBJS) $(LIB)
 
 	@$(CC) $(CFLAGS) $(OBJS) $(LIB) -o ${NAME}
+
+
+
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
