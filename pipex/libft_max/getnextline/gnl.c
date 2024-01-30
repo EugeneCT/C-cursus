@@ -61,7 +61,7 @@ char	*read_file(int fd, struct s_fileInfo *fd_i, char **buffer, char **n_b)
 			return (NULL);
 		}
 		ft_free(n_b, 0, 0);
-		*n_b = ft_strncpy_mod(*buffer, b_count, 0);
+		*n_b = ft_strncpm(*buffer, b_count, 0);
 		eol = ft_strchar_mod(*n_b, '\n', fd, fd_i);
 	}
 	return (fd_i[fd].c_line);
@@ -79,7 +79,7 @@ char	*get_result(int fd, struct s_fileInfo *fd_i)
 	new_buffer = NULL;
 	if (fd_i[fd].p_line != NULL)
 	{
-		fd_i[fd].c_line = ft_strncpy_mod(fd_i[fd].p_line, 1, 1);
+		fd_i[fd].c_line = ft_strncpm(fd_i[fd].p_line, 1, 1);
 		ft_free(&(fd_i[fd].p_line), 0, 0);
 	}
 	result = read_file(fd, fd_i, &buffer, &new_buffer);
@@ -104,7 +104,7 @@ char	*get_next_line(int fd)
 	}
 	if (fd_i[fd].p_line && ft_strchr_mini(fd_i[fd].p_line, '\n'))
 	{
-		str = ft_strncpy_mod(fd_i[fd].p_line, 1, 1);
+		str = ft_strncpm(fd_i[fd].p_line, 1, 1);
 		ft_strchar_mod(str, '\n', fd, fd_i);
 		free(str);
 		return (fd_i[fd].c_line);

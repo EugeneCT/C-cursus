@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gnl_util.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: cliew < cliew@student.42singapore.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 09:27:41 by cliew             #+#    #+#             */
-/*   Updated: 2024/01/19 16:46:51 by cliew            ###   ########.fr       */
+/*   Updated: 2024/01/30 17:37:01 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ char	*ft_strjoin_nconst(char *s1, char *s2)
 	return (res);
 }
 
-char	*ft_strncpy_mod(char *src, size_t n, int full_cpy)
+char	*ft_strncpm(char *src, size_t n, int full_cpy)
 {
 	size_t	i;
 	size_t	len;
@@ -116,10 +116,10 @@ int	ft_strchar_mod(char *str, int chr, int fd, struct s_fileInfo *fd_i)
 	i = 0;
 	end_current = find_length(str, chr, &i, &eol);
 	if (!fd_i[fd].c_line)
-		fd_i[fd].c_line = ft_strncpy_mod(str, end_current + 1, 0);
+		fd_i[fd].c_line = ft_strncpm(str, end_current + 1, 0);
 	else
 	{
-		temp_cur = ft_strncpy_mod(str, end_current + 1, 0);
+		temp_cur = ft_strncpm(str, end_current + 1, 0);
 		temp_join = ft_strjoin_nconst(fd_i[fd].c_line, temp_cur);
 		ft_free(&(fd_i[fd].c_line), &temp_cur, 0);
 		fd_i[fd].c_line = temp_join;
@@ -127,7 +127,7 @@ int	ft_strchar_mod(char *str, int chr, int fd, struct s_fileInfo *fd_i)
 	if (fd_i[fd].p_line)
 		free(fd_i[fd].p_line);
 	if (i - (end_current + 1) > 0 && fd_i[fd].file_end != 1)
-		fd_i[fd].p_line = ft_strncpy_mod(str + end_current + 1, i - end_current, 0);
+		fd_i[fd].p_line = ft_strncpm(str + end_current + 1, i - end_current, 0);
 	else
 		fd_i[fd].p_line = NULL;
 	return (eol);

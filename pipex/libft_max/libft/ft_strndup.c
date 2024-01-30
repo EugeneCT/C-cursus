@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strndup.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
+/*   By: cliew < cliew@student.42singapore.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 13:58:27 by cliew             #+#    #+#             */
-/*   Updated: 2024/01/15 14:07:17 by cliew            ###   ########.fr       */
+/*   Updated: 2024/01/30 17:28:30 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-
 
 size_t	ft_min_sizet(size_t a, size_t b)
 {
@@ -19,6 +18,7 @@ size_t	ft_min_sizet(size_t a, size_t b)
 		return (a);
 	return (b);
 }
+
 char	*ft_strndup(const char *s, size_t n)
 {
 	char	*dup;
@@ -30,5 +30,3 @@ char	*ft_strndup(const char *s, size_t n)
 	ft_strlcpy(dup, s, n + 1);
 	return (dup);
 }
-
-

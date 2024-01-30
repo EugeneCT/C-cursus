@@ -6,7 +6,7 @@
 #    By: cliew < cliew@student.42singapore.sg>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/09 12:18:06 by cliew             #+#    #+#              #
-#    Updated: 2024/01/30 15:12:45 by cliew            ###   ########.fr        #
+#    Updated: 2024/01/30 15:32:15 by cliew            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,7 +38,7 @@
 # re: fclean all
 INCLUDE := ./include
 NAME := pipex
-SRC := pipex.c
+SRC := pipex.c utils.c
 SRCS := $(SRC)
 OBJS := $(SRCS:.c=.o)
 LIB := ./libft_max/libft_max.a
@@ -48,10 +48,10 @@ CFLAGS := -g -std=c99 -Wall -Wextra -Werror -I$(INCLUDE)
 AR := ar crs
 RM := rm -rf
 
-.PHONY: all bonus clean fclean re
+.PHONY: all s clean fclean re
 
 all: $(NAME)
-bonus: $(NAME)
+
 
 $(NAME): $(OBJS) $(LIB)
 

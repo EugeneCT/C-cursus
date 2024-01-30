@@ -36,7 +36,6 @@ char	*ft_strchr(const char *str, int chr)
 	return ((char *) NULL);
 }
 
-
 int	ft_strchr_count(const char *s, int c)
 {
 	int	count;
