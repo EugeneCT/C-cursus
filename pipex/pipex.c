@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
+/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 16:17:01 by cliew             #+#    #+#             */
-/*   Updated: 2024/01/31 19:19:11 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/01 07:56:54 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,8 @@ int	run_cmd(char *cmd, char **envp)
 	}
 	else
 	{
-		status = -1;
-		ft_puterr(ERR_INVALID_CMD, 1);
+		status = 127;
+		return (ft_puterr(ERR_INVALID_CMD, 127));
 	}
 	free(cmd_path);
 	free_array(cmd_args);
@@ -124,21 +124,25 @@ int	pipex(t_in in)
 int	main(int argc, char **argv, char **envp)
 {
 	t_in	in;
+	int		status;
 
-	if (argc < 5)
+	if (argc != 5)
 		return (ft_puterr(ERR_INVALID_PARAMS, 1));
 	in.fin = open(argv[1], O_RDONLY);
 	if (in.fin < 0)
-		return (ft_puterr(ERR_INVALID_FILE, 0));
+	{
+		perror("pipex: input file:" );
+		return (0);
+	}
 	in.fout = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (in.fout < 0)
-		return (ft_puterr(ERR_INVALID_FILE, 1));
+	{
+		perror("pipex: output file:" );
+		return (1);
+	}
 	in.argv = argv;
 	in.envp = envp;
 	in.argc = argc;
-	if (pipex(in) < 0)
-	{
-		return (1);
-	}
-	return (1);
+	status = pipex(in);
+	return (status);
 }

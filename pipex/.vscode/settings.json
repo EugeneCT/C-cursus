@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "gnl.h": "c",
-        "pipex_bonus.h": "c"
-    }
+        "pipex_bonus.h": "c",
+        "cerrno": "c"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }

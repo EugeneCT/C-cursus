@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
+/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 17:01:53 by cliew             #+#    #+#             */
-/*   Updated: 2024/01/31 19:24:08 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/01 07:35:50 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,10 @@
 # include <stdio.h>
 # include <sys/wait.h>
 # include <unistd.h>
+# include <errno.h>
+
 // Error Handiling
 # define ERR_INVALID_PARAMS "pipex: invalid parameters"
-# define ERR_INVALID_FILE "pipex: No such file or directory"
 # define ERR_INVALID_CMD "\n pipex: command not found \n"
 # define STDIN_FILENO 0
 # define STDOUT_FILENO 1
