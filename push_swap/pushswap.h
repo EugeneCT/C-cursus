@@ -9,7 +9,13 @@
 # include <stdlib.h>
 # include <unistd.h>
 
+// # define STDOUT_FILENO 1
 
-
+typedef struct s_node
+{
+	int				val;  //content
+	struct s_node	*prev;
+	struct s_node	*next;
+}					t_node;
 
 #endif
