@@ -14,6 +14,7 @@
 typedef struct s_node
 {
 	int				val;  //content
+	int				rank;
 	struct s_node	*prev;
 	struct s_node	*next;
 }					t_node;

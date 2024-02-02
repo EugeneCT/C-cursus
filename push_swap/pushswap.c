@@ -45,15 +45,21 @@ t_node	*find_end_node(t_node *stack, int last_node)
 	return (stack);
 }
 
-void	print_stack(t_node *stack)
+int	print_stack(t_node *stack,int print)
 {
+	int len;
+	
+	len=0;
 	stack = find_end_node(stack, 0);
 	while (stack)
 	{
-		ft_printf("%d \n", stack->val);
+		if (print)
+			ft_printf("%d \n", stack->val);
 		stack = stack->next;
+		len++;
 	}
-	stack = find_end_node(stack, 0);
+	return len;
+	// stack = find_end_node(stack, 0);
 }
 void	clear_stack(t_node *stack)
 {
@@ -71,26 +77,43 @@ void	clear_stack(t_node *stack)
 	}
 }
 
+int check_result(t_node *stack){
+
+	int temp_val;
+	stack=find_end_node(stack, 0);
+	if (!stack)
+		return (0);
+	temp_val=stack->val;
+	while (stack->next){
+		stack=stack->next;
+		if (stack->val < temp_val)
+			return (1);
+		temp_val=stack->val;
+	}
+	return (0);
+}
 /* Operation Functions */
 // sa,sb,ss
 int	swap(t_node **stack)
 {
 	t_node	*temp;
 	int		temp_val;
-
+	if (print_stack(*stack,0)<=1)
+		return (1);
 	*stack = find_end_node(*stack, 0);
 	temp = (*stack)->next;
 	temp_val = temp->val;
 	temp->val = (*stack)->val;
 	(*stack)->val = temp_val;
-	return (0);
+	return (1);
 }
 // ra,rb,rr,rra,rrb,rrr
 int	rotate(t_node **stack, int reverse)
 {
 	t_node	*head;
 	t_node	*tail;
-
+	if (print_stack(*stack,0)<=1)
+		return (1);
 	*stack = find_end_node(*stack, 0);
 	head = *stack;
 	tail = find_end_node(*stack, 1);
@@ -110,7 +133,7 @@ int	rotate(t_node **stack, int reverse)
 		head->prev = tail;
 		(*stack)->next = NULL;
 	}
-    return (0);
+    return (1);
 }
 int push(t_node **stack_1, t_node **stack_2) {
     t_node *head_1;
@@ -119,28 +142,29 @@ int push(t_node **stack_1, t_node **stack_2) {
     head_2 = find_end_node(*stack_2, 0);
     if (!head_2)
         return 1;
-
     head_1 = find_end_node(*stack_1, 0);
     if (!head_1) {
-        printf("destination isempty!");
-        (*stack_2) = (*stack_2)->next;
+        (*stack_2)=(head_2)->next;
         (*stack_1) = head_2;
-        (*stack_2)->prev = NULL;
+		if  (*stack_2)
+        	(*stack_2)->prev = NULL;
         (*stack_1)->prev = NULL;
         (*stack_1)->next = NULL;
         return 0;
     }
-    (*stack_2) = (*stack_2)->next;
+	(*stack_2) = (head_2)->next;
+
     head_2->prev = NULL;
     head_2->next = head_1;
     head_1->prev = head_2;
-    (*stack_2)->prev = NULL;
+	if (*stack_2)
+    	(*stack_2)->prev = NULL;
     return 0;
 }
 
 int	execute(t_node **stack_a, t_node **stack_b, char *line, int s_print)
 {
-	if (!s_print)
+	if (s_print)
 		ft_printf("%s\n", line);
 	if (ft_strcmp(line, "sa") == 0)
 		return (swap(stack_a));
@@ -163,9 +187,92 @@ int	execute(t_node **stack_a, t_node **stack_b, char *line, int s_print)
 	else if (ft_strcmp(line, "rrb") == 0)
 		return (rotate(stack_b, 1));
 	else if (ft_strcmp(line, "rrr") == 0)
-		return (rotate(stack_a, 1) && rotate(stack_b, 1));
+		return ((rotate(stack_b, 1)) && (rotate(stack_a, 1)));
 	return (0);
 }
+int find_min_max(t_node *stack,char* stat){
+	
+	int temp_val;
+	int len;
+	int sum;
+	
+	sum = 0;
+	len=print_stack(stack,0);
+	stack=find_end_node(stack,0);
+	if (!stack)
+		return (0);
+	temp_val=stack->val;
+	while (stack->next)
+	{	
+		stack=stack->next;
+		if (ft_strcmp(stat, "min") == 0 && stack->val < temp_val)
+			temp_val=stack->val;
+		else if (ft_strcmp(stat, "max") == 0 && stack->val > temp_val)
+			temp_val=stack->val;
+		else 
+			sum=sum+stack->val;
+	}
+	if (ft_strcmp(stat, "avg") == 0)
+		return (sum/len);
+	return (temp_val);
+}
+
+// int find_median(t_node *stack,int avg){
+	
+// 	int temp_val;
+// 	int len;
+// 	t_node *min_node;
+
+// 	len=print_stack(stack,0);
+// 	stack=find_end_node(stack,0);
+// 	if (!stack)
+// 		return (0);
+// 	temp_val=stack->val;
+// 	while (temp_val!=min)
+// 	{
+// 		if (stack->next)
+// 		{
+// 			stack=stack->next;
+// 			temp_val=stack->val;
+// 		}
+// 	}
+// 	min_node=stack;
+
+// 	while (stack->next)
+// 	{	
+// 		stack=stack->next;
+// 		if (ft_strcmp(stat, "min") == 0 && stack->val < temp_val)
+// 			temp_val=stack->val;
+
+// 	}
+// 	return (temp_val);
+// }
+
+// t_node *random3 (t_node** stack){
+// 	stack=find_end_node(stack,0);
+
+
+
+// }
+
+int rank_list(t_node *stack)
+{
+	t_node *head;
+	int rank;
+
+	rank=1;
+	head=find_end_node(stack,0);
+
+	head->rank=rank;
+	while (head->next)
+	{
+		head=head->next;
+		if head-
+	}
+
+
+// }
+
 int	main(int argc, char **argv)
 {
 	int i;
@@ -181,72 +288,169 @@ int	main(int argc, char **argv)
 		stack_a = add_node(stack_a, ft_atoi(argv[i]));
 		i++;
 	}
-	ft_printf("Stack a : \n");
-	print_stack(stack_a);
-	ft_printf("Stack b : \n");
-    print_stack(stack_b);
+	int len=print_stack(stack_a,0);
+	printf("len is %d",len);
+	int min = find_min_max(stack_a,"min");
+	int max = find_min_max(stack_a,"max");
+	// int mdn = find_min_max(stack_a,"mdn");
 
-    execute(&stack_a,&stack_b,"pb", 1);
-    ft_printf("pb \n");
-    ft_printf("Stack a : \n");
-	print_stack(stack_a);
-	ft_printf("Stack b : \n");
-    print_stack(stack_b);
-
-    execute(&stack_a,&stack_b,"ra", 1);
-    ft_printf("ra \n");
-    ft_printf("Stack a : \n");
-	print_stack(stack_a);
-	ft_printf("Stack b : \n");
-    print_stack(stack_b);
+	ft_printf("\n min is %d \n",min);
+	ft_printf("\n max is %d \n",max);
 
 
-    execute(&stack_a,&stack_b,"pb", 1);
-    ft_printf("pb \n");
-    ft_printf("Stack a : \n");
-	print_stack(stack_a);
-	ft_printf("Stack b : \n");
-    print_stack(stack_b);
-
-    execute(&stack_a,&stack_b,"ra", 1);
-    ft_printf("ra \n");
-    ft_printf("Stack a : \n");
-	print_stack(stack_a);
-	ft_printf("Stack b : \n");
-    print_stack(stack_b);
-
-    execute(&stack_a,&stack_b,"sa", 1);
-     ft_printf("sa \n");
-    ft_printf("Stack a : \n");
-	print_stack(stack_a);
-	ft_printf("Stack b : \n");
-    print_stack(stack_b);
-
-    execute(&stack_a,&stack_b,"ra", 1);
-    ft_printf("ra \n");
-    ft_printf("Stack a : \n");
-	print_stack(stack_a);
-	ft_printf("Stack b : \n");
-    print_stack(stack_b);
-
-    execute(&stack_a,&stack_b,"pa", 1);
-    ft_printf("pa \n");
-    ft_printf("Stack a : \n");
-	print_stack(stack_a);
-	ft_printf("Stack b : \n");
-    print_stack(stack_b);
-    execute(&stack_a,&stack_b,"pa", 1);   
-    ft_printf("pa \n");
-    ft_printf("Stack a : \n");
-	print_stack(stack_a);
-	ft_printf("Stack b : \n");
-    print_stack(stack_b);
+	// /// 3 Random case
+	// if (argc == 4)
+	// {
 
 
-    ft_printf("After Sort : \n");
-    ft_printf("Stack a : \n");
-	print_stack(stack_a);
-	ft_printf("Stack b : \n");	
+	// }
+	// ft_printf("\n mdn is %d \n",mdn);
+
+
+// 	ft_printf("Stack a : \n");
+// 	print_stack(stack_a,1);
+// 	ft_printf("Stack b : \n");
+//     print_stack(stack_b,1);
+// 	ft_printf("------------------------------ \n");
+
+//     execute(&stack_a,&stack_b,"pb", 1);
+//     ft_printf("Stack a : \n");
+// 	print_stack(stack_a,1);
+// 	ft_printf("Stack b : \n");
+//     print_stack(stack_b,1);
+// 	ft_printf("------------------------------ \n");
+
+//     execute(&stack_a,&stack_b,"ra", 1);
+//     ft_printf("Stack a : \n");
+// 	print_stack(stack_a,1);
+// 	ft_printf("Stack b : \n");
+//     print_stack(stack_b,1);
+// 	ft_printf("------------------------------ \n");
+
+
+//     execute(&stack_a,&stack_b,"pb", 1);
+//     ft_printf("Stack a : \n");
+// 	print_stack(stack_a,1);
+// 	ft_printf("Stack b : \n");
+//     print_stack(stack_b,1);
+// 	ft_printf("------------------------------ \n");
+
+//     execute(&stack_a,&stack_b,"ra", 1);
+//     ft_printf("Stack a : \n");
+// 	print_stack(stack_a,1);
+// 	ft_printf("Stack b : \n");
+//     print_stack(stack_b,1);
+// 	ft_printf("------------------------------ \n");
+
+//     execute(&stack_a,&stack_b,"sa", 1);
+//     ft_printf("Stack a : \n");
+// 	print_stack(stack_a,1);
+// 	ft_printf("Stack b : \n");
+//     print_stack(stack_b,1);
+// 	ft_printf("------------------------------ \n");
+
+//     execute(&stack_a,&stack_b,"ra", 1);
+//     ft_printf("Stack a : \n");
+// 	print_stack(stack_a,1);
+// 	ft_printf("Stack b : \n");
+//     print_stack(stack_b,1);
+// 	ft_printf("------------------------------ \n");
+
+//     execute(&stack_a,&stack_b,"pa", 1);
+//     ft_printf("Stack a : \n");
+// 	print_stack(stack_a,1);
+// 	ft_printf("Stack b : \n");
+//     print_stack(stack_b,1);
+// 	ft_printf("------------------------------ \n");
+
+//     execute(&stack_a,&stack_b,"pa", 1);   
+//     ft_printf("Stack a : \n");
+// 	print_stack(stack_a,1);
+// 	ft_printf("Stack b : \n");
+//     print_stack(stack_b,1);
+// 	ft_printf("------------------------------ \n");
+
+// ////////////////////////////////////////////////////////////////////
+
+//     execute(&stack_a,&stack_b,"pb", 1);   
+//     ft_printf("Stack a : \n");
+// 	print_stack(stack_a,1);
+// 	ft_printf("Stack b : \n");
+//     print_stack(stack_b,1);
+// 	ft_printf("------------------------------ \n");
+
+//     execute(&stack_a,&stack_b,"pb", 1);   
+//     ft_printf("Stack a : \n");
+// 	print_stack(stack_a,1);
+// 	ft_printf("Stack b : \n");
+//     print_stack(stack_b,1);
+// 	ft_printf("------------------------------ \n");
+
+
+//     execute(&stack_a,&stack_b,"pb", 1);   
+//     ft_printf("Stack a : \n");
+// 	print_stack(stack_a,1);
+// 	ft_printf("Stack b : \n");
+//     print_stack(stack_b,1);
+// 	ft_printf("------------------------------ \n");
+
+
+
+
+//     execute(&stack_a,&stack_b,"ss", 1);   
+//     ft_printf("Stack a : \n");
+// 	print_stack(stack_a,1);
+// 	ft_printf("Stack b : \n");
+//     print_stack(stack_b,1);
+// 	ft_printf("------------------------------ \n");
+
+
+// 	execute(&stack_a,&stack_b,"rra", 1);   
+//     ft_printf("Stack a : \n");
+// 	print_stack(stack_a,1);
+// 	ft_printf("Stack b : \n");
+//     print_stack(stack_b,1);
+// 	ft_printf("------------------------------ \n");
+
+
+//     execute(&stack_a,&stack_b,"ss", 1);   
+//     ft_printf("Stack a : \n");
+// 	print_stack(stack_a,1);
+// 	ft_printf("Stack b : \n");
+//     print_stack(stack_b,1);
+// 	ft_printf("------------------------------ \n");
+
+
+// 	execute(&stack_a,&stack_b,"rrr", 1);   
+//     ft_printf("Stack a : \n");
+// 	print_stack(stack_a,1);
+// 	ft_printf("Stack b : \n");
+//     print_stack(stack_b,1);
+// 	ft_printf("------------------------------ \n");
+
+
+
+
+// 	execute(&stack_a,&stack_b,"rrb", 1);   
+//     ft_printf("Stack a : \n");
+// 	print_stack(stack_a,1);
+// 	ft_printf("Stack b : \n");
+//     print_stack(stack_b,1);
+// 	ft_printf("------------------------------ \n");
+
+
+
+
+//     ft_printf("After Sort : \n");
+//     ft_printf("Stack a : \n");
+// 	print_stack(stack_a,1);
+// 	ft_printf("Stack b : \n");	
+// 	print_stack(stack_b,1);
+
+	// if (check_result(stack_a))
+	// 	ft_putstr_fd("Not in order!",2);
+	// else
+	// 	ft_printf("Sorted succesfully!");
     // swap(&stack_a);
 	// ft_printf("After swap Stack a : \n");
 	// print_stack(stack_a);
