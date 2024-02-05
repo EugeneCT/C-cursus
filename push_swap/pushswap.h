@@ -23,4 +23,10 @@ int	swap(t_node **stack);
 int	rotate(t_node **stack, int reverse);// ra,rb,rr,rra,rrb,rrr
 int push(t_node **stack_1, t_node **stack_2);
 int	execute(t_node **stack_a, t_node **stack_b, char *line, int s_print);
+int	multi_execute(t_node **stack_a, t_node **stack_b, char *line, int n);
+
+
+int	print_stack(t_node *stack,int print,char *type);
+t_node	*find_end_node(t_node *stack, int last_node);
+
 #endif

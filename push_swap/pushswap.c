@@ -126,12 +126,15 @@ int find_min_max(t_node *stack,char* stat){
 	return (temp_val);
 }
 
-t_node* find_node_by_val(t_node *stack,int val)
+t_node* find_node_by(t_node *stack,char*type, int val)
 {
 	stack=find_end_node(stack,0);
 	while (stack->next)
 	{
-		if (stack->val == val)
+		if (stack->val == val && ft_strcmp(type, "val") == 0 )
+			return stack;
+
+		else if (stack->rank == val && ft_strcmp(type, "rank") == 0 )
 			return stack;
 		stack=stack->next;
 	}
@@ -210,28 +213,68 @@ int rank_list(t_node **stack,int min,int rank,int argc)
 
 	if (rank < argc)
 	{
-		(*stack)=find_node_by_val(*stack,min);
+		(*stack)=find_node_by(*stack,"val",min);
 		(*stack)->rank=rank;
 		rank_list(stack,find_next_min(*stack,min)->val,++rank,argc);
 	}
 
 	return 1;
 
+}
+
+
+int cost_to_end(t_node* stack,int last_node)
+{
+	int count;
+
+	count=0;
+	if (!stack)
+		return 0;
+	if (last_node)
+	{
+		while (stack->next)
+		{	
+			count++;
+			stack = stack->next;
+		}
+	}
+	else
+	{
+		while (stack->prev)
+		{
+			count++;
+			stack = stack->prev;
+		}
+	}
+	return (count);
 
 }
 
 
+void push_to_stack(t_node** stack,t_node** to_stack,int rank)
+{
+	int cost_to_top;
+	int cost_to_btm;
+	*stack=find_node_by(*stack,"rank",rank);
+	cost_to_top=cost_to_end(*stack,0);
+	cost_to_btm=cost_to_end(*stack,1);
+	if (cost_to_btm+1>cost_to_top)
+		multi_execute(stack,to_stack,"ra", cost_to_top);
+	else if (cost_to_top>=cost_to_btm)
+		multi_execute(stack,to_stack,"rra", cost_to_btm+1);
+	execute(stack,to_stack,"pb",1);
+}
 
 
 int	main(int argc, char **argv)
 {
 	int i;
 	t_node *stack_a;
-	// t_node *stack_b;
+	t_node *stack_b;
 
 	i = 1;
 	stack_a = NULL;
-	// stack_b = NULL;
+	stack_b = NULL;
 
 	while (i < argc)
 	{
@@ -241,22 +284,50 @@ int	main(int argc, char **argv)
 	int len=print_stack(stack_a,0,"val");
 	printf("len is %d",len);
 	int min = find_min_max(stack_a,"min");
-	int max = find_min_max(stack_a,"max");
+	// int max = find_min_max(stack_a,"max");
 	// int mdn = find_min_max(stack_a,"mdn");
-	int sec_min = find_next_min(stack_a,min)->val;
-	int third_min = find_next_min(stack_a,sec_min)->val;
-	int fourth_min = find_next_min(stack_a,third_min)->val;
+	// int sec_min = find_next_min(stack_a,min)->val;
+	// int third_min = find_next_min(stack_a,sec_min)->val;
+	// int fourth_min = find_next_min(stack_a,third_min)->val;
 
-	ft_printf("\n min is %d \n",min);
-	ft_printf("\n max is %d \n",max);
-	ft_printf("\n sec min is %d \n",sec_min);
-	ft_printf("\n third min is %d \n",third_min);
-	ft_printf("\n fourth min is %d \n",fourth_min);
+	// ft_printf("\n min is %d \n",min);
+	// ft_printf("\n max is %d \n",max);
+	// ft_printf("\n sec min is %d \n",sec_min);
+	// ft_printf("\n third min is %d \n",third_min);
+	// ft_printf("\n fourth min is %d \n",fourth_min);
 
 
 	rank_list(&stack_a,min,1,argc);
 	print_stack(stack_a,1,"rank");
 
+	// print_stack(stack_b,1,"rank");
+	int j =1;
+	int k =argc-1;
+
+	while (j<argc){
+		push_to_stack(&stack_a,&stack_b,j);
+	// 		ft_printf("----------------------- \n");
+	// ft_printf("Stack a After push : \n");
+	// print_stack(stack_a,1,"rank");
+	// ft_printf("\nStack b After push : \n");
+	// 	print_stack(stack_b,1,"rank");
+		j++;
+	}
+	while (k>0){
+
+	push_to_stack(&stack_b,&stack_a,k);
+			ft_printf("----------------------- \n");
+	// ft_printf("Stack a After push : \n");
+	// print_stack(stack_a,1,"rank");
+	// ft_printf("\nStack b After push : \n");
+	// 	print_stack(stack_b,1,"rank");
+		k--;
+	}
+	ft_printf("----------------------- \n");
+	ft_printf("Stack a After push : \n");
+	print_stack(stack_a,1,"val");
+	ft_printf("\nStack b After push : \n");
+	print_stack(stack_b,1,"val");
 
 	// /// 3 Random case
 	// if (argc == 4)

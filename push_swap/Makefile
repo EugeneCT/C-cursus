@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+         #
+#    By: cliew <cliew@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/09 12:18:06 by cliew             #+#    #+#              #
-#    Updated: 2024/02/01 09:19:34 by cliew            ###   ########.fr        #
+#    Updated: 2024/02/05 15:54:09 by cliew            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,7 +38,7 @@
 # re: fclean all
 INCLUDE := ./include
 NAME := push_swap
-SRC := pushswap.c
+SRC := pushswap.c actions.c
 SRCS := $(SRC)
 OBJS := $(SRCS:.c=.o)
 LIB := ./libft_max/libft_max.a

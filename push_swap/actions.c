@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   actions.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 19:42:40 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/02 21:21:08 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/05 15:56:57 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	swap(t_node **stack)
 {
 	t_node	*temp;
 	int		temp_val;
-	if (print_stack(*stack,0)<=1)
+	if (print_stack(*stack,0,"val")<=1)
 		return (1);
 	*stack = find_end_node(*stack, 0);
 	temp = (*stack)->next;
@@ -31,7 +31,7 @@ int	rotate(t_node **stack, int reverse)
 {
 	t_node	*head;
 	t_node	*tail;
-	if (print_stack(*stack,0)<=1)
+	if (print_stack(*stack,0,"val")<=1)
 		return (1);
 	*stack = find_end_node(*stack, 0);
 	head = *stack;
@@ -107,5 +107,16 @@ int	execute(t_node **stack_a, t_node **stack_b, char *line, int s_print)
 		return (rotate(stack_b, 1));
 	else if (ft_strcmp(line, "rrr") == 0)
 		return ((rotate(stack_b, 1)) && (rotate(stack_a, 1)));
+	return (0);
+}
+
+
+int	multi_execute(t_node **stack_a, t_node **stack_b, char *line, int n)
+{
+	while (n--)
+	{
+		if (!execute(stack_a, stack_b, line, 1))
+			return (1);
+	}
 	return (0);
 }
