@@ -263,6 +263,11 @@ void push_to_stack_ab(t_node** stack,t_node** to_stack,int rank)
 
 	move=0;
 	*stack=find_node_by(*stack,"rank",rank);
+	if (*stack==find_end_node(*stack,0))
+	{
+		execute(stack,to_stack,"pb",1);
+		return ;
+	}
 	if (((*stack)->rank != rank )|| !stack)
 
 		return ;
@@ -274,7 +279,10 @@ void push_to_stack_ab(t_node** stack,t_node** to_stack,int rank)
 			execute(stack,to_stack,"ra",1);
 			stack_top_rank=find_end_node(*stack,0)->rank;
 			if (stack_top_rank > rank)
+			{
 				execute(stack,to_stack,"pb",1);
+				// cost_to_top=cost_to_top-1;
+			}
 			move++;
 		}
 		// multi_execute(stack,to_stack,"ra", cost_to_top);
@@ -285,7 +293,11 @@ void push_to_stack_ab(t_node** stack,t_node** to_stack,int rank)
 			execute(stack,to_stack,"rra",1);
 			stack_top_rank=find_end_node(*stack,0)->rank;
 			if (stack_top_rank > rank)
+			{
 				execute(stack,to_stack,"pb",1);
+				// cost_to_btm=cost_to_btm-1;
+
+			}
 			move++;
 		}
 		// multi_execute(stack,to_stack,"rra", cost_to_btm+1);
@@ -317,26 +329,42 @@ t_node* arrange_stack_ab(t_node* stack,t_node* to_stack,int max_rank)
 	int move;
 
 	move= 0;
+	
 	stack_top=find_end_node(stack,0);
 	next_rank=stack_top->rank+1;
+
 	if (next_rank>=max_rank)
 	{
 		execute(&stack,&to_stack,"ra",1);
 		return stack;
 	}
 	stack=find_node_by(stack,"rank",next_rank);
-	cost_to_top=cost_to_end(stack,0)+2;
-	cost_to_btm=cost_to_end(stack,1)+3;
+	while (stack_top->next == stack)
+	{
+		execute(&stack,&to_stack,"ra",1);
+	
+		stack_top=find_end_node(stack,0);
+		next_rank=stack_top->rank+1;
+		if (next_rank>=max_rank)
+		{
+			execute(&stack,&to_stack,"ra",1);
+			return stack;
+		}
+		stack=find_node_by(stack,"rank",next_rank);
+
+	}
+	cost_to_top=cost_to_end(stack,0)+1;
+	cost_to_btm=cost_to_end(stack,1)+2;
 	execute(&stack,&to_stack,"pb",1);
 	if (cost_to_btm>cost_to_top)
 	{	
-		while (move++ < cost_to_top-1)
+		while (move++ < cost_to_top-2)
 			execute(&stack,&to_stack,"ra",1);
 	}
 
     else if (cost_to_top>cost_to_btm)
 	{	
-		while (move++ < cost_to_top-1)
+		while (move++ < cost_to_btm-1)
 			execute(&stack,&to_stack,"rra",1);
 		
 	}
