@@ -129,6 +129,8 @@ int find_min_max(t_node *stack,char* stat){
 t_node* find_node_by(t_node *stack,char*type, int val)
 {
 	stack=find_end_node(stack,0);
+	if (!stack)
+		return NULL;
 	while (stack->next)
 	{
 		if (stack->val == val && ft_strcmp(type, "val") == 0 )
@@ -258,49 +260,44 @@ void push_to_stack_ab(t_node** stack,t_node** to_stack,int rank)
 {
 	int cost_to_top;
 	int cost_to_btm;
-	int move;
-	int stack_top_rank;
+	// int move;
+	// int stack_top_rank;
 
-	move=0;
+	// move=0;
 	*stack=find_node_by(*stack,"rank",rank);
+	if (!(*stack) ||((*stack)->rank != rank ) )
+
+		return ;
 	if (*stack==find_end_node(*stack,0))
 	{
 		execute(stack,to_stack,"pb",1);
 		return ;
 	}
-	if (((*stack)->rank != rank )|| !stack)
+	/* First 1 is to handle if rank is not in stack, so find node by will not return the correct rank*/
 
-		return ;
 	cost_to_top=cost_to_end(*stack,0);
 	cost_to_btm=cost_to_end(*stack,1);
-	if (cost_to_btm+1>cost_to_top)
-	{	while (move <cost_to_top)
-		{
-			execute(stack,to_stack,"ra",1);
-			stack_top_rank=find_end_node(*stack,0)->rank;
-			if (stack_top_rank > rank)
-			{
-				execute(stack,to_stack,"pb",1);
-				// cost_to_top=cost_to_top-1;
-			}
-			move++;
-		}
-		// multi_execute(stack,to_stack,"ra", cost_to_top);
-	}
-	else if (cost_to_top>=cost_to_btm)
-		while (move <cost_to_btm+1)
-		{
-			execute(stack,to_stack,"rra",1);
-			stack_top_rank=find_end_node(*stack,0)->rank;
-			if (stack_top_rank > rank)
-			{
-				execute(stack,to_stack,"pb",1);
-				// cost_to_btm=cost_to_btm-1;
 
-			}
-			move++;
+	while(find_end_node(*stack,0)->rank!=rank){
+		while (find_end_node(*stack,0)->rank > rank){
+				execute(stack,to_stack,"pb",1);
+				cost_to_top=cost_to_top-1;
+		}
+
+		if (cost_to_btm+1>cost_to_top){	
+		// while (move <cost_to_top)
+			execute(stack,to_stack,"ra",1);
+	
+		
+		// multi_execute(stack,to_stack,"ra", cost_to_top);
+		}	
+		else if (cost_to_top>=cost_to_btm)
+		{
+
+				execute(stack,to_stack,"rra",1);
 		}
 		// multi_execute(stack,to_stack,"rra", cost_to_btm+1);
+	}
 	execute(stack,to_stack,"pb",1);
 }
 
@@ -376,13 +373,13 @@ t_node* arrange_stack_ab(t_node* stack,t_node* to_stack,int max_rank)
 
 t_node* push_to_top(t_node* stack,t_node* to_stack,int rank)
 {
-	t_node* stack_top;
+	// t_node* stack_top;
 	int cost_to_btm;
 	int cost_to_top;
 	int move;
 
 	move= 0;
-	stack_top=find_end_node(stack,0);
+	// stack_top=find_end_node(stack,0);
 	stack=find_node_by(stack,"rank",rank);
 	cost_to_top=cost_to_end(stack,0);
 	cost_to_btm=cost_to_end(stack,1);
@@ -515,8 +512,14 @@ int	main(int argc, char **argv)
 	/*Prepare Stack A for Stack B*/
 
 	stack_a=push_to_top(stack_a,stack_b,1);
+	if (check_result(stack_a)==0)
+	{
+		print_stack(stack_a,1,"rank");
+		ft_printf("----------------------- \n");
+		ft_printf("Arrange succesfully! \n");
 
 
+	}
 	// ft_printf("----------------------- \n");
 	// ft_printf("Stack a After push : \n");
 	// print_stack(stack_a,1,"val");
