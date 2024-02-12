@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   actions.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
+/*   By: cliew < cliew@student.42singapore.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 19:42:40 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/05 15:56:57 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/07 23:28:44 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,22 @@ int	swap(t_node **stack)
 {
 	t_node	*temp;
 	int		temp_val;
+	int 	temp_rank;
 	if (print_stack(*stack,0,"val")<=1)
 		return (1);
 	*stack = find_end_node(*stack, 0);
+	
 	temp = (*stack)->next;
+	
 	temp_val = temp->val;
+	temp_rank = temp->rank;
+
 	temp->val = (*stack)->val;
+	temp->rank = (*stack)->rank;
+
 	(*stack)->val = temp_val;
+	(*stack)->rank = temp_rank;
+
 	return (1);
 }
 // ra,rb,rr,rra,rrb,rrr
