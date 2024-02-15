@@ -873,6 +873,92 @@ int push_to_stack_ba(t_node** stack,t_node** to_stack,int rank,int print)
 		return count;
 	}
 
+
+void	sort_three(t_node **stack)
+{
+	t_node	*max;
+	int max_val;
+	max_val = find_min_max(*stack,"max");
+	max=find_node_by(*stack, "val",max_val);
+	*stack=find_end_node(*stack,0);
+
+	if (check_result(*stack)==0)
+		return ;
+	if (*stack == max)
+	{
+		execute(stack,stack,"ra",1);
+	}
+	else if ((*stack)->next == max)
+	{
+		execute(stack,stack,"rra",1);
+	}
+	*stack=find_end_node(*stack,0);
+	if ((*stack)->rank > (*stack)->next->rank)
+	{
+		execute(stack,stack,"sa",1);
+	}
+
+}
+
+
+void	sort_ten(t_node **stack_a, t_node **stack_b)
+{
+	int len;
+	int i;
+
+	i=4;
+	len= print_stack(*stack_a,0,"rank");
+	while (i <= len){
+		move_rank_top(stack_a,i,1);
+		execute(stack_a,stack_b,"pb",1);
+		i++;;
+
+	}
+	len= print_stack(*stack_a,0,"rank");
+	if (len == 3)
+		sort_three(stack_a);
+	while (*stack_b)
+	{
+		execute(stack_a,stack_b,"pa",1);
+	}
+	move_rank_top(stack_a,1,1);
+}
+
+
+int check_input(int argc, char**argv)
+{
+	int i;
+	int argv_i;
+	int j;
+	// char* argv_a;
+	i=1;
+	if (argc==1)
+		return (ft_puterr("",1));
+
+	while (i < argc)
+	{	
+		/*Check int min max, empty string and invalid character*/
+		argv_i=ft_atoi(argv[i]);
+		if (argv_i>INT_MAX || argv_i<INT_MIN || argv[i][0] == '\0'|| !ft_isInteger(argv[i]))  
+		{
+			return (ft_puterr("Error \n",1));
+		}
+
+		/*Duplicate*/
+		j=i+1;
+
+		while (j < argc)
+		{
+			if (ft_strcmp(argv[i],argv[j])==0)
+		
+				return (ft_puterr("Error \n",1));
+			j++;
+		}
+
+		i++;
+	}
+	return 0;
+}
 int	main(int argc, char **argv)
 {
 	int i;
@@ -884,7 +970,8 @@ int	main(int argc, char **argv)
 	stack_a = NULL;
 	stack_b = NULL;
 
-
+	if (check_input(argc,argv)==1)
+		return 1;
 	/* Convert ARGC to linked list*/
 	while (i < argc)
 	{
@@ -899,6 +986,16 @@ int	main(int argc, char **argv)
 	int min = find_min_max(stack_a,"min");
 
 	rank_list(&stack_a,min,1,argc);
+
+	if (argc==4)
+		sort_three(&stack_a);
+
+	else if (argc<=11)
+	{
+		sort_ten(&stack_a,&stack_b);
+
+
+	}
 	/*Chunk*/
 	// int MAX_CHUNK;
 	// int chunk_1=5;
@@ -934,67 +1031,71 @@ int	main(int argc, char **argv)
 
 
 
-	/* Calculate best chunk*/
-	int min_count=-1;
-	int MAX_CHUNK=1;
-	int max_MAX_CHUNK=argc/4;
-	int k=argc-1;
-	int best_chunk=1;
-	t_node * tmp_a;
-	t_node	*tmp_b;
 
-	tmp_a=NULL;
-	while (MAX_CHUNK<=max_MAX_CHUNK){
-		if ((argc-1)%MAX_CHUNK ==0)
-		{
-			tmp_a=duplicate_list(stack_a);
-			tmp_b=NULL;
+	else
+	{
+			/* Calculate best chunk*/
+		int min_count=-1;
+		int MAX_CHUNK=1;
+		int max_MAX_CHUNK=argc/4;
+		int k=argc-1;
+		int best_chunk=1;
+		t_node * tmp_a;
+		t_node	*tmp_b;
 
-			// printf("MAX_CHUNK is %d\n",MAX_CHUNK);
-
-			count=chunk_sort(MAX_CHUNK,0,&tmp_a,&tmp_b,argc);
-			k=argc-1;
-			while (k>0){
-				count=count+push_to_stack_ba(&tmp_b,&tmp_a,k,0);
-				k--;
-			}
-			// printf("count is %d\n",count);
-
-			if (min_count==-1)
-				min_count=count;
-			else if (count<min_count)
+		tmp_a=NULL;
+		while (MAX_CHUNK<=max_MAX_CHUNK){
+			if ((argc-1)%MAX_CHUNK ==0)
 			{
-				min_count=count;
-				best_chunk=MAX_CHUNK;
+				tmp_a=duplicate_list(stack_a);
+				tmp_b=NULL;
+
+				// printf("MAX_CHUNK is %d\n",MAX_CHUNK);
+
+				count=chunk_sort(MAX_CHUNK,0,&tmp_a,&tmp_b,argc);
+				k=argc-1;
+				while (k>0){
+					count=count+push_to_stack_ba(&tmp_b,&tmp_a,k,0);
+					k--;
+				}
+				// printf("count is %d\n",count);
+
+				if (min_count==-1)
+					min_count=count;
+				else if (count<min_count)
+				{
+					min_count=count;
+					best_chunk=MAX_CHUNK;
+				}
+				clear_stack(tmp_a);
+				clear_stack(tmp_b);
 			}
-			clear_stack(tmp_a);
-			clear_stack(tmp_b);
+			MAX_CHUNK++;
+
+		}	
+
+		// printf("%d",best_chunk);
+		/*Run best chunk*/
+		count = 0;
+		count=chunk_sort(best_chunk,1,&stack_a,&stack_b,argc);
+		k=argc-1;
+		while (k>0){
+			count=count+push_to_stack_ba(&stack_b,&stack_a,k,1);
+			k--;
 		}
-		MAX_CHUNK++;
+		// printf("%d \n",count);
 
-	}	
+		/*Push to BA*/
+		// int k=argc-1;
 
-	// printf("%d",best_chunk);
-	/*Run best chunk*/
-	count = 0;
-	count=chunk_sort(best_chunk,1,&stack_a,&stack_b,argc);
-	k=argc-1;
-	while (k>0){
-		count=count+push_to_stack_ba(&stack_b,&stack_a,k,1);
-		k--;
+		// while (k>0){
+		// 	count=count+push_to_stack_ba(&stack_b,&stack_a,k,1);
+		// 	k--;
+		// }
+
+		/*Arrange A so that rank 1 = Top*/
+		count=count+move_rank_top(&stack_a,1,1);
 	}
-	// printf("%d \n",count);
-
-	/*Push to BA*/
-	// int k=argc-1;
-
-	// while (k>0){
-	// 	count=count+push_to_stack_ba(&stack_b,&stack_a,k,1);
-	// 	k--;
-	// }
-
-	/*Arrange A so that rank 1 = Top*/
-	count=count+move_rank_top(&stack_a,1,1);
 	// if (check_result(stack_a)==0)
 	// {
 	// ft_printf("Succesfulyy with count = %d and chunk = %d",count,best_chunk);

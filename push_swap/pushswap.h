@@ -8,6 +8,7 @@
 # include <stdarg.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <limits.h>
 
 // # define STDOUT_FILENO 1
 
