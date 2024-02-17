@@ -1,10 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pushswap.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cliew < cliew@student.42singapore.sg>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/02/15 19:21:44 by cliew             #+#    #+#             */
+/*   Updated: 2024/02/17 14:25:46 by cliew            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "pushswap.h"
-
-/* Node Functions */
-
-
-
-
 
 t_node	*create_node(int val)
 {
@@ -14,6 +20,7 @@ t_node	*create_node(int val)
 	if (!node)
 		return (NULL);
 	node->val = val;
+	node->rank = -1;
 	node->next = NULL;
 	node->prev = NULL;
 	return (node);
@@ -33,7 +40,6 @@ t_node	*add_node(t_node *stack, int val)
 	return (new);
 }
 
-
 t_node	*find_end_node(t_node *stack, int last_node)
 {
 	if (!stack)
@@ -51,25 +57,24 @@ t_node	*find_end_node(t_node *stack, int last_node)
 	return (stack);
 }
 
-int	print_stack(t_node *stack,int print,char *type)
+int	print_stack(t_node *stack, int print, char *type)
 {
-	int len;
-	
-	len=0;
+	int	len;
+
+	len = 0;
 	stack = find_end_node(stack, 0);
 	while (stack)
 	{
-		if (print && ft_strcmp(type, "val") == 0) 
+		if (print && ft_strcmp(type, "val") == 0)
 			ft_printf("%d \n", stack->val);
-		else if (print && ft_strcmp(type, "rank") == 0) 
+		else if (print && ft_strcmp(type, "rank") == 0)
 			ft_printf("%d \n", stack->rank);
-		
 		stack = stack->next;
 		len++;
 	}
-	return len;
-	// stack = find_end_node(stack, 0);
+	return (len);
 }
+
 void	clear_stack(t_node *stack)
 {
 	t_node	*temp;
@@ -86,173 +91,125 @@ void	clear_stack(t_node *stack)
 	}
 }
 
-int check_result(t_node *stack){
+int	check_result(t_node *stack)
+{
+	int	temp_val;
 
-	int temp_val;
-	stack=find_end_node(stack, 0);
+	stack = find_end_node(stack, 0);
 	if (!stack)
 		return (0);
-	temp_val=stack->val;
-	while (stack->next){
-		stack=stack->next;
+	temp_val = stack->val;
+	while (stack->next)
+	{
+		stack = stack->next;
 		if (stack->val < temp_val)
 			return (1);
-		temp_val=stack->val;
+		temp_val = stack->val;
 	}
 	return (0);
 }
-/* Operation Functions */
-// sa,sb,ss
 
+int	find_min_max(t_node *stack, char *stat)
+{
+	int	temp_val;
+	int	len;
+	int	sum;
 
-int find_min_max(t_node *stack,char* stat){
-	
-	int temp_val;
-	int len;
-	int sum;
-	
 	sum = 0;
-	len=print_stack(stack,0,"val");
-	stack=find_end_node(stack,0);
+	len = print_stack(stack, 0, "val");
+	stack = find_end_node(stack, 0);
 	if (!stack)
 		return (0);
-	temp_val=stack->val;
+	temp_val = stack->val;
 	while (stack->next)
-	{	
-		stack=stack->next;
+	{
+		stack = stack->next;
 		if (ft_strcmp(stat, "min") == 0 && stack->val < temp_val)
-			temp_val=stack->val;
+			temp_val = stack->val;
 		else if (ft_strcmp(stat, "max") == 0 && stack->val > temp_val)
-			temp_val=stack->val;
-		else 
-			sum=sum+stack->val;
+			temp_val = stack->val;
+		else
+			sum = sum + stack->val;
 	}
 	if (ft_strcmp(stat, "avg") == 0)
-		return (sum/len);
+		return (sum / len);
 	return (temp_val);
 }
 
-t_node* find_node_by(t_node *stack,char*type, int val)
+t_node	*find_node_by(t_node *stack, char *type, int val)
 {
-	stack=find_end_node(stack,0);
+	stack = find_end_node(stack, 0);
 	if (!stack)
-		return NULL;
+		return (NULL);
 	while (stack->next)
 	{
-		if (stack->val == val && ft_strcmp(type, "val") == 0 )
-			return stack;
-
-		else if (stack->rank == val && ft_strcmp(type, "rank") == 0 )
-			return stack;
-		stack=stack->next;
+		if (stack->val == val && ft_strcmp(type, "val") == 0)
+			return (stack);
+		else if (stack->rank == val && ft_strcmp(type, "rank") == 0)
+			return (stack);
+		stack = stack->next;
 	}
-	if (stack->val == val && ft_strcmp(type, "val") == 0 )
-		return stack;
-
-	else if (stack->rank == val && ft_strcmp(type, "rank") == 0 )
-			return stack;
-	return NULL;
-
-}
-// int find_median(t_node *stack,int avg){
-	
-// 	int temp_val;
-// 	int len;
-// 	t_node *min_node;
-
-// 	len=print_stack(stack,0);
-// 	stack=find_end_node(stack,0);
-// 	if (!stack)
-// 		return (0);
-// 	temp_val=stack->val;
-// 	while (temp_val!=min)
-// 	{
-// 		if (stack->next)
-// 		{
-// 			stack=stack->next;
-// 			temp_val=stack->val;
-// 		}
-// 	}
-// 	min_node=stack;
-
-// 	while (stack->next)
-// 	{	
-// 		stack=stack->next;
-// 		if (ft_strcmp(stat, "min") == 0 && stack->val < temp_val)
-// 			temp_val=stack->val;
-
-// 	}
-// 	return (temp_val);
-// }
-
-// t_node *random3 (t_node** stack){
-// 	stack=find_end_node(stack,0);
-
-
-
-// }
-t_node* find_next_min(t_node *stack,int min)
-{
-	int temp;
-
-	stack=find_end_node(stack,0);
-	while (stack->next && stack -> val <= min)
-		stack=stack->next;
-	temp=stack->val;
-	while (stack->next)
-	{
-		stack=stack->next;
-		if (stack->val <temp && stack->val > min)
-			temp=stack->val;
-	}
-	stack=find_end_node(stack,0);
-	if (stack->val ==temp)
-		return stack;
-	while (stack->next)
-	{
-		stack=stack->next;
-		if (stack->val==temp)
-			return stack;
-	}
-	return stack;
+	if (stack->val == val && ft_strcmp(type, "val") == 0)
+		return (stack);
+	else if (stack->rank == val && ft_strcmp(type, "rank") == 0)
+		return (stack);
+	return (NULL);
 }
 
-
-int rank_list(t_node **stack,int min,int rank,int argc)
+t_node	*find_next_min(t_node *stack, int min)
 {
-	// t_node *head;
-	t_node *next_min_node;
-	// int sec_min;
+	int	temp;
+
+	stack = find_end_node(stack, 0);
+	while (stack->next && stack->val <= min)
+		stack = stack->next;
+	temp = stack->val;
+	while (stack->next)
+	{
+		stack = stack->next;
+		if (stack->val < temp && stack->val > min)
+			temp = stack->val;
+	}
+	stack = find_end_node(stack, 0);
+	if (stack->val == temp)
+		return (stack);
+	while (stack->next)
+	{
+		stack = stack->next;
+		if (stack->val == temp)
+			return (stack);
+	}
+	return (stack);
+}
+
+int	rank_list(t_node **stack, int min, int rank, int argc)
+{
+	t_node	*next_min_node;
 
 	if (rank < argc)
 	{
-		next_min_node=find_node_by(*stack,"val",min);
+		next_min_node = find_node_by(*stack, "val", min);
 		if (next_min_node)
-			(*stack)=next_min_node;
+			(*stack) = next_min_node;
 		else
-			*stack=find_end_node(*stack,1);
-		(*stack)->rank=rank;
-		rank_list(stack,find_next_min(*stack,min)->val,++rank,argc);
-		}
-		
-	
-
-	return 1;
-
+			*stack = find_end_node(*stack, 1);
+		(*stack)->rank = rank;
+		rank_list(stack, find_next_min(*stack, min)->val, ++rank, argc);
+	}
+	return (1);
 }
 
-
-int cost_to_end(t_node* stack,int last_node)
+int	cost_to_end(t_node *stack, int last_node)
 {
-	int count;
+	int	count;
 
-	count=0;
+	count = 0;
 	if (!stack)
-		return 0;
+		return (0);
 	if (last_node)
 	{
 		while (stack->next)
-		{	
+		{
 			count++;
 			stack = stack->next;
 		}
@@ -266,1131 +223,350 @@ int cost_to_end(t_node* stack,int last_node)
 		}
 	}
 	return (count);
-
 }
 
-
-// void push_to_stack_ab(t_node** stack,t_node** to_stack,int rank)
-// {
-// 	int cost_to_top;
-// 	int cost_to_btm;
-// 	// int move;
-// 	// int stack_top_rank;
-
-// 	// move=0;
-// 	*stack=find_node_by(*stack,"rank",rank);
-// 	if (!(*stack) ||((*stack)->rank != rank ) )
-
-// 		return ;
-// 	if (*stack==find_end_node(*stack,0))
-// 	{
-// 		execute(stack,to_stack,"pb",1);
-// 		return ;
-// 	}
-// 	/* First 1 is to handle if rank is not in stack, so find node by will not return the correct rank*/
-
-// 	cost_to_top=cost_to_end(*stack,0);
-// 	cost_to_btm=cost_to_end(*stack,1);
-
-// 	while(find_end_node(*stack,0)->rank!=rank){
-// 		while (find_end_node(*stack,0)->rank > rank){
-// 				execute(stack,to_stack,"pb",1);
-// 				cost_to_top=cost_to_top-1;
-// 		}
-
-// 		if (cost_to_btm+1>cost_to_top){	
-// 		// while (move <cost_to_top)
-// 			execute(stack,to_stack,"ra",1);
-	
-		
-// 		// multi_execute(stack,to_stack,"ra", cost_to_top);
-// 		}	
-// 		else if (cost_to_top>=cost_to_btm)
-// 		{
-
-// 				execute(stack,to_stack,"rra",1);
-// 		}
-// 		// multi_execute(stack,to_stack,"rra", cost_to_btm+1);
-// 	}
-// 	execute(stack,to_stack,"pb",1);
-// }
-
-int check_swap(t_node** stack, char* seq)
+int	move_rank_top(t_node **stack, int rank, int print)
 {
-	t_node *stack_top;
-	t_node *stack_sec;
+	int	cost_to_top;
+	int	cost_to_btm;
+	int	count;
 
-	stack_top=find_end_node(*stack,0);
-	if (!stack_top)
-		return 0;
-	if (stack_top->next)
-		stack_sec=stack_top->next;
-	else
-		return 0;
-	
-	if (ft_strcmp(seq, "asc") == 0)
-	{
-		if (stack_sec->rank<stack_top->rank)
-		{
-			// execute(stack,stack,s_type,print);
-			return 1;
-		}
-
-	}
-	else if (ft_strcmp(seq, "dsc") == 0)
-	{
-		if (stack_sec->rank>stack_top->rank)
-		{
-			// execute(stack,stack,s_type,print);
-			return 1;
-
-		}
-	}
-	return 0;
-	
-}
-
-int move_rank_top(t_node**  stack,int rank,int print)
-{
-
-	int cost_to_top;
-	int cost_to_btm;
-	int count;
 	count = 0;
-	*stack=find_node_by(*stack,"rank",rank);
-	if (!(*stack) ||((*stack)->rank != rank ) ||(*stack==find_end_node(*stack,0) ))
-
-		return 0 ;
-
-	cost_to_top=cost_to_end(*stack,0);
-	cost_to_btm=cost_to_end(*stack,1);
-
-	while(find_end_node(*stack,0)->rank!=rank){
-	if (cost_to_btm+1>cost_to_top){	
-			execute(stack,stack,"ra",print);
-			count++;
-		}	
-		else if (cost_to_top>=cost_to_btm)
+	*stack = find_node_by(*stack, "rank", rank);
+	if (!(*stack) || ((*stack)->rank != rank)
+		|| (*stack == find_end_node(*stack, 0)))
+		return (0);
+	cost_to_top = cost_to_end(*stack, 0);
+	cost_to_btm = cost_to_end(*stack, 1);
+	while (find_end_node(*stack, 0)->rank != rank)
+	{
+		if (cost_to_btm + 1 > cost_to_top)
 		{
-			execute(stack,stack,"rra",print);
+			execute(stack, stack, "ra", print);
 			count++;
 		}
-
+		else if (cost_to_top >= cost_to_btm)
+		{
+			execute(stack, stack, "rra", print);
+			count++;
+		}
 	}
-	return count;
-
-}
-void push_to_stack_ab_v2(t_node** stack,t_node** to_stack,int rank)
-{
-	move_rank_top(stack,rank,1);
-	execute(stack,to_stack,"pb",1);
-
-
+	return (count);
 }
 
-// void push_to_stack_ab_v2(t_node** stack,t_node** to_stack,int rank)
-// {
-// 	int cost_to_top;
-// 	int cost_to_btm;
-// 	int swap_a=0;
-// 	int swap_b=0;
-// 	// int move;
-// 	// int stack_top_rank;
-
-// 	// move=0;
-// 	*stack=find_node_by(*stack,"rank",rank);
-// 	if (!(*stack) ||((*stack)->rank != rank ) )
-
-// 		return ;
-// 	if (*stack==find_end_node(*stack,0))
-// 	{
-// 		execute(stack,to_stack,"pb",1);
-// 		return ;
-// 	}
-// 	/* First 1 is to handle if rank is not in stack, so find node by will not return the correct rank*/
-
-// 	cost_to_top=cost_to_end(*stack,0);
-// 	cost_to_btm=cost_to_end(*stack,1);
-
-// 	while(find_end_node(*stack,0)->rank!=rank){
-// 		while (find_end_node(*stack,0)->rank > rank){
-// 				execute(stack,to_stack,"pb",1);
-// 			if (find_end_node(*stack,0)->rank < rank)
-// 			{
-// 				swap_a=check_swap(stack,"asc","sa",0);
-// 			}
-
-// 			swap_b= check_swap(to_stack,"dsc","sb",0);
-// 			if (swap_a && swap_b)
-// 				ft_printf("ss\n");
-// 			else if (swap_a)
-// 				ft_printf("sa\n");
-// 			else if (swap_b)
-// 				ft_printf("sb\n");
-
-
-
-
-
-// 			cost_to_top=cost_to_top-1;
-// 			swap_a=0;
-// 			swap_b=0;
-// 		}
-
-// 		if (cost_to_btm+1>cost_to_top){	
-// 		// while (move <cost_to_top)
-// 			execute(stack,to_stack,"ra",1);
-		
-// 		// multi_execute(stack,to_stack,"ra", cost_to_top);
-// 		}	
-// 		else if (cost_to_top>=cost_to_btm)
-// 		{
-
-// 			execute(stack,to_stack,"rra",1);
-
-
-// 		}
-// 		// multi_execute(stack,to_stack,"rra", cost_to_btm+1);
-// 	}
-// 	execute(stack,to_stack,"pb",1);
-// 				if (find_end_node(*stack,0)->rank < rank)
-// 			{
-// 				swap_a=check_swap(stack,"asc","sa",0);
-// 			}
-
-// 			swap_b= check_swap(to_stack,"dsc","sb",0);
-// 			if (swap_a && swap_b)
-// 				ft_printf("ss\n");
-// 			else if (swap_a)
-// 				ft_printf("sa\n");
-// 			else if (swap_b)
-// 				ft_printf("sb\n");
-
-
-// }
-
-
-t_node *duplicate_list(t_node *stack)
+void	push_to_stack_ab_v2(t_node **stack, t_node **to_stack, int rank)
 {
-		t_node *new_stack;
-		t_node *old_stack_head;
-		int len;
-		int i;
-		int min;
-	
-		new_stack=NULL;
-		len = print_stack(stack,0,"rank");
-		old_stack_head=find_end_node(stack,0);
-		i=0;
-		while (i < len)
-		{
-			new_stack = add_node(new_stack, old_stack_head->val);
-			i++;
-			old_stack_head=old_stack_head->next;
-		}
-		min = find_min_max(new_stack,"min");
-
-		rank_list(&new_stack,min,1,len+1);
-		return new_stack;
+	move_rank_top(stack, rank, 1);
+	execute(stack, to_stack, "pb", 1);
 }
-int push_to_stack_ba(t_node** stack,t_node** to_stack,int rank,int print)
+
+t_node	*duplicate_list(t_node *stack)
 {
-	int cost_to_top;
-	int cost_to_btm;
-	int count;
-	*stack=find_node_by(*stack,"rank",rank);
-	count=0;
+	t_node	*new_stack;
+	t_node	*old_stack_head;
+	int		len;
+	int		i;
+	int		min;
+
+	new_stack = NULL;
+	len = print_stack(stack, 0, "rank");
+	old_stack_head = find_end_node(stack, 0);
+	i = 0;
+	while (i < len)
+	{
+		new_stack = add_node(new_stack, old_stack_head->val);
+		i++;
+		old_stack_head = old_stack_head->next;
+	}
+	min = find_min_max(new_stack, "min");
+	rank_list(&new_stack, min, 1, len + 1);
+	return (new_stack);
+}
+
+int	push_to_stack_ba(t_node **stack, t_node **to_stack, int rank, int print)
+{
+	int	cost_to_top;
+	int	cost_to_btm;
+	int	count;
+
+	*stack = find_node_by(*stack, "rank", rank);
+	count = 0;
 	if (!stack)
-		return 0;
-	cost_to_top=cost_to_end(*stack,0);
-	cost_to_btm=cost_to_end(*stack,1);
-
-	/**Swap multi execute to while loop, then put in print*/
-
-	while (find_end_node(*stack,0)->rank != rank){
-		if (cost_to_btm+1>cost_to_top)
+		return (0);
+	cost_to_top = cost_to_end(*stack, 0);
+	cost_to_btm = cost_to_end(*stack, 1);
+	while (find_end_node(*stack, 0)->rank != rank)
+	{
+		if (cost_to_btm + 1 > cost_to_top)
 		{
-			execute(to_stack,stack,"rb", print);
+			execute(to_stack, stack, "rb", print);
 		}
-		else if (cost_to_top>=cost_to_btm)
+		else if (cost_to_top >= cost_to_btm)
 		{
-			execute(to_stack,stack,"rrb", print);
+			execute(to_stack, stack, "rrb", print);
 		}
 		count++;
-
 	}
-	execute(to_stack,stack,"pa",print);
-	return count+1;
-
+	execute(to_stack, stack, "pa", print);
+	return (count + 1);
 }
 
-// t_node* arrange_stack_ab(t_node* stack,t_node* to_stack,int max_rank)
-// {
-// 	t_node* stack_top;
-// 	int next_rank;
-// 	int cost_to_btm;
-// 	int cost_to_top;
-// 	int move;
+int	find_min_cost_rank(int chunk, int argc, int max_chunk, t_node *stack_a)
+{
+	int	j;
+	int	min_cost;
+	int	min_cost_rank;
 
-// 	move= 0;
-	
-// 	stack_top=find_end_node(stack,0);
-// 	next_rank=stack_top->rank+1;
-
-// 	if (next_rank>=max_rank)
-// 	{
-// 		execute(&stack,&to_stack,"ra",1);
-// 		return stack;
-// 	}
-// 	stack=find_node_by(stack,"rank",next_rank);
-// 	while (stack_top->next == stack)
-// 	{
-// 		execute(&stack,&to_stack,"ra",1);
-	
-// 		stack_top=find_end_node(stack,0);
-// 		next_rank=stack_top->rank+1;
-// 		if (next_rank>=max_rank)
-// 		{
-// 			execute(&stack,&to_stack,"ra",1);
-// 			return stack;
-// 		}
-// 		stack=find_node_by(stack,"rank",next_rank);
-
-// 	}
-// 	cost_to_top=cost_to_end(stack,0)+1;
-// 	cost_to_btm=cost_to_end(stack,1)+2;
-// 	execute(&stack,&to_stack,"pb",1);
-// 	if (cost_to_btm>cost_to_top)
-// 	{	
-// 		while (move++ < cost_to_top-2)
-// 			execute(&stack,&to_stack,"ra",1);
-// 	}
-
-//     else if (cost_to_top>cost_to_btm)
-// 	{	
-// 		while (move++ < cost_to_btm-1)
-// 			execute(&stack,&to_stack,"rra",1);
-		
-// 	}
-// 		execute(&stack,&to_stack,"pa",1);
-// 		execute(&stack,&to_stack,"ra",1);
-
-// 	return stack;
-// }
-
-// t_node* arrange_stack_ab_v2(t_node* stack,t_node* to_stack,int max_rank)
-// {
-// 	t_node* stack_top;
-// 	int next_rank;
-// 	int cost_to_btm;
-// 	int cost_to_top;
-// 	// int rank;
-
-	
-// 	stack_top=find_end_node(stack,0);
-// 	next_rank=stack_top->rank+1;
-
-// 	if (next_rank>=max_rank)
-// 		next_rank=1;
-// 	stack=find_node_by(stack,"rank",next_rank);
-
-// 	/*Handle if already sorted*/
-// 	while (stack_top->next == stack && stack_top->rank !=1 && check_result(stack)!=0)
-// 	{
-// 		execute(&stack,&to_stack,"ra",1);
-	
-// 		stack_top=find_end_node(stack,0);
-// 		// rank=stack_top->rank;
-// 		next_rank=stack_top->rank+1;
-// 		if (next_rank>=max_rank)
-// 		{
-// 				next_rank=1;
-// 		}
-// 		stack=find_node_by(stack,"rank",next_rank);
-// 	}
-
-// 	if (check_result(stack)==0)
-// 		return stack;
-// 	cost_to_top=cost_to_end(stack,0);
-// 	cost_to_btm=cost_to_end(stack,1);
-
-// 	while(find_end_node(stack,0)->rank!=next_rank){
-	
-// 		if (cost_to_btm+1>cost_to_top)
-// 			execute(&stack,&to_stack,"ra",1);
-	
-// 		else if (cost_to_top>=cost_to_btm)
-// 			execute(&stack,&to_stack,"rra",1);
-// 	}
-// 	execute(&stack,&to_stack,"pb",1);
-
-// 	cost_to_top=cost_to_end(stack_top,0);
-// 	cost_to_btm=cost_to_end(stack_top,1);
-
-// 	while(find_end_node(stack,1)->rank!=stack_top->rank){
-	
-// 		if (cost_to_btm+1>cost_to_top)
-// 			execute(&stack,&to_stack,"ra",1);
-	
-// 		else if (cost_to_top>=cost_to_btm)
-// 			execute(&stack,&to_stack,"rra",1);
-// 	}
-// 	execute(&stack,&to_stack,"pa",1);
-
-// 	return stack;
-// }
-
-
-// int push_to_top(t_node* stack,t_node* to_stack,int rank)
-// {
-// 	// t_node* stack_top;
-// 	int cost_to_btm;
-// 	int cost_to_top;
-// 	int move;
-
-// 	move= 0;
-// 	// stack_top=find_end_node(stack,0);
-// 	stack=find_node_by(stack,"rank",rank);
-// 	cost_to_top=cost_to_end(stack,0);
-// 	cost_to_btm=cost_to_end(stack,1);
-// 	// execute(&stack,&to_stack,"pb",1);
-// 	if (cost_to_btm>cost_to_top)
-// 	{	
-// 		while (move++ < cost_to_top-1)
-// 			execute(&stack,&to_stack,"ra",1);
-
-// 	}
-
-//     else if (cost_to_top>cost_to_btm)
-// 	{	
-	
-// 		while (move++ < cost_to_btm+1)
-// 			execute(&stack,&to_stack,"rra",1);
-		
-// 	}
-// 		// execute(&stack,&to_stack,"pa",1);
-// 		// execute(&stack,&to_stack,"ra",1);
-
-// 	return stack;
-// }
-
-
-
-
-// t_node* arrange_stack_ba(t_node* stack,t_node* to_stack,int max_rank)
-// {
-// 	t_node* stack_top;
-// 	int next_rank;
-// 	int cost_to_btm;
-// 	int cost_to_top;
-// 	int move;
-
-// 	move= 0;
-// 	stack_top=find_end_node(stack,0);
-// 	next_rank=stack_top->rank+1;
-// 	if (next_rank>max_rank)
-// 		execute(stack,to_stack,"ra",1);
-// 	stack=find_node_by(stack,"rank",next_rank);
-// 	cost_to_top=cost_to_end(stack,0)+2;
-// 	cost_to_btm=cost_to_end(stack,1)+3;
-// 	execute(stack,to_stack,"pb",1);
-// 	if (cost_to_btm>cost_to_top)
-// 	{	
-// 		while (move < cost_to_top-1)
-// 			execute(stack,to_stack,"ra",1);
-// 	}
-
-//     else if (cost_to_top>cost_to_btm)
-// 	{	
-// 		while (move < cost_to_top-1)
-// 			execute(stack,to_stack,"ra",1);
-		
-// 	}
-// 		execute(stack,to_stack,"pa",1);
-// 	return stack;
-// }
-
-
-	// int chunk_sort(int MAX_CHUNK,int print,t_node** stack_a,t_node** stack_b,int argc){
-	// 	int CHUNK=1;
-	// 	int repeat=0;
-	// 	int max_repeat = argc/MAX_CHUNK;
-	// 	int min_cost=argc+100;
-	// 	int count = 0;
-	// 	while(CHUNK <= MAX_CHUNK)
-	// 	{
-	// 		// int j = 0+ ((CHUNK-1) * argc/MAX_CHUNK);
-	// 		while (repeat<=max_repeat){
-	// 			int j = 1+ ((CHUNK-1) * argc/MAX_CHUNK);
-	// 			min_cost=argc+100;
-
-	// 			while (j <=(CHUNK)*(argc/MAX_CHUNK))
-	// 			{	
-	// 				t_node *node= find_node_by(*stack_a,"rank",j);
-	// 				if (!node)
-	// 				{
-	// 					j++;
-	// 					continue ;
-	// 				}
-	// 				int cost_to_top= cost_to_end(node,0);
-	// 				int cost_to_btm= cost_to_end(node,1) +1;
-	// 				if (cost_to_top<min_cost)
-	// 					min_cost=cost_to_top;
-	// 				if (cost_to_btm<min_cost)
-	// 					min_cost=cost_to_btm;
-	// 				j++;
-	// 			}
-	// 			j = 1+ ((CHUNK-1) * argc/MAX_CHUNK);
-	// 			while (j <=CHUNK* (argc/MAX_CHUNK))
-	// 			{	
-	// 				t_node *node= find_node_by(*stack_a,"rank",j);
-	// 				if (!node)
-	// 				{
-	// 					j++;
-	// 					continue;
-	// 				}
-	// 				int cost_to_top= cost_to_end(node,0);
-	// 				int cost_to_btm= cost_to_end(node,1) +1;
-	// 				if (cost_to_top == min_cost || cost_to_btm == min_cost)
-	// 				{
-	// 					count=count+move_rank_top(&node,j,print);
-	// 					// printf("%d \n",count);
-
-	// 					execute(stack_a,stack_b,"pb",print);
-	// 					count++;
-
-
-
-	// 					// printf("%d \n",count);
-
-	// 					break;
-
-	// 				}
-	// 				j++;
-	// 			}
-	// 		repeat++;
-	// 		}
-	// 		repeat=0;
-	// 		min_cost=argc+100;
-	// 		CHUNK++;
-
-	// 	}
-
-	// 	return count;
-	// }
-	int chunk_sort(int MAX_CHUNK,int print,t_node** stack_a,t_node** stack_b,int argc){
-		int CHUNK=1;
-		int repeat=0;
-		int max_repeat = argc/MAX_CHUNK;
-		int min_cost=argc+100;
-		int count = 0;
-		while(CHUNK <= MAX_CHUNK)
+	j = 1 + ((chunk - 1) * argc / max_chunk);
+	min_cost = argc + 100;
+	while (j <= (chunk) * (argc / max_chunk))
+	{
+		if (find_node_by(stack_a, "rank", j))
 		{
-			// int j = 0+ ((CHUNK-1) * argc/MAX_CHUNK);
-			while (repeat<=max_repeat){
-				int j = 1+ ((CHUNK-1) * argc/MAX_CHUNK);
-				min_cost=argc+100;
-
-				while (j <=(CHUNK)*(argc/MAX_CHUNK))
-				{	
-					t_node *node= find_node_by(*stack_a,"rank",j);
-					if (!node)
-					{
-						j++;
-						continue ;
-					}
-					int cost_to_top= cost_to_end(node,0);
-					int cost_to_btm= cost_to_end(node,1) +1;
-					if (cost_to_top<min_cost)
-						min_cost=cost_to_top;
-					if (cost_to_btm<min_cost)
-						min_cost=cost_to_btm;
-					j++;
-				}
-				j = 1+ ((CHUNK-1) * argc/MAX_CHUNK);
-				while (j <=CHUNK* (argc/MAX_CHUNK))
-				{	
-					t_node *node= find_node_by(*stack_a,"rank",j);
-					if (!node)
-					{
-						j++;
-						continue;
-					}
-					int cost_to_top= cost_to_end(node,0);
-					int cost_to_btm= cost_to_end(node,1) +1;
-					if (cost_to_top == min_cost || cost_to_btm == min_cost)
-					{
-						count=count+move_rank_top(&node,j,print);
-						// printf("%d \n",count);
-
-						execute(stack_a,stack_b,"pb",print);
-						count++;
-						// if (check_swap(stack_a,"asc") & check_swap(stack_b,"dsc"))
-						// {
-						// 	count++;
-						// 	execute(stack_a,stack_b,"ss",print);
-
-						// }
-						// else if (check_swap(stack_a,"asc") )
-						// {
-						// 	count++;
-						// 	execute(stack_a,stack_b,"sa",print);
-
-						// }
-						// else if (check_swap(stack_b,"dsc"))
-						// {
-						// 	count++;
-						// 	execute(stack_a,stack_b,"sb",print);
-
-						// }
-
-
-
-						// if (check_swap(stack_b,"dsc"))
-						// {
-						// 	count++;
-						// 	execute(stack_a,stack_b,"sb",print);
-
-						// }
-
-
-			
-						// printf("%d \n",count);
-
-						break;
-
-					}
-					j++;
-				}
-			repeat++;
+			if (cost_to_end(find_node_by(stack_a, "rank", j), 0) < min_cost)
+			{
+				min_cost = cost_to_end(find_node_by(stack_a, "rank", j), 0);
+				min_cost_rank = j;
 			}
-			repeat=0;
-			min_cost=argc+100;
-			CHUNK++;
-
+			if (cost_to_end(find_node_by(stack_a, "rank", j), 1) + 1 < min_cost)
+			{
+				min_cost = cost_to_end(find_node_by(stack_a, "rank", j), 1) + 1;
+				min_cost_rank = j;
+			}
 		}
-
-		return count;
+		j++;
 	}
+	return (min_cost_rank);
+}
 
+int	chunk_sort(int max_chunk, t_node **stack_a, t_node **stack_b, int argc)
+{
+	int	chunk;
+	int	repeat;
+	int	min_cost_rank;
+	int	count;
+	int	print;
+
+	print = 1;
+	chunk = 1;
+	repeat = 0;
+	count = 0;
+	while (chunk <= max_chunk)
+	{
+		while (repeat < (argc / max_chunk))
+		{
+			min_cost_rank = find_min_cost_rank(chunk, argc, max_chunk,
+					*stack_a);
+			count = count + move_rank_top(stack_a, min_cost_rank, print);
+			execute(stack_a, stack_b, "pb", print);
+			count++;
+			repeat++;
+		}
+		repeat = 0;
+		chunk++;
+	}
+	return (count);
+}
+
+int	chunk_sort_no_print(int max_chunk, t_node **stack_a, t_node **stack_b,
+		int argc)
+{
+	int	chunk;
+	int	repeat;
+	int	min_cost_rank;
+	int	count;
+	int	print;
+
+	print = 0;
+	chunk = 1;
+	repeat = 0;
+	count = 0;
+	while (chunk <= max_chunk)
+	{
+		while (repeat < (argc / max_chunk))
+		{
+			min_cost_rank = find_min_cost_rank(chunk, argc, max_chunk,
+					*stack_a);
+			count = count + move_rank_top(stack_a, min_cost_rank, print);
+			execute(stack_a, stack_b, "pb", print);
+			count++;
+			repeat++;
+		}
+		repeat = 0;
+		chunk++;
+	}
+	return (count);
+}
 
 void	sort_three(t_node **stack)
 {
 	t_node	*max;
-	int max_val;
-	max_val = find_min_max(*stack,"max");
-	max=find_node_by(*stack, "val",max_val);
-	*stack=find_end_node(*stack,0);
+	int		max_val;
 
-	if (check_result(*stack)==0)
+	max_val = find_min_max(*stack, "max");
+	max = find_node_by(*stack, "val", max_val);
+	*stack = find_end_node(*stack, 0);
+	if (check_result(*stack) == 0)
 		return ;
 	if (*stack == max)
 	{
-		execute(stack,stack,"ra",1);
+		execute(stack, stack, "ra", 1);
 	}
 	else if ((*stack)->next == max)
 	{
-		execute(stack,stack,"rra",1);
+		execute(stack, stack, "rra", 1);
 	}
-	*stack=find_end_node(*stack,0);
+	*stack = find_end_node(*stack, 0);
 	if ((*stack)->rank > (*stack)->next->rank)
 	{
-		execute(stack,stack,"sa",1);
+		execute(stack, stack, "sa", 1);
 	}
-
 }
-
 
 void	sort_ten(t_node **stack_a, t_node **stack_b)
 {
-	int len;
-	int i;
+	int	len;
+	int	i;
 
-	i=4;
-	len= print_stack(*stack_a,0,"rank");
-	while (i <= len){
-		move_rank_top(stack_a,i,1);
-		execute(stack_a,stack_b,"pb",1);
-		i++;;
-
+	i = 4;
+	len = print_stack(*stack_a, 0, "rank");
+	while (i <= len)
+	{
+		move_rank_top(stack_a, i, 1);
+		execute(stack_a, stack_b, "pb", 1);
+		i++;
 	}
-	len= print_stack(*stack_a,0,"rank");
+	len = print_stack(*stack_a, 0, "rank");
 	if (len == 3)
 		sort_three(stack_a);
 	while (*stack_b)
 	{
-		execute(stack_a,stack_b,"pa",1);
+		execute(stack_a, stack_b, "pa", 1);
 	}
-	move_rank_top(stack_a,1,1);
+	move_rank_top(stack_a, 1, 1);
 }
 
-
-int check_input(int argc, char**argv)
+int	check_input(int argc, char **argv)
 {
-	int i;
-	int argv_i;
-	int j;
-	// char* argv_a;
-	i=1;
-	if (argc==1)
-		return (ft_puterr("",1));
+	int	i;
+	int	argv_i;
+	int	j;
 
+	i = 1;
+	if (argc == 1)
+		return (ft_puterr("", 1));
 	while (i < argc)
-	{	
-		/*Check int min max, empty string and invalid character*/
-		argv_i=ft_atoi(argv[i]);
-		if (argv_i>INT_MAX || argv_i<INT_MIN || argv[i][0] == '\0'|| !ft_isInteger(argv[i]))  
+	{
+		argv_i = ft_atoi(argv[i]);
+		if (argv_i > INT_MAX || argv_i < INT_MIN || argv[i][0] == '\0'
+			|| !ft_isInteger(argv[i]))
 		{
-			return (ft_puterr("Error \n",1));
+			return (ft_puterr("Error \n", 1));
 		}
-
-		/*Duplicate*/
-		j=i+1;
-
+		j = i + 1;
 		while (j < argc)
 		{
-			if (ft_strcmp(argv[i],argv[j])==0)
-		
-				return (ft_puterr("Error \n",1));
+			if (ft_strcmp(argv[i], argv[j]) == 0)
+				return (ft_puterr("Error \n", 1));
 			j++;
 		}
-
 		i++;
 	}
-	return 0;
+	return (0);
 }
-int	main(int argc, char **argv)
-{
-	int i;
-	int count;
-	t_node *stack_a;
-	t_node *stack_b;
-	count=0;
-	i = 1;
-	stack_a = NULL;
-	stack_b = NULL;
 
-	if (check_input(argc,argv)==1)
-		return 1;
-	/* Convert ARGC to linked list*/
+void	init_stack(t_node **stack_a, t_node **stack_b, int argc, char **argv)
+{
+	int	i;
+	int	min;
+
+	i = 1;
+	*stack_a = NULL;
+	*stack_b = NULL;
 	while (i < argc)
 	{
-		stack_a = add_node(stack_a, ft_atoi(argv[i]));
+		*stack_a = add_node(*stack_a, ft_atoi(argv[i]));
 		i++;
 	}
-	// int len=print_stack(stack_a,0,"val");
-	// printf("len is %d",len);
-	// int min = find_min_max(stack_a,"min");
+	min = find_min_max(*stack_a, "min");
+	rank_list(stack_a, min, 1, argc);
+}
 
-	/* Rank list */
-	int min = find_min_max(stack_a,"min");
+int	count_chunk_cost(t_node *stack_a, int max_chunk, int argc)
+{
+	t_node	*tmp_a;
+	t_node	*tmp_b;
+	int		count;
+	int		k;
 
-	rank_list(&stack_a,min,1,argc);
-
-	if (argc==4)
-		sort_three(&stack_a);
-
-	else if (argc<=11)
+	tmp_a = NULL;
+	tmp_b = NULL;
+	tmp_a = duplicate_list(stack_a);
+	count = chunk_sort_no_print(max_chunk, &tmp_a, &tmp_b, argc);
+	k = argc - 1;
+	while (k > 0)
 	{
-		sort_ten(&stack_a,&stack_b);
-
-
+		count = count + push_to_stack_ba(&tmp_b, &tmp_a, k, 0);
+		k--;
 	}
-	/*Chunk*/
-	// int MAX_CHUNK;
-	// int chunk_1=5;
-	// int chunk_2=15;
-	// if ((argc-1) <=250)
-	// {
-	// 	while (chunk_1>=2)
-	// 	{
-	// 		if ((argc -1) % chunk_1 ==0)
-	// 		{
-	// 			MAX_CHUNK = chunk_1;
-	// 			break;
-	// 		}
-	// 		chunk_1--;
-	// 	}
+	clear_stack(tmp_a);
+	clear_stack(tmp_b);
+	return (count);
+}
 
-	// }
+int	find_best_chunk(t_node *stack_a, int argc)
+{
+	int	min_count;
+	int	max_chunk;
+	int	best_chunk;
+	int	count;
 
-	// if ((argc-1) >250)
-	// {
-	// 	while (chunk_2>=10)
-	// 	{
-	// 		if ((argc -1) % chunk_2 ==0)
-	// 		{
-	// 			MAX_CHUNK = chunk_2;
-	// 			break;
-	// 		}
-	// 		chunk_2--;
-	// 	}
+	min_count = -1;
+	max_chunk = 1;
+	best_chunk = 1;
+	while (max_chunk <= (argc / 4))
+	{
+		if ((argc - 1) % max_chunk == 0)
+		{
+			count = count_chunk_cost(stack_a, max_chunk, argc);
+			if (min_count == -1)
+				min_count = count;
+			else if (count < min_count)
+			{
+				min_count = count;
+				best_chunk = max_chunk;
+			}
+		}
+		max_chunk++;
+	}
+	return (best_chunk);
+}
 
-	// }
-	// MAX_CHUNK=5;
+int	main(int argc, char **argv)
+{
+	int		count;
+	int		best_chunk;
+	t_node	*stack_a;
+	t_node	*stack_b;
+	int		k;
 
-
-
-
+	count = 0;
+	if (check_input(argc, argv) == 1)
+		return (1);
+	init_stack(&stack_a, &stack_b, argc, argv);
+	if (argc == 4)
+		sort_three(&stack_a);
+	else if (argc <= 11)
+		sort_ten(&stack_a, &stack_b);
 	else
 	{
-			/* Calculate best chunk*/
-		int min_count=-1;
-		int MAX_CHUNK=1;
-		int max_MAX_CHUNK=argc/4;
-		int k=argc-1;
-		int best_chunk=1;
-		t_node * tmp_a;
-		t_node	*tmp_b;
-
-		tmp_a=NULL;
-		while (MAX_CHUNK<=max_MAX_CHUNK){
-			if ((argc-1)%MAX_CHUNK ==0)
-			{
-				tmp_a=duplicate_list(stack_a);
-				tmp_b=NULL;
-
-				// printf("MAX_CHUNK is %d\n",MAX_CHUNK);
-
-				count=chunk_sort(MAX_CHUNK,0,&tmp_a,&tmp_b,argc);
-				k=argc-1;
-				while (k>0){
-					count=count+push_to_stack_ba(&tmp_b,&tmp_a,k,0);
-					k--;
-				}
-				// printf("count is %d\n",count);
-
-				if (min_count==-1)
-					min_count=count;
-				else if (count<min_count)
-				{
-					min_count=count;
-					best_chunk=MAX_CHUNK;
-				}
-				clear_stack(tmp_a);
-				clear_stack(tmp_b);
-			}
-			MAX_CHUNK++;
-
-		}	
-
-		// printf("%d",best_chunk);
-		/*Run best chunk*/
-		count = 0;
-		count=chunk_sort(best_chunk,1,&stack_a,&stack_b,argc);
-		k=argc-1;
-		while (k>0){
-			count=count+push_to_stack_ba(&stack_b,&stack_a,k,1);
-			k--;
-		}
-		// printf("%d \n",count);
-
-		/*Push to BA*/
-		// int k=argc-1;
-
-		// while (k>0){
-		// 	count=count+push_to_stack_ba(&stack_b,&stack_a,k,1);
-		// 	k--;
-		// }
-
-		/*Arrange A so that rank 1 = Top*/
-		count=count+move_rank_top(&stack_a,1,1);
+		best_chunk = find_best_chunk(stack_a, argc);
+		count = chunk_sort(best_chunk, &stack_a, &stack_b, argc);
+		k = argc;
+		while (--k > 0)
+			count += push_to_stack_ba(&stack_b, &stack_a, k, 1);
+		count = count + move_rank_top(&stack_a, 1, 1);
 	}
-	// if (check_result(stack_a)==0)
-	// {
-	// ft_printf("Succesfulyy with count = %d and chunk = %d",count,best_chunk);
-
-	// }
-
-
-	// int j ;
-	// int k ;
-	// int a_max;
-	// int k_max;
-	// if (argc % 2 ==1)
-	// {
-	// 	j =(argc/2)+1;
-	// 	k_max=argc/2;
-
-
-	// }
-	// else{
-	// 	j =(argc/2);
-	// 	k_max=(argc/2)-1;
-
-	// }
-	// k =argc-1;
-	// a_max=j;
-	// while (j<(argc)){
-		
-	// 	push_to_stack_ab_v2(&stack_a,&stack_b,j);
-
-	// 	j++;
-	// }
-
-	// /*Arrange Stack A*/
-	// while (check_result(stack_a)!=0)
-	// 	stack_a=arrange_stack_ab_v2(stack_a,stack_b,a_max);
-
-	// 	// stack_a=arrange_stack_ab(stack_a,stack_b,a_max);
-	// /*Arrange Stack B*/
-
-	// while (k>(k_max)){
-	// 	push_to_stack_ba(&stack_b,&stack_a,k);
-	// 	k--;
-	// }
-
-
-
-	// /*Prepare Stack A for Stack B*/
-
-	// stack_a=push_to_top(&stack_a,&stack_b,1);
-
-
-
-	// ft_puterr(ft_itoa(count),2);
-
-
-	// /* End of v1*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	// if (check_result(stack_a)==0)
-	// {
-	// 	print_stack(stack_a,1,"rank");
-	// 	ft_printf("----------------------- \n");
-	// 	ft_printf("Arrange succesfully! \n");
-
-
-	// }
-	// ft_printf("----------------------- \n");
-	// ft_printf("Stack a After push : \n");
-	// print_stack(stack_a,1,"val");
-	// ft_printf("\nStack b After push : \n");
-	// print_stack(stack_b,1,"val");
-
-	// /// 3 Random case
-	// if (argc == 4)
-	// {
-
-
-	// }
-	// ft_printf("\n mdn is %d \n",mdn);
-
-
-// 	ft_printf("Stack a : \n");
-// 	print_stack(stack_a,1);
-// 	ft_printf("Stack b : \n");
-//     print_stack(stack_b,1);
-// 	ft_printf("------------------------------ \n");
-
-//     execute(&stack_a,&stack_b,"pb", 1);
-//     ft_printf("Stack a : \n");
-// 	print_stack(stack_a,1);
-// 	ft_printf("Stack b : \n");
-//     print_stack(stack_b,1);
-// 	ft_printf("------------------------------ \n");
-
-//     execute(&stack_a,&stack_b,"ra", 1);
-//     ft_printf("Stack a : \n");
-// 	print_stack(stack_a,1);
-// 	ft_printf("Stack b : \n");
-//     print_stack(stack_b,1);
-// 	ft_printf("------------------------------ \n");
-
-
-//     execute(&stack_a,&stack_b,"pb", 1);
-//     ft_printf("Stack a : \n");
-// 	print_stack(stack_a,1);
-// 	ft_printf("Stack b : \n");
-//     print_stack(stack_b,1);
-// 	ft_printf("------------------------------ \n");
-
-//     execute(&stack_a,&stack_b,"ra", 1);
-//     ft_printf("Stack a : \n");
-// 	print_stack(stack_a,1);
-// 	ft_printf("Stack b : \n");
-//     print_stack(stack_b,1);
-// 	ft_printf("------------------------------ \n");
-
-//     execute(&stack_a,&stack_b,"sa", 1);
-//     ft_printf("Stack a : \n");
-// 	print_stack(stack_a,1);
-// 	ft_printf("Stack b : \n");
-//     print_stack(stack_b,1);
-// 	ft_printf("------------------------------ \n");
-
-//     execute(&stack_a,&stack_b,"ra", 1);
-//     ft_printf("Stack a : \n");
-// 	print_stack(stack_a,1);
-// 	ft_printf("Stack b : \n");
-//     print_stack(stack_b,1);
-// 	ft_printf("------------------------------ \n");
-
-//     execute(&stack_a,&stack_b,"pa", 1);
-//     ft_printf("Stack a : \n");
-// 	print_stack(stack_a,1);
-// 	ft_printf("Stack b : \n");
-//     print_stack(stack_b,1);
-// 	ft_printf("------------------------------ \n");
-
-//     execute(&stack_a,&stack_b,"pa", 1);   
-//     ft_printf("Stack a : \n");
-// 	print_stack(stack_a,1);
-// 	ft_printf("Stack b : \n");
-//     print_stack(stack_b,1);
-// 	ft_printf("------------------------------ \n");
-
-// ////////////////////////////////////////////////////////////////////
-
-//     execute(&stack_a,&stack_b,"pb", 1);   
-//     ft_printf("Stack a : \n");
-// 	print_stack(stack_a,1);
-// 	ft_printf("Stack b : \n");
-//     print_stack(stack_b,1);
-// 	ft_printf("------------------------------ \n");
-
-//     execute(&stack_a,&stack_b,"pb", 1);   
-//     ft_printf("Stack a : \n");
-// 	print_stack(stack_a,1);
-// 	ft_printf("Stack b : \n");
-//     print_stack(stack_b,1);
-// 	ft_printf("------------------------------ \n");
-
-
-//     execute(&stack_a,&stack_b,"pb", 1);   
-//     ft_printf("Stack a : \n");
-// 	print_stack(stack_a,1);
-// 	ft_printf("Stack b : \n");
-//     print_stack(stack_b,1);
-// 	ft_printf("------------------------------ \n");
-
-
-
-
-//     execute(&stack_a,&stack_b,"ss", 1);   
-//     ft_printf("Stack a : \n");
-// 	print_stack(stack_a,1);
-// 	ft_printf("Stack b : \n");
-//     print_stack(stack_b,1);
-// 	ft_printf("------------------------------ \n");
-
-
-// 	execute(&stack_a,&stack_b,"rra", 1);   
-//     ft_printf("Stack a : \n");
-// 	print_stack(stack_a,1);
-// 	ft_printf("Stack b : \n");
-//     print_stack(stack_b,1);
-// 	ft_printf("------------------------------ \n");
-
-
-//     execute(&stack_a,&stack_b,"ss", 1);   
-//     ft_printf("Stack a : \n");
-// 	print_stack(stack_a,1);
-// 	ft_printf("Stack b : \n");
-//     print_stack(stack_b,1);
-// 	ft_printf("------------------------------ \n");
-
-
-// 	execute(&stack_a,&stack_b,"rrr", 1);   
-//     ft_printf("Stack a : \n");
-// 	print_stack(stack_a,1);
-// 	ft_printf("Stack b : \n");
-//     print_stack(stack_b,1);
-// 	ft_printf("------------------------------ \n");
-
-
-
-
-// 	execute(&stack_a,&stack_b,"rrb", 1);   
-//     ft_printf("Stack a : \n");
-// 	print_stack(stack_a,1);
-// 	ft_printf("Stack b : \n");
-//     print_stack(stack_b,1);
-// 	ft_printf("------------------------------ \n");
-
-
-
-
-//     ft_printf("After Sort : \n");
-//     ft_printf("Stack a : \n");
-// 	print_stack(stack_a,1);
-// 	ft_printf("Stack b : \n");	
-// 	print_stack(stack_b,1);
-
-	// if (check_result(stack_a))
-	// 	ft_putstr_fd("Not in order!",2);
-	// else
-	// 	ft_printf("Sorted succesfully!");
-    // swap(&stack_a);
-	// ft_printf("After swap Stack a : \n");
-	// print_stack(stack_a);
-	// print_stack(stack_b);
-
-	// // rotate(stack_a,0); // ra
-	// // ft_printf("After rotate Stack a : \n");
-	// // print_stack(stack_a);
-	// // print_stack(stack_b);
-	// rotate(&stack_a, 0); // ra
-
-	// ft_printf("After reverese rotate Stack a : \n");
-	// print_stack(stack_a);
-	// print_stack(stack_b);
-
-    // push(&stack_b,&stack_a); // ra
-
-	// ft_printf("After push ra : \n");
-    // ft_printf("Stack a : \n");
-	// print_stack(stack_a);
-    // ft_printf("Stack b : \n");
-	// print_stack(stack_b);
-
-	// char *stack_a;
-	// char *stack_b;
-
-	// int i=0;
-	// int j=0;
-	// stack_a= (char *)malloc((argc-1) * sizeof(char));
-	// stack_b= (char *)malloc((argc-1) * sizeof(char));
-
-	// // Check if memory allocation was successful
-	// if (stack_a == NULL) {
-	//     fprintf(stderr, "Memory allocation failed\n");
-	//     return (1); // Return an error code
-	// }
-	// if (stack_b == NULL) {
-	//     fprintf(stderr, "Memory allocation failed\n");
-	//     return (1); // Return an error code
-	// }
-	// if (argv == NULL) {
-	//     fprintf(stderr, "Memory allocation failed for argv\n");
-	//     return (1); // Return an error code
-	// }
-
-	// while (i < argc)
-	// {
-	//     stack_a[i] = (*argv[i]);
-	//     printf("i of %d is %c\n",i,stack_a[i]);
-
-	//     i++;
-	// }
-
-	//     while (j < argc)
-	// {
-	//     // stack_b[j] = ft_atoi(argv[j]);
-	//     printf("j of %d is %d\n",j,stack_b[j]);
-	//     j++;
-	// }
+	clear_stack(stack_a);
+	clear_stack(stack_b);
 }

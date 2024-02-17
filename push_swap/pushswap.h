@@ -20,6 +20,15 @@ typedef struct s_node
 	struct s_node	*next;
 }					t_node;
 
+
+// struct chunk
+// {
+// 	int				MAX_CHUNK;  //content
+// 	int				print;
+// 	int 			argc;
+// };
+
+
 int	swap(t_node **stack);
 int	rotate(t_node **stack, int reverse);// ra,rb,rr,rra,rrb,rrr
 int push(t_node **stack_1, t_node **stack_2);
