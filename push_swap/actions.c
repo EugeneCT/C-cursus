@@ -6,41 +6,40 @@
 /*   By: cliew < cliew@student.42singapore.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 19:42:40 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/07 23:28:44 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/18 23:42:11 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pushswap.h"
+
 /* Operation Functions */
 // sa,sb,ss
 int	swap(t_node **stack)
 {
 	t_node	*temp;
 	int		temp_val;
-	int 	temp_rank;
-	if (print_stack(*stack,0,"val")<=1)
+	int		temp_rank;
+
+	if (print_stack(*stack, 0, "val") <= 1)
 		return (1);
 	*stack = find_end_node(*stack, 0);
-	
 	temp = (*stack)->next;
-	
 	temp_val = temp->val;
 	temp_rank = temp->rank;
-
 	temp->val = (*stack)->val;
 	temp->rank = (*stack)->rank;
-
 	(*stack)->val = temp_val;
 	(*stack)->rank = temp_rank;
-
 	return (1);
 }
+
 // ra,rb,rr,rra,rrb,rrr
 int	rotate(t_node **stack, int reverse)
 {
 	t_node	*head;
 	t_node	*tail;
-	if (print_stack(*stack,0,"val")<=1)
+
+	if (print_stack(*stack, 0, "val") <= 1)
 		return (1);
 	*stack = find_end_node(*stack, 0);
 	head = *stack;
@@ -61,33 +60,35 @@ int	rotate(t_node **stack, int reverse)
 		head->prev = tail;
 		(*stack)->next = NULL;
 	}
-    return (1);
+	return (1);
 }
-int push(t_node **stack_1, t_node **stack_2) {
-    t_node *head_1;
-    t_node *head_2;
 
-    head_2 = find_end_node(*stack_2, 0);
-    if (!head_2)
-        return 1;
-    head_1 = find_end_node(*stack_1, 0);
-    if (!head_1) {
-        (*stack_2)=(head_2)->next;
-        (*stack_1) = head_2;
-		if  (*stack_2)
-        	(*stack_2)->prev = NULL;
-        (*stack_1)->prev = NULL;
-        (*stack_1)->next = NULL;
-        return 1;
-    }
+int	push(t_node **stack_1, t_node **stack_2)
+{
+	t_node	*head_1;
+	t_node	*head_2;
+
+	head_2 = find_end_node(*stack_2, 0);
+	if (!head_2)
+		return (1);
+	head_1 = find_end_node(*stack_1, 0);
+	if (!head_1)
+	{
+		(*stack_2) = (head_2)->next;
+		(*stack_1) = head_2;
+		if (*stack_2)
+			(*stack_2)->prev = NULL;
+		(*stack_1)->prev = NULL;
+		(*stack_1)->next = NULL;
+		return (1);
+	}
 	(*stack_2) = (head_2)->next;
-
-    head_2->prev = NULL;
-    head_2->next = head_1;
-    head_1->prev = head_2;
+	head_2->prev = NULL;
+	head_2->next = head_1;
+	head_1->prev = head_2;
 	if (*stack_2)
-    	(*stack_2)->prev = NULL;
-    return 0;
+		(*stack_2)->prev = NULL;
+	return (0);
 }
 
 int	execute(t_node **stack_a, t_node **stack_b, char *line, int s_print)
@@ -119,13 +120,20 @@ int	execute(t_node **stack_a, t_node **stack_b, char *line, int s_print)
 	return (0);
 }
 
-
-int	multi_execute(t_node **stack_a, t_node **stack_b, char *line, int n)
+int	check_result(t_node *stack)
 {
-	while (n--)
+	int	temp_val;
+
+	stack = find_end_node(stack, 0);
+	if (!stack)
+		return (0);
+	temp_val = stack->val;
+	while (stack->next)
 	{
-		if (!execute(stack_a, stack_b, line, 1))
+		stack = stack->next;
+		if (stack->val < temp_val)
 			return (1);
+		temp_val = stack->val;
 	}
 	return (0);
 }

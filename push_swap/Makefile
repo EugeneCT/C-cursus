@@ -10,35 +10,10 @@
 #                                                                              #
 # **************************************************************************** #
 
-# INCLUDE:=./include
-# TARGET:=pipex
-# SRC:= project.c
-# OBJS:=${SRCS:=.o}
-# LIB:=./libft_max/libft_max.a
-# LIBR:= ranlib
-# CC:=cc
-# CFLAGS:=-g -std=c99 -Wall -Wextra -Werror -I ${INCLUDE}
-# AR:=ar crs
-# RM:=rm -rf
 
-# .PHONY: all clean fclean re
-# .PHONY: $(LIB) 
-
-# all: ${TARGET}
-# ${TARGET}: ${OBJS} ${LIB}
-# 	$(LIBR) $(LIB)
-# 	@$(CC) $(CFLAGS) $(OBJS) $(LIB) -o ${TARGET}
-# %.o: %.c
- 
-
-# clean:
-# 	@$(RM) $(OBJS) $(LIB)
-# fclean: clean
-# 	@$(RM) $(TARGET)
-# re: fclean all
 INCLUDE := ./include
 NAME := push_swap
-SRC := pushswap.c actions.c
+SRC := pushswap.c actions.c stack_utility.c stack_utility2.c chunk_simulate.c sort_helper.c
 SRCS := $(SRC)
 OBJS := $(SRCS:.c=.o)
 LIB := ./libft_max/libft_max.a

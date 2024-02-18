@@ -6,7 +6,7 @@
 /*   By: cliew < cliew@student.42singapore.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 10:37:27 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/15 13:41:25 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/18 23:45:26 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,23 +22,24 @@ int	ft_isdigit(int c)
 		return (0);
 }
 
-
-int ft_isInteger(char *number)
+int	ft_isinteger(char *number)
 {
-    int i;
-	i = 0;
+	int	i;
 
-    //checking for negative numbers
-    if (number[0] == '-')
-    {
+	i = 0;
+	if (number[0] == '-')
 		i = 1;
-	}
-	while (number[i]!='\0')
-    {
-        //if (number[i] > '9' || number[i] < '0')
-        if (!ft_isdigit(number[i]))
-            return 0;
+	if (number[0] == '0' && number[1] != '\0')
+		return (0);
+	if (number[0] == '-' && number[1] == '0')
+		return (0);
+	if (number[0] == '-' && number[1] == '\0')
+		return (0);
+	while (number[i] != '\0')
+	{
+		if (!ft_isdigit(number[i]))
+			return (0);
 		i++;
-    }
-    return 1;
+	}
+	return (1);
 }
