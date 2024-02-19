@@ -6,71 +6,26 @@
 /*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 19:21:44 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/19 11:01:52 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/19 15:31:30 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pushswap.h"
 
-int	chunk_sort_no_print(int max_chunk, t_node **stack_a, t_node **stack_b,
-		int argc)
+
+void ft_freearray(char** s1,int free_pt)
 {
-	int	chunk;
-	int	repeat;
-	int	min_cost_rank;
-	int	count;
-	int	print;
+	int i;
 
-	print = 0;
-	chunk = 1;
-	repeat = 0;
-	count = 0;
-	while (chunk <= max_chunk)
+	i = 0;
+	while ((s1[i]) != NULL && *s1)
 	{
-		while (repeat < (argc / max_chunk))
-		{
-			min_cost_rank = find_min_cost_rank(chunk, argc, max_chunk,
-					*stack_a);
-			count = count + move_rank_top(stack_a, min_cost_rank, print);
-			execute(stack_a, stack_b, "pb", print);
-			count++;
-			repeat++;
-		}
-		repeat = 0;
-		chunk++;
+   	 	free(s1[i]);
+		i++;
 	}
-	return (count);
+	if (free_pt)
+		free(s1);
 }
-
-int	chunk_sort(int max_chunk, t_node **stack_a, t_node **stack_b, int argc)
-{
-	int	chunk;
-	int	repeat;
-	int	min_cost_rank;
-	int	count;
-	int	print;
-
-	print = 1;
-	chunk = 1;
-	repeat = 0;
-	count = 0;
-	while (chunk <= max_chunk)
-	{
-		while (repeat < (argc / max_chunk))
-		{
-			min_cost_rank = find_min_cost_rank(chunk, argc, max_chunk,
-					*stack_a);
-			count = count + move_rank_top(stack_a, min_cost_rank, print);
-			execute(stack_a, stack_b, "pb", print);
-			count++;
-			repeat++;
-		}
-		repeat = 0;
-		chunk++;
-	}
-	return (count);
-}
-
 int	check_input(int argc, char **argv)
 {
 	int		i;
@@ -122,6 +77,45 @@ int	init_stack(t_node **stack_a, t_node **stack_b, int argc, char **argv)
 	return (0);
 }
 
+int check_quote(int *argc,char ***argv)
+{	
+	int array_len;
+	char** quote_array;
+	int i;
+	
+	i=0;
+	quote_array=NULL;
+	array_len=0;
+	if (*argc == 2 )
+	{
+		if (!ft_isinteger((*argv)[1]))
+		{
+			// printf("argv %s is not integer!\n",(*argv)[1]);
+			quote_array=ft_split((*argv)[1],' ');	
+		}
+		while ((quote_array)[array_len] != NULL) 
+        	array_len++;
+		
+		
+		*argc=array_len+1;
+		while (i < (*argc)-1)
+		{
+			(*argv)[i+1]=ft_strdup(quote_array[i]);
+			i++;
+		}
+		(*argv)[i+1]=NULL;
+
+		ft_freearray(quote_array,1);
+	}
+
+	return 0;
+}
+
+
+
+
+
+
 int	main(int argc, char **argv)
 {
 	int		count;
@@ -131,6 +125,7 @@ int	main(int argc, char **argv)
 	int		k;
 
 	count = 0;
+	check_quote(&argc,&argv);
 	if (check_input(argc, argv) == 1 || init_stack(&stack_a, &stack_b, argc,
 			argv) == 1)
 		return (1);
@@ -149,4 +144,5 @@ int	main(int argc, char **argv)
 	}
 	clear_stack(stack_a);
 	clear_stack(stack_b);
+	ft_freearray(argv+1,0);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pushswap.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew < cliew@student.42singapore.sg>      +#+  +:+       +#+        */
+/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/18 23:37:26 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/18 23:39:19 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/19 15:32:27 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,12 +64,15 @@ int					cost_to_end(t_node *stack, int last_node);
 int					rank_list(t_node **stack, int min, int rank, int argc);
 void				sort_three(t_node **stack);
 void				sort_ten(t_node **stack_a, t_node **stack_b);
-
-/*Main*/
 int					chunk_sort_no_print(int max_chunk, t_node **stack_a,
 						t_node **stack_b, int argc);
 int					chunk_sort(int max_chunk, t_node **stack_a,
 						t_node **stack_b, int argc);
+
+/*Main*/
+void ft_freearray(char** s1,int free_pt);
+int check_quote(int *argc,char ***argv);
+
 int					check_input(int argc, char **argv);
 int					init_stack(t_node **stack_a, t_node **stack_b, int argc,
 						char **argv);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sort_helper.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew < cliew@student.42singapore.sg>      +#+  +:+       +#+        */
+/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/18 23:34:22 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/18 23:35:08 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/19 15:31:35 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,4 +75,62 @@ int	rank_list(t_node **stack, int min, int rank, int argc)
 		rank_list(stack, find_next_min(*stack, min)->val, ++rank, argc);
 	}
 	return (1);
+}
+int	chunk_sort_no_print(int max_chunk, t_node **stack_a, t_node **stack_b,
+		int argc)
+{
+	int	chunk;
+	int	repeat;
+	int	min_cost_rank;
+	int	count;
+	int	print;
+
+	print = 0;
+	chunk = 1;
+	repeat = 0;
+	count = 0;
+	while (chunk <= max_chunk)
+	{
+		while (repeat < (argc / max_chunk))
+		{
+			min_cost_rank = find_min_cost_rank(chunk, argc, max_chunk,
+					*stack_a);
+			count = count + move_rank_top(stack_a, min_cost_rank, print);
+			execute(stack_a, stack_b, "pb", print);
+			count++;
+			repeat++;
+		}
+		repeat = 0;
+		chunk++;
+	}
+	return (count);
+}
+
+int	chunk_sort(int max_chunk, t_node **stack_a, t_node **stack_b, int argc)
+{
+	int	chunk;
+	int	repeat;
+	int	min_cost_rank;
+	int	count;
+	int	print;
+
+	print = 1;
+	chunk = 1;
+	repeat = 0;
+	count = 0;
+	while (chunk <= max_chunk)
+	{
+		while (repeat < (argc / max_chunk))
+		{
+			min_cost_rank = find_min_cost_rank(chunk, argc, max_chunk,
+					*stack_a);
+			count = count + move_rank_top(stack_a, min_cost_rank, print);
+			execute(stack_a, stack_b, "pb", print);
+			count++;
+			repeat++;
+		}
+		repeat = 0;
+		chunk++;
+	}
+	return (count);
 }
