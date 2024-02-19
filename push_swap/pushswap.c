@@ -6,25 +6,30 @@
 /*   By: cliew < cliew@student.42singapore.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 19:21:44 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/19 16:06:14 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/19 16:32:40 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pushswap.h"
 
-void	ft_freearray(char **s1, int free_pt)
+int	ft_freearray(char **s1, int free_pt, int run)
 {
 	int	i;
 
 	i = 0;
-	while ((s1[i]) != NULL && *s1)
+	if (run)
 	{
-		free(s1[i]);
-		i++;
+		while ((s1[i]) != NULL && *s1)
+		{
+			free(s1[i]);
+			i++;
+		}
+		if (free_pt)
+			free(s1);
 	}
-	if (free_pt)
-		free(s1);
+	return (i);
 }
+
 int	check_input(int argc, char **argv)
 {
 	int		i;
@@ -39,12 +44,12 @@ int	check_input(int argc, char **argv)
 		argv_i = ft_atoll(argv[i]);
 		if (argv_i > INT_MAX || argv_i < INT_MIN || argv[i][0] == '\0'
 			|| !ft_isinteger(argv[i]))
-			return (ft_puterr("Error", 1));
+			return (ft_puterr("Error\n", 1));
 		j = i + 1;
 		while (j < argc)
 		{
 			if (ft_strcmp(argv[i], argv[j]) == 0)
-				return (ft_puterr("Error", 1));
+				return (ft_puterr("Error\n", 1));
 			j++;
 		}
 		i++;
@@ -52,7 +57,7 @@ int	check_input(int argc, char **argv)
 	return (0);
 }
 
-int	init_stack(t_node **stack_a, t_node **stack_b, int argc, char **argv)
+int	init(t_node **stack_a, t_node **stack_b, int argc, char **argv)
 {
 	int	i;
 	int	min;
@@ -84,21 +89,18 @@ int	check_quote(int *argc, char ***argv)
 	i = 0;
 	quote_array = NULL;
 	array_len = 0;
-	if (*argc == 2 && (*argv)[1][0]!='\0')
+	if (*argc == 2 && (*argv)[1][0] != '\0')
 	{
 		if (!ft_isinteger((*argv)[1]))
 		{
 			quote_array = ft_split((*argv)[1], ' ');
-			while (quote_array!=NULL && (quote_array)[array_len] != NULL)
+			while (quote_array != NULL && (quote_array)[array_len] != NULL)
 				array_len++;
 			*argc = array_len + 1;
-			while (i < (*argc) - 1)
-			{
-				(*argv)[i + 1] = ft_strdup(quote_array[i]);
-				i++;
-			}
-			(*argv)[i + 1] = NULL;
-			ft_freearray(quote_array, 1);
+			while (++i < *argc)
+				(*argv)[i] = ft_strdup(quote_array[i - 1]);
+			(*argv)[i] = NULL;
+			ft_freearray(quote_array, 1, 1);
 			return (1);
 		}
 	}
@@ -109,29 +111,27 @@ int	main(int argc, char **argv)
 {
 	int		count;
 	int		best_chunk;
-	t_node	*stack_a;
-	t_node	*stack_b;
+	t_node	*s_a;
+	t_node	*s_b;
 	int		k;
 
 	count = 0;
-	k=check_quote(&argc, &argv);
-	if (check_input(argc, argv) == 1 || init_stack(&stack_a, &stack_b, argc,
-			argv) == 1)
+	k = check_quote(&argc, &argv);
+	if (check_input(argc, argv) == 1 || init(&s_a, &s_b, argc, argv) == 1)
 		return (1);
-	if (k)
-		ft_freearray(argv + 1, 0);
+	ft_freearray(argv + 1, 0, k);
 	if (argc == 4)
-		sort_three(&stack_a);
+		sort_three(&s_a);
 	else if (argc <= 11)
-		sort_ten(&stack_a, &stack_b);
+		sort_ten(&s_a, &s_b);
 	else
 	{
-		best_chunk = find_best_chunk(stack_a, argc);
-		count = chunk_sort(best_chunk, &stack_a, &stack_b, argc);
+		best_chunk = find_best_chunk(s_a, argc);
+		count = chunk_sort(best_chunk, &s_a, &s_b, argc);
 		k = argc;
 		while (--k > 0)
-			count += push_to_stack_ba(&stack_b, &stack_a, k, 1);
-		count = count + move_rank_top(&stack_a, 1, 1);
+			count += push_to_stack_ba(&s_b, &s_a, k, 1);
+		count = count + move_rank_top(&s_a, 1, 1);
 	}
-	clear_stack(stack_a, stack_b);
+	clear_stack(s_a, s_b);
 }

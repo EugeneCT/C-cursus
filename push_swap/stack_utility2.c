@@ -6,7 +6,7 @@
 /*   By: cliew < cliew@student.42singapore.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/18 23:20:46 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/19 15:38:17 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/19 16:09:46 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ int	push_to_stack_ba(t_node **stack, t_node **to_stack, int rank, int print)
 	return (count + 1);
 }
 
-void	clear_stack(t_node *stack1,t_node *stack2)
+void	clear_stack(t_node *stack1, t_node *stack2)
 {
 	t_node	*temp;
 
@@ -136,7 +136,7 @@ void	clear_stack(t_node *stack1,t_node *stack2)
 		free(stack1);
 		stack1 = temp;
 	}
-    	if (!stack1)
+	if (!stack1)
 		return ;
 	stack2 = find_end_node(stack2, 0);
 	while (stack2)

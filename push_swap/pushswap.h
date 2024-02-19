@@ -6,7 +6,7 @@
 /*   By: cliew < cliew@student.42singapore.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/18 23:37:26 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/19 15:41:16 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/19 16:32:09 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ typedef struct s_node
 
 /*Stack actions*/
 int					swap(t_node **stack);
-int	rotate(t_node **stack, int reverse); // ra,rb,rr,rra,rrb,rrr
+int					rotate(t_node **stack, int reverse);
 int					push(t_node **stack_1, t_node **stack_2);
 int					execute(t_node **stack_a, t_node **stack_b, char *line,
 						int s_print);
@@ -70,10 +70,10 @@ int					chunk_sort(int max_chunk, t_node **stack_a,
 						t_node **stack_b, int argc);
 
 /*Main*/
-void				ft_freearray(char **s1, int free_pt);
+int					ft_freearray(char **s1, int free_pt, int run);
 int					check_quote(int *argc, char ***argv);
 int					check_input(int argc, char **argv);
-int					init_stack(t_node **stack_a, t_node **stack_b, int argc,
+int					init(t_node **stack_a, t_node **stack_b, int argc,
 						char **argv);
 
 #endif

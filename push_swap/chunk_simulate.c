@@ -6,7 +6,7 @@
 /*   By: cliew < cliew@student.42singapore.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/18 23:14:37 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/19 15:42:28 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/19 16:09:39 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ int	count_chunk_cost(t_node *stack_a, int max_chunk, int argc)
 		count = count + push_to_stack_ba(&tmp_b, &tmp_a, k, 0);
 		k--;
 	}
-	clear_stack(tmp_a,tmp_b);
+	clear_stack(tmp_a, tmp_b);
 	return (count);
 }
 

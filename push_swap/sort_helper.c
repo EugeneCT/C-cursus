@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sort_helper.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
+/*   By: cliew < cliew@student.42singapore.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/18 23:34:22 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/19 15:31:35 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/19 16:09:25 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ int	rank_list(t_node **stack, int min, int rank, int argc)
 	}
 	return (1);
 }
+
 int	chunk_sort_no_print(int max_chunk, t_node **stack_a, t_node **stack_b,
 		int argc)
 {
