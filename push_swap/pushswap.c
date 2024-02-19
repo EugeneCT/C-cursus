@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pushswap.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew < cliew@student.42singapore.sg>      +#+  +:+       +#+        */
+/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 19:21:44 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/18 23:44:29 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/19 11:01:52 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,12 +85,12 @@ int	check_input(int argc, char **argv)
 		argv_i = ft_atoll(argv[i]);
 		if (argv_i > INT_MAX || argv_i < INT_MIN || argv[i][0] == '\0'
 			|| !ft_isinteger(argv[i]))
-			return (ft_puterr("Error", 1));
+			return (ft_puterr("Error\n", 1));
 		j = i + 1;
 		while (j < argc)
 		{
 			if (ft_strcmp(argv[i], argv[j]) == 0)
-				return (ft_puterr("Error", 1));
+				return (ft_puterr("Error\n", 1));
 			j++;
 		}
 		i++;
