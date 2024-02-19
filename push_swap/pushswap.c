@@ -3,24 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   pushswap.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
+/*   By: cliew < cliew@student.42singapore.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 19:21:44 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/19 15:31:30 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/19 16:06:14 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pushswap.h"
 
-
-void ft_freearray(char** s1,int free_pt)
+void	ft_freearray(char **s1, int free_pt)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while ((s1[i]) != NULL && *s1)
 	{
-   	 	free(s1[i]);
+		free(s1[i]);
 		i++;
 	}
 	if (free_pt)
@@ -40,12 +39,12 @@ int	check_input(int argc, char **argv)
 		argv_i = ft_atoll(argv[i]);
 		if (argv_i > INT_MAX || argv_i < INT_MIN || argv[i][0] == '\0'
 			|| !ft_isinteger(argv[i]))
-			return (ft_puterr("Error\n", 1));
+			return (ft_puterr("Error", 1));
 		j = i + 1;
 		while (j < argc)
 		{
 			if (ft_strcmp(argv[i], argv[j]) == 0)
-				return (ft_puterr("Error\n", 1));
+				return (ft_puterr("Error", 1));
 			j++;
 		}
 		i++;
@@ -70,51 +69,41 @@ int	init_stack(t_node **stack_a, t_node **stack_b, int argc, char **argv)
 	rank_list(stack_a, min, 1, argc);
 	if (check_result(*stack_a) == 0)
 	{
-		clear_stack(*stack_a);
-		clear_stack(*stack_b);
+		clear_stack(*stack_a, *stack_b);
 		return (1);
 	}
 	return (0);
 }
 
-int check_quote(int *argc,char ***argv)
-{	
-	int array_len;
-	char** quote_array;
-	int i;
-	
-	i=0;
-	quote_array=NULL;
-	array_len=0;
-	if (*argc == 2 )
+int	check_quote(int *argc, char ***argv)
+{
+	int		array_len;
+	char	**quote_array;
+	int		i;
+
+	i = 0;
+	quote_array = NULL;
+	array_len = 0;
+	if (*argc == 2 && (*argv)[1][0]!='\0')
 	{
 		if (!ft_isinteger((*argv)[1]))
 		{
-			// printf("argv %s is not integer!\n",(*argv)[1]);
-			quote_array=ft_split((*argv)[1],' ');	
+			quote_array = ft_split((*argv)[1], ' ');
+			while (quote_array!=NULL && (quote_array)[array_len] != NULL)
+				array_len++;
+			*argc = array_len + 1;
+			while (i < (*argc) - 1)
+			{
+				(*argv)[i + 1] = ft_strdup(quote_array[i]);
+				i++;
+			}
+			(*argv)[i + 1] = NULL;
+			ft_freearray(quote_array, 1);
+			return (1);
 		}
-		while ((quote_array)[array_len] != NULL) 
-        	array_len++;
-		
-		
-		*argc=array_len+1;
-		while (i < (*argc)-1)
-		{
-			(*argv)[i+1]=ft_strdup(quote_array[i]);
-			i++;
-		}
-		(*argv)[i+1]=NULL;
-
-		ft_freearray(quote_array,1);
 	}
-
-	return 0;
+	return (0);
 }
-
-
-
-
-
 
 int	main(int argc, char **argv)
 {
@@ -125,10 +114,12 @@ int	main(int argc, char **argv)
 	int		k;
 
 	count = 0;
-	check_quote(&argc,&argv);
+	k=check_quote(&argc, &argv);
 	if (check_input(argc, argv) == 1 || init_stack(&stack_a, &stack_b, argc,
 			argv) == 1)
 		return (1);
+	if (k)
+		ft_freearray(argv + 1, 0);
 	if (argc == 4)
 		sort_three(&stack_a);
 	else if (argc <= 11)
@@ -142,7 +133,5 @@ int	main(int argc, char **argv)
 			count += push_to_stack_ba(&stack_b, &stack_a, k, 1);
 		count = count + move_rank_top(&stack_a, 1, 1);
 	}
-	clear_stack(stack_a);
-	clear_stack(stack_b);
-	ft_freearray(argv+1,0);
+	clear_stack(stack_a, stack_b);
 }

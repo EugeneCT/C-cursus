@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pushswap.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
+/*   By: cliew < cliew@student.42singapore.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/18 23:37:26 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/19 15:32:27 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/19 15:41:16 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ typedef struct s_node
 
 /*Stack actions*/
 int					swap(t_node **stack);
-int					rotate(t_node **stack, int reverse); // ra,rb,rr,rra,rrb,rrr
+int	rotate(t_node **stack, int reverse); // ra,rb,rr,rra,rrb,rrr
 int					push(t_node **stack_1, t_node **stack_2);
 int					execute(t_node **stack_a, t_node **stack_b, char *line,
 						int s_print);
@@ -47,7 +47,7 @@ t_node				*find_node_by(t_node *stack, char *type, int val);
 /*Stack utility 2*/
 int					find_min_max(t_node *stack, char *stat);
 t_node				*find_next_min(t_node *stack, int min);
-void				clear_stack(t_node *stack);
+void				clear_stack(t_node *stack1, t_node *stack2);
 int					move_rank_top(t_node **stack, int rank, int print);
 int					push_to_stack_ba(t_node **stack, t_node **to_stack,
 						int rank, int print);
@@ -70,9 +70,8 @@ int					chunk_sort(int max_chunk, t_node **stack_a,
 						t_node **stack_b, int argc);
 
 /*Main*/
-void ft_freearray(char** s1,int free_pt);
-int check_quote(int *argc,char ***argv);
-
+void				ft_freearray(char **s1, int free_pt);
+int					check_quote(int *argc, char ***argv);
 int					check_input(int argc, char **argv);
 int					init_stack(t_node **stack_a, t_node **stack_b, int argc,
 						char **argv);
