@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 19:21:44 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/20 16:51:08 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/20 16:58:10 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,19 +24,23 @@ void fill_map_xy(t_map *map,char* file_name)
 	width_array=ft_split(line,' ');
 	map->max_x=sizeof(width_array)/sizeof(width_array[0]);
 	free(width_array);
+	free(line);
 	rows=1;
 	while (1)
 	{
 		line = get_next_line(fd);
 		if (line == NULL)
+		{
+			map->max_y=rows;
 			break ;
-		if (map->max_x != new_width)
+		}
+		width_array=ft_split(line,' ');
+		if (map->max_x != sizeof(width_array)/sizeof(width_array[0]))
 			return (0);
 		if (ft_isprint(*line))
 			rows++;
-
+		free(line);
 	}
-	
 }
 
 int fill_map_details(t_map *map,char* file_name)
