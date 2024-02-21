@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 19:21:44 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/21 19:46:32 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/21 20:20:41 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -315,7 +315,135 @@ t_win	*init_fdf(char *file_name)
 	return fdf;
 }
 
+void	clear_image(t_image *image, int image_size)
+{
+	int	x;
+	int	y;
 
+	ft_bzero(image->buffer, image_size);
+	y = 0;
+	while (y < WINDOW_HEIGHT)
+	{
+		x = 0;
+		while (x < WINDOW_WIDTH)
+		{
+			pixel_to_image(image, x, y, BACKGROUND_DEFAULT);
+			x++;
+		}
+		y++;
+	}
+}
+
+void	pixel_to_image(t_image *image, float x, float y, int color)
+{
+	int	pixel;
+
+	pixel = ((int)y * image->line_bytes) + ((int)x * 4);
+	if (image->endian == 1)
+	{
+		image->buffer[pixel + 0] = (color >> 24);
+		image->buffer[pixel + 1] = (color >> 16) & 0xff;
+		image->buffer[pixel + 2] = (color >> 8) & 0xff;
+		image->buffer[pixel + 3] = (color) & 0xff;
+	}
+	else if (image->endian == 0)
+	{
+		image->buffer[pixel + 0] = (color) & 0xff;
+		image->buffer[pixel + 1] = (color >> 8) & 0xff;
+		image->buffer[pixel + 2] = (color >> 16) & 0xff;
+		image->buffer[pixel + 3] = (color >> 24);
+	}
+}
+
+void	bresenham(t_win *fdf, t_point start, t_point end)
+{
+	float	x_step;
+	float	y_step;
+	int		max_steps;
+	int		i_line;
+	t_color	*color;
+
+	x_step = end.x - start.x;
+	y_step = end.y - start.y;
+	max_steps = (int)min_max_abs("max",min_max_abs("abs",x_step,0), min_max_abs("abs",y_step,0));
+	x_step /= max_steps;
+	y_step /= max_steps;
+	color = C_RED;
+	// if (!color)
+		// close_all(fdf, 8);
+	i_line = 0;
+	while (i_line < max_steps)
+	{
+		// start.color = get_color(color, i_line++, max_steps);
+		if (start.x > 0 && start.y > 0 && start.x < WINDOW_WIDTH && start.y < \
+				WINDOW_HEIGHT)
+			pixel_to_image(fdf->image, start.x, start.y, color);
+		start.x += x_step;
+		start.y += y_step;
+	}
+	free(color);
+}
+
+
+t_line	*init_line(t_point start, t_point end, t_win *fdf)
+{
+	t_line	*line;
+
+	line = malloc(sizeof(t_line));
+	if (!line)
+		return (NULL);
+	line->start.x = start.x;
+	line->start.y = start.y;
+	line->start.z = start.z;
+	line->start.color = start.color;
+	line->end.x = end.x;
+	line->end.y = end.y;
+	line->end.z = end.z;
+	line->end.color = end.color;
+	line->transform_z = min_max_abs("max",(fdf->map->max_z - fdf->map->min_z), \
+		min_max_abs("max",fdf->map->max_x, fdf->map->max_y));
+	return (line);
+}
+
+static void	render_line(t_win *fdf, t_point start, t_point end)
+{
+	start.z *= fdf->cam->scale_z;
+	end.z *= fdf->cam->scale_z;
+	fdf->image->line = init_line(start, end, fdf);
+	bresenham(fdf, fdf->image->line->start, fdf->image->line->end);
+	free(fdf->image->line);
+
+}
+
+
+
+
+
+void	render_img(t_win *fdf)
+{
+	int	x;
+	int	y;
+
+	// clear_image(fdf->image, MAX_PIXEL * 4);
+	y = 0;
+	while (y < fdf->map->max_y)
+	{
+		x = 0;
+		while (x < fdf->map->max_x)
+		{
+			if (x < fdf->map->max_x - 1)
+				render_line(fdf, fdf->map->coordinates[x][y], \
+					fdf->map->coordinates[x + 1][y]);
+			if (y < fdf->map->max_y - 1)
+				render_line(fdf, fdf->map->coordinates[x][y], \
+					fdf->map->coordinates[x][y + 1]);
+			x++;
+		}
+		y++;
+	}
+	mlx_put_image_to_window(fdf->mlx, fdf->win, fdf->image->image, 0, 0);
+	// print_menu(fdf);
+}
 int main()
 {
 	char	*file_name;
@@ -326,7 +454,7 @@ int main()
 	// 	error(1);
 	// file_name = argv[1];
 	fdf = init_fdf(file_name);
-
+	render_img(fdf);
 	// if (argc!=2)
 	// 	ft_errexit("ERRor!!",1);
 	// else
