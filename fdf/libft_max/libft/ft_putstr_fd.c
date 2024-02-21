@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_putstr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew < cliew@student.42singapore.sg>      +#+  +:+       +#+        */
+/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/29 10:39:09 by cliew             #+#    #+#             */
-/*   Updated: 2024/01/30 17:28:59 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/21 19:03:56 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,4 +24,10 @@ int	ft_puterr(char const *s, int ret)
 	ft_putstr_fd(s, 2);
 	ft_putstr_fd("\n", 2);
 	return (ret);
+}
+
+void	ft_errexit(char const *s, int ret)
+{
+	ft_putstr_fd(s, 2);
+	exit(ret);
 }
