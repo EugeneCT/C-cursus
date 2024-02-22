@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   fdf.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
+/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 19:21:44 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/21 20:20:41 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/22 10:25:30 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
-
-
 float min_max_abs(char* ops,float a,float b)
 {
 	if (ft_strcmp(ops,"min")==0)
@@ -37,6 +35,113 @@ float min_max_abs(char* ops,float a,float b)
 		return (a);
 	}
 	return 0;
+}
+
+static int	color_gradient(t_color *color, float progress)
+{
+	int		r;
+	int		g;
+	int		b;
+
+	r = color->delta_r * progress;
+	if (r < -255)
+		r = 0;
+	else if (r > 255)
+		r = 255;
+	r = r << 16;
+	g = color->delta_g * progress;
+	if (g < -255)
+		g = 0;
+	else if (g > 255)
+		g = 255;
+	g = g << 8;
+	b = color->delta_b * progress;
+	if (b < -255)
+		b = 0;
+	else if (b > 255)
+		b = 255;
+	return (color->start_color + r + g + b);
+}
+
+
+
+int	get_color(t_color *color, int i_line, int line_size)
+{
+	float	progress;
+
+	progress = (float) i_line / (float) line_size;
+	return (color_gradient(color, progress));
+}
+
+t_color	*color_init(t_point start, t_point end)
+{
+	t_color	*color;
+
+	color = malloc(sizeof(t_color));
+	if (!color)
+		return (NULL);
+	color->start_color = start.color;
+	color->start_r = (C_RED & start.color) >> 16;
+	color->start_g = (C_GREEN & start.color) >> 8;
+	color->start_b = (C_BLUE & start.color);
+	color->end_color = end.color;
+	color->end_r = (C_RED & end.color) >> 16;
+	color->end_g = (C_GREEN & end.color) >> 8;
+	color->end_b = (C_BLUE & end.color);
+	color->delta_r = (color->end_r - color->start_r);
+	color->delta_g = (color->end_g - color->start_g);
+	color->delta_b = (color->end_b - color->start_b);
+	return (color);
+}
+
+t_color	*color_pallet_init(int min_color, int max_color)
+{
+	t_color	*color;
+
+	color = malloc(sizeof(t_color));
+	if (!color)
+		return (NULL);
+	color->start_color = min_color;
+	color->start_r = (C_RED & min_color) >> 16;
+	color->start_g = (C_GREEN & min_color) >> 8;
+	color->start_b = (C_BLUE & min_color);
+	color->end_color = max_color;
+	color->end_r = (C_RED & max_color) >> 16;
+	color->end_g = (C_GREEN & max_color) >> 8;
+	color->end_b = (C_BLUE & max_color);
+	color->delta_r = (color->end_r - color->start_r);
+	color->delta_g = (color->end_g - color->start_g);
+	color->delta_b = (color->end_b - color->start_b);
+	return (color);
+}
+
+static void	apply_colors(t_win *fdf, t_point *point)
+{
+	t_color	*col;
+
+	col = NULL;
+	if (fdf->cam->color_pallet == FALSE)
+	{
+		if (point->color == -1)
+			point->color = LINE_DEFAULT;
+	}
+	else
+	{
+		if (point->z >= 0)
+		{
+			col = color_pallet_init(C_GREY, C_ORANGY);
+			point->color = get_color(col, min_max_abs("abs",point->z,0), \
+				min_max_abs("abs",fdf->map->max_z,0));
+			free(col);
+		}
+		else
+		{
+			col = color_pallet_init(C_GREY, C_BLUEY);
+			point->color = get_color(col, min_max_abs("abs",point->z,0), \
+				min_max_abs("abs",fdf->map->max_z,0));
+			free(col);
+		}
+	}
 }
 
 
@@ -315,6 +420,30 @@ t_win	*init_fdf(char *file_name)
 	return fdf;
 }
 
+void	pixel_to_image(t_image *image, float x, float y, int color)
+{
+	int	pixel;
+
+	pixel = ((int)y * image->line_bytes) + ((int)x * 4);
+	image->buffer[pixel] = (color);
+
+	// if (image->endian == 1)
+	// {
+	// 	image->buffer[pixel + 0] = (color >> 24);
+	// 	image->buffer[pixel + 1] = (color >> 16) & 0xff;
+	// 	image->buffer[pixel + 2] = (color >> 8) & 0xff;
+	// 	image->buffer[pixel + 3] = (color) & 0xff;
+	// }
+	// else if (image->endian == 0)
+	// {
+	// 	image->buffer[pixel + 0] = (color) & 0xff;
+	// 	image->buffer[pixel + 1] = (color >> 8) & 0xff;
+	// 	image->buffer[pixel + 2] = (color >> 16) & 0xff;
+	// 	image->buffer[pixel + 3] = (color >> 24);
+	// }
+}
+
+
 void	clear_image(t_image *image, int image_size)
 {
 	int	x;
@@ -334,26 +463,6 @@ void	clear_image(t_image *image, int image_size)
 	}
 }
 
-void	pixel_to_image(t_image *image, float x, float y, int color)
-{
-	int	pixel;
-
-	pixel = ((int)y * image->line_bytes) + ((int)x * 4);
-	if (image->endian == 1)
-	{
-		image->buffer[pixel + 0] = (color >> 24);
-		image->buffer[pixel + 1] = (color >> 16) & 0xff;
-		image->buffer[pixel + 2] = (color >> 8) & 0xff;
-		image->buffer[pixel + 3] = (color) & 0xff;
-	}
-	else if (image->endian == 0)
-	{
-		image->buffer[pixel + 0] = (color) & 0xff;
-		image->buffer[pixel + 1] = (color >> 8) & 0xff;
-		image->buffer[pixel + 2] = (color >> 16) & 0xff;
-		image->buffer[pixel + 3] = (color >> 24);
-	}
-}
 
 void	bresenham(t_win *fdf, t_point start, t_point end)
 {
@@ -361,14 +470,15 @@ void	bresenham(t_win *fdf, t_point start, t_point end)
 	float	y_step;
 	int		max_steps;
 	int		i_line;
-	t_color	*color;
-
+	// t_color	*color;
+	int color;
 	x_step = end.x - start.x;
 	y_step = end.y - start.y;
 	max_steps = (int)min_max_abs("max",min_max_abs("abs",x_step,0), min_max_abs("abs",y_step,0));
 	x_step /= max_steps;
 	y_step /= max_steps;
-	color = C_RED;
+	color = 16777215;
+	// color= C_RED;	
 	// if (!color)
 		// close_all(fdf, 8);
 	i_line = 0;
@@ -377,11 +487,14 @@ void	bresenham(t_win *fdf, t_point start, t_point end)
 		// start.color = get_color(color, i_line++, max_steps);
 		if (start.x > 0 && start.y > 0 && start.x < WINDOW_WIDTH && start.y < \
 				WINDOW_HEIGHT)
+
+				// mlx_pixel_put(fdf->,start.x, start.x, 0x00FF0000);
+
 			pixel_to_image(fdf->image, start.x, start.y, color);
 		start.x += x_step;
 		start.y += y_step;
 	}
-	free(color);
+	// free(color);
 }
 
 
@@ -409,13 +522,16 @@ static void	render_line(t_win *fdf, t_point start, t_point end)
 {
 	start.z *= fdf->cam->scale_z;
 	end.z *= fdf->cam->scale_z;
+	apply_colors(fdf, &start);
+	apply_colors(fdf, &end);
 	fdf->image->line = init_line(start, end, fdf);
+	rotate(fdf->cam, fdf->image->line);
+	project(fdf->cam, fdf->image->line);
+	transform(fdf->cam, fdf->image->line);
 	bresenham(fdf, fdf->image->line->start, fdf->image->line->end);
 	free(fdf->image->line);
 
 }
-
-
 
 
 
@@ -424,7 +540,7 @@ void	render_img(t_win *fdf)
 	int	x;
 	int	y;
 
-	// clear_image(fdf->image, MAX_PIXEL * 4);
+	clear_image(fdf->image, MAX_PIXEL * 4);
 	y = 0;
 	while (y < fdf->map->max_y)
 	{
@@ -461,7 +577,7 @@ int main()
 	// 	printf("%s",argv[1]);
 	// printf("%s",argv[0]);
 
-	// mlx_loop(fdf->mlx);
+	mlx_loop(fdf->mlx);
 
 	// printf("map-max x is %d and max_y is %d",fdf->map->max_x,fdf->map->max_y);
 	

@@ -3,17 +3,17 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: cliew <cliew@student.42.fr>                +#+  +:+       +#+         #
+#    By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/09 12:18:06 by cliew             #+#    #+#              #
-#    Updated: 2024/02/20 11:45:25 by cliew            ###   ########.fr        #
+#    Updated: 2024/02/22 08:53:36 by cliew            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
 INCLUDE := ./include
 NAME := fdf
-SRC := fdf.c
+SRC := fdf.c rotate.c project.c transform.c
 SRCS := $(SRC)
 OBJS := $(SRCS:.c=.o)
 LIB := ./libft_max/libft_max.a

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fdf.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
+/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/18 23:37:26 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/20 12:01:58 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/22 08:51:49 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,4 +173,16 @@ enum e_bool
 	FALSE,
 	TRUE
 };
+
+
+
+void	rotate(t_cam *cam, t_line *line);
+void	rotate_x(t_line *line, double angle);
+void	rotate_y(t_line *line, double angle);
+void	rotate_z(t_line *line, double angle);
+void	project(t_cam *cam, t_line *line);
+void	transform(t_cam *cam, t_line *line);
+void	scale(t_line *line, int scale_factor);
+void	translate(t_line *line, int move_x, int move_y);
+
 #endif
