@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 19:21:44 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/23 14:52:23 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/23 18:30:14 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,24 +159,35 @@ static void	close_coordinates(t_point **coordinates, int width)
 
 void	exit_prog(t_win *fdf,char* type,char* exit_msg,int exit_code)
 {
-	close_coordinates(fdf->map->coordinates, fdf->map->max_x);
-	free(fdf->map);
+
 	if (ft_strcmp(type,"all")==0)
 	{
+		close_coordinates(fdf->map->coordinates, fdf->map->max_x);
+		free(fdf->map);
 		mlx_destroy_image(fdf->mlx, fdf->image->image);
 		free(fdf->image);
 		free(fdf->cam);
+		free(fdf->mouse);
+
 		mlx_destroy_window(fdf->mlx, fdf->win);
 		mlx_destroy_display(fdf->mlx);
 		free(fdf->mlx);
 
 	}
-	// else if (ft_strcmp(type,"map")==0)
-	// {
-	// 	mlx_destroy_window(fdf->mlx, fdf->win);
-	// 	mlx_destroy_display(fdf->mlx);
-	// 	free(fdf->mlx);
-	// }
+	else if (ft_strcmp(type,"pre-map")==0)
+	{
+		free(fdf->map);
+		free(fdf->mlx);
+	}
+	else if (ft_strcmp(type,"map")==0)
+	{
+		close_coordinates(fdf->map->coordinates, fdf->map->max_x);
+		free(fdf->map);
+		mlx_destroy_window(fdf->mlx, fdf->win);
+		mlx_destroy_display(fdf->mlx);
+		free(fdf->mlx);
+	}
+	
 	free(fdf);
 	ft_errexit(exit_msg,exit_code);
 }
@@ -218,6 +229,23 @@ void	center_to_origin(t_map *map)
 	}
 }
 
+void free_string_array(char** string_array) {
+	int i;
+
+	i=0;
+    if (string_array == NULL) {
+        return; // Return if the array is already NULL
+    }
+
+    while (string_array[i] != NULL) {
+        free(string_array[i]); 
+		i++;// Free each individual string
+    }
+
+    free(string_array); // Free the array of strings
+}
+
+
 int ft_split_count(char* line, char space)
 {
 
@@ -227,13 +255,41 @@ int ft_split_count(char* line, char space)
 	count=0;
 	width_array=NULL;
 	width_array=ft_split(line,space);
-	while (width_array[count] != NULL) {
+	while (width_array[count] != NULL ) {
 		count++;
 	}
-	free(width_array);
+	free_string_array(width_array);
 	return count;
 
 }
+
+
+// int	ft_split_count(const char *s, char c)
+// {
+// 	int	i;
+// 	size_t	prev;
+// 	size_t	next;
+// 	size_t	size;
+// 	int	counter;
+
+// 	i = 0;
+// 	prev = i;
+// 	next = i;
+// 	counter = 0;
+// 	while (1)
+// 	{
+// 		if (s[i] == c || s[i] == '\0')
+// 			next = i;
+// 		size = next - prev;
+// 		if (size > 1 || (size == 1 && s[i - 1] != c))
+// 			counter++;
+// 		if (s[i] == '\0')
+// 			break ;
+// 		prev = next;
+// 		i++;
+// 	}
+// 	return (counter);
+// }
 
 int fill_map_xy(t_map *map,char* file_name)
 {
@@ -254,8 +310,16 @@ int fill_map_xy(t_map *map,char* file_name)
 			map->max_y=rows;
 			break ;
 		}
-		if (map->max_x != ft_split_count(line,' '))
-			return (1);
+		if (rows==115)
+		{
+			if (map->max_x != ft_split_count(line,' '))
+				return (1);
+		}
+		else{
+			if (map->max_x != ft_split_count(line,' '))
+				return (1);
+		}			
+		
 		if (ft_isprint(*line))
 			rows++;
 		free(line);
@@ -319,7 +383,7 @@ int fill_coors( t_map *map,int max_x,int max_y,char *file_name)
 			x++;
 		}
 		free(line);
-		free(split);
+		free_string_array(split);
 		y++;
 	}
 	return (0);
@@ -420,9 +484,9 @@ t_win	*init_fdf(char *file_name)
 	fdf = malloc(sizeof(t_win));
 	fdf->map=init_map();
 	if (!fdf->map)
-		exit_prog(fdf,"map","Map initialize Failed!",1);
+		exit_prog(fdf,"pre-map","Map initialize Failed!",1);
 	if (fill_map_details(fdf->map,file_name))
-		exit_prog(fdf,"map","Map initialize Failed!",2);
+		exit_prog(fdf,"pre-map","Map initialize Failed!",2);
 	fdf->mlx = mlx_init();
 	fdf->win_x = WINDOW_WIDTH;
 	fdf->win_y = WINDOW_HEIGHT;
@@ -432,8 +496,8 @@ t_win	*init_fdf(char *file_name)
 	if (!fdf->image)
 		exit_prog(fdf,"map","Image initialize Failed!",1);
 	fdf->cam = init_cam(fdf->map);
-	if (!fdf->cam)
-		exit_prog(fdf,"all","Camera initialize Failed!",1);
+	// if (!fdf->cam)
+	// 	exit_prog(fdf,"al","Camera initialize Failed!",1);
 
 	fdf->mouse = init_mouse();
 	if (!fdf->mouse)
@@ -528,8 +592,8 @@ t_line	*init_line(t_point start, t_point end, t_win *fdf)
 	line->end.x = end.x;
 	line->end.y = end.y;
 	line->end.z = end.z;
-	line->transform_z = min_max_abs("max",(fdf->map->max_z - fdf->map->min_z), \
-		min_max_abs("max",fdf->map->max_x, fdf->map->max_y));
+	fdf->map->max_z=0;
+
 	return (line);
 }
 
@@ -559,49 +623,42 @@ void	print_menu(t_win *fdf)
 	void	*mlx;
 	void	*win;
 	char	*str;
-
+	char*	str2;
 	y = 0;
 	mlx = fdf->mlx;
 	win = fdf->win;
 	// projection = get_projection_name(fdf);
 	// mlx_string_put(mlx, win, 50, y += 50, C_TEXT, projection);
-	str=ft_strjoin("Alpha is : ",ft_itoa(fdf->cam->alpha));
-	mlx_string_put(mlx, win, 50, y += 35, C_TEXT,str );
-	free(str);
 
-	str=ft_strjoin("Beta is : ",ft_itoa(fdf->cam->beta));
+	str2=ft_itoa(fdf->cam->alpha);
+	str=ft_strjoin("Alpha is : ",str2);
 	mlx_string_put(mlx, win, 50, y += 35, C_TEXT,str );
-	free(str);
-	str=ft_strjoin("Gamma is : ",ft_itoa(fdf->cam->gamma));
-	mlx_string_put(mlx, win, 50, y += 35, C_TEXT,str );
-	free(str);
+	ft_free(&str,&str2,0);
 
-	str=ft_strjoin("Mouse x is : ",ft_itoa(fdf->mouse->mouse_x));
+	str2=ft_itoa(fdf->cam->beta);
+	str=ft_strjoin("Beta is : ",str2);
 	mlx_string_put(mlx, win, 50, y += 35, C_TEXT,str );
-	free(str);
+	ft_free(&str,&str2,0);
 
-	str=ft_strjoin("Mouse y is : ",ft_itoa(fdf->mouse->mouse_y));
+	str2=ft_itoa(fdf->cam->gamma);
+	str=ft_strjoin("Gamma is : ",str2);
 	mlx_string_put(mlx, win, 50, y += 35, C_TEXT,str );
-	free(str);
+	ft_free(&str,&str2,0);
 
-	str=ft_strjoin("Mouse pressed is : ",ft_itoa(fdf->mouse->is_pressed));
+	str2=ft_itoa(fdf->mouse->mouse_x);
+	str=ft_strjoin("Mouse x is : ",str2);
 	mlx_string_put(mlx, win, 50, y += 35, C_TEXT,str );
-	free(str);
+	ft_free(&str,&str2,0);
 
-	str=ft_strjoin("Prev Mouse x is : ",ft_itoa(fdf->mouse->prev_mouse_x));
+	str2=ft_itoa(fdf->mouse->mouse_y);
+	str=ft_strjoin("Mouse y is : ",str2);
 	mlx_string_put(mlx, win, 50, y += 35, C_TEXT,str );
-	free(str);
+	ft_free(&str,&str2,0);
 
-	str=ft_strjoin("Prev Mouse y is : ",ft_itoa(fdf->mouse->prev_mouse_y));
+	str2=ft_itoa(fdf->mouse->is_pressed);
+	str=ft_strjoin("Mouse pressed is : ",str2);
 	mlx_string_put(mlx, win, 50, y += 35, C_TEXT,str );
-	free(str);
-
-	str=ft_strjoin("x_diff pressed is : ",ft_itoa(fdf->mouse->mouse_x_diff));
-	mlx_string_put(mlx, win, 50, y += 35, C_TEXT,str );
-	free(str);
-	str=ft_strjoin("y_diff pressed is : ",ft_itoa(fdf->mouse->mouse_y_diff));
-	mlx_string_put(mlx, win, 50, y += 35, C_TEXT,str );
-	free(str);
+	ft_free(&str,&str2,0);
 
 
 
