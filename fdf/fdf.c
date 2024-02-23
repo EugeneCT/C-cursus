@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 19:21:44 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/23 13:45:23 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/23 14:52:23 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,112 +37,110 @@ float min_max_abs(char* ops,float a,float b)
 	return 0;
 }
 
-static int	color_gradient(t_color *color, float progress)
-{
-	int		r;
-	int		g;
-	int		b;
+// static int	color_gradient(t_color *color, float progress)
+// {
+// 	int		r;
+// 	int		g;
+// 	int		b;
 
-	r = color->delta_r * progress;
-	if (r < -255)
-		r = 0;
-	else if (r > 255)
-		r = 255;
-	r = r << 16;
-	g = color->delta_g * progress;
-	if (g < -255)
-		g = 0;
-	else if (g > 255)
-		g = 255;
-	g = g << 8;
-	b = color->delta_b * progress;
-	if (b < -255)
-		b = 0;
-	else if (b > 255)
-		b = 255;
-	return (color->start_color + r + g + b);
-}
+// 	r = color->delta_r * progress;
+// 	if (r < -255)
+// 		r = 0;
+// 	else if (r > 255)
+// 		r = 255;
+// 	r = r << 16;
+// 	g = color->delta_g * progress;
+// 	if (g < -255)
+// 		g = 0;
+// 	else if (g > 255)
+// 		g = 255;
+// 	g = g << 8;
+// 	b = color->delta_b * progress;
+// 	if (b < -255)
+// 		b = 0;
+// 	else if (b > 255)
+// 		b = 255;
+// 	return (color->start_color + r + g + b);
+// }
 
 
 
-int	get_color(t_color *color, int i_line, int line_size)
-{
-	float	progress;
+// int	get_color(t_color *color, int i_line, int line_size)
+// {
+// 	float	progress;
 
-	progress = (float) i_line / (float) line_size;
-	return (color_gradient(color, progress));
-}
+// 	progress = (float) i_line / (float) line_size;
+// 	return (color_gradient(color, progress));
+// }
 
-t_color	*color_init(t_point start, t_point end)
-{
-	t_color	*color;
+// t_color	*color_init(t_point start, t_point end)
+// {
+// 	t_color	*color;
 
-	color = malloc(sizeof(t_color));
-	if (!color)
-		return (NULL);
-	color->start_color = start.color;
-	color->start_r = (C_RED & start.color) >> 16;
-	color->start_g = (C_GREEN & start.color) >> 8;
-	color->start_b = (C_BLUE & start.color);
-	color->end_color = end.color;
-	color->end_r = (C_RED & end.color) >> 16;
-	color->end_g = (C_GREEN & end.color) >> 8;
-	color->end_b = (C_BLUE & end.color);
-	color->delta_r = (color->end_r - color->start_r);
-	color->delta_g = (color->end_g - color->start_g);
-	color->delta_b = (color->end_b - color->start_b);
-	return (color);
-}
+// 	color = malloc(sizeof(t_color));
+// 	if (!color)
+// 		return (NULL);
+// 	color->start_color = start.color;
+// 	color->start_r = (C_RED & start.color) >> 16;
+// 	color->start_g = (C_GREEN & start.color) >> 8;
+// 	color->start_b = (C_BLUE & start.color);
+// 	color->end_color = end.color;
+// 	color->end_r = (C_RED & end.color) >> 16;
+// 	color->end_g = (C_GREEN & end.color) >> 8;
+// 	color->end_b = (C_BLUE & end.color);
+// 	color->delta_r = (color->end_r - color->start_r);
+// 	color->delta_g = (color->end_g - color->start_g);
+// 	color->delta_b = (color->end_b - color->start_b);
+// 	return (color);
+// }
 
-t_color	*color_pallet_init(int min_color, int max_color)
-{
-	t_color	*color;
+// t_color	*color_pallet_init(int min_color, int max_color)
+// {
+// 	t_color	*color;
 
-	color = malloc(sizeof(t_color));
-	if (!color)
-		return (NULL);
-	color->start_color = min_color;
-	color->start_r = (C_RED & min_color) >> 16;
-	color->start_g = (C_GREEN & min_color) >> 8;
-	color->start_b = (C_BLUE & min_color);
-	color->end_color = max_color;
-	color->end_r = (C_RED & max_color) >> 16;
-	color->end_g = (C_GREEN & max_color) >> 8;
-	color->end_b = (C_BLUE & max_color);
-	color->delta_r = (color->end_r - color->start_r);
-	color->delta_g = (color->end_g - color->start_g);
-	color->delta_b = (color->end_b - color->start_b);
-	return (color);
-}
+// 	color = malloc(sizeof(t_color));
+// 	if (!color)
+// 		return (NULL);
+// 	color->start_color = min_color;
+// 	color->start_r = (C_RED & min_color) >> 16;
+// 	color->start_g = (C_GREEN & min_color) >> 8;
+// 	color->start_b = (C_BLUE & min_color);
+// 	color->end_color = max_color;
+// 	color->end_r = (C_RED & max_color) >> 16;
+// 	color->end_g = (C_GREEN & max_color) >> 8;
+// 	color->end_b = (C_BLUE & max_color);
+// 	color->delta_r = (color->end_r - color->start_r);
+// 	color->delta_g = (color->end_g - color->start_g);
+// 	color->delta_b = (color->end_b - color->start_b);
+// 	return (color);
+// }
 
-static void	apply_colors(t_win *fdf, t_point *point)
-{
-	t_color	*col;
+// static void	apply_colors(t_win *fdf, t_point *point)
+// {
+// 	t_color	*col;
 
-	col = NULL;
-	if (fdf->cam->color_pallet == FALSE)
-	{
-		if (point->color == -1)
-			point->color = LINE_DEFAULT;
-	}
-	else
-	{
-		if (point->z >= 0)
-		{
-			col = color_pallet_init(C_GREY, C_ORANGY);
-			point->color = get_color(col, min_max_abs("abs",point->z,0), \
-				min_max_abs("abs",fdf->map->max_z,0));
-			free(col);
-		}
-		else
-		{
-			col = color_pallet_init(C_GREY, C_BLUEY);
-			point->color = get_color(col, min_max_abs("abs",point->z,0), \
-				min_max_abs("abs",fdf->map->max_z,0));
-			free(col);
-		}
-	}
-}
+// 	col = NULL;
+// 	if (fdf->cam->color_pallet == FALSE)
+// 	{
+// 		if (point->color == -1)
+// 			point->color = LINE_DEFAULT;
+// 	}
+// 	else
+// 	{
+// 		if (point->z >= 0)
+// 		{
+// 			col = color_pallet_init(C_GREY, C_ORANGY);
+// 			point->color = get_color(col, min_max_abs("abs",point->z,0), min_max_abs("abs",fdf->map->max_z,0));
+// 			free(col);
+// 		}
+// 		else
+// 		{
+// 			col = color_pallet_init(C_GREY, C_BLUEY);
+// 			point->color = get_color(col, min_max_abs("abs",point->z,0), min_max_abs("abs",fdf->map->max_z,0));
+// 			free(col);
+// 		}
+// 	}
+// }
 
 
 static void	close_coordinates(t_point **coordinates, int width)
@@ -385,7 +383,7 @@ t_cam	*init_cam(t_map *map)
 	if (!cam)
 		return (NULL);
 	cam->projection = ISOMETRIC;
-	cam->color_pallet = FALSE;
+	// cam->color_pallet = FALSE;
 	cam->scale_factor = scale_to_fit(map);
 	cam->scale_z = 0.5;
 	cam->move_x = WINDOW_WIDTH / 2;
@@ -450,20 +448,20 @@ void	pixel_to_image(t_image *image, float x, float y, int color)
 	pixel = ((int)y * image->line_bytes) + ((int)x * 4);
 	image->buffer[pixel] = (color);
 
-	// if (image->endian == 1)
-	// {
-	// 	image->buffer[pixel + 0] = (color >> 24);
-	// 	image->buffer[pixel + 1] = (color >> 16) & 0xff;
-	// 	image->buffer[pixel + 2] = (color >> 8) & 0xff;
-	// 	image->buffer[pixel + 3] = (color) & 0xff;
-	// }
-	// else if (image->endian == 0)
-	// {
-	// 	image->buffer[pixel + 0] = (color) & 0xff;
-	// 	image->buffer[pixel + 1] = (color >> 8) & 0xff;
-	// 	image->buffer[pixel + 2] = (color >> 16) & 0xff;
-	// 	image->buffer[pixel + 3] = (color >> 24);
-	// }
+	if (image->endian == 1)
+	{
+		image->buffer[pixel + 0] = (color >> 24);
+		image->buffer[pixel + 1] = (color >> 16) & 0xff;
+		image->buffer[pixel + 2] = (color >> 8) & 0xff;
+		image->buffer[pixel + 3] = (color) & 0xff;
+	}
+	else if (image->endian == 0)
+	{
+		image->buffer[pixel + 0] = (color) & 0xff;
+		image->buffer[pixel + 1] = (color >> 8) & 0xff;
+		image->buffer[pixel + 2] = (color >> 16) & 0xff;
+		image->buffer[pixel + 3] = (color >> 24);
+	}
 }
 
 
@@ -487,31 +485,26 @@ void	clear_image(t_image *image, int image_size)
 }
 
 
-void	bresenham(t_win *fdf, t_point start, t_point end)
+void	bresenham(t_win *fdf, t_point start, t_point end,int color)
 {
 	float	x_step;
 	float	y_step;
 	int		max_steps;
 	int		i_line;
-	// t_color	*color;
-	int color;
+
+
 	x_step = end.x - start.x;
 	y_step = end.y - start.y;
 	max_steps = (int)min_max_abs("max",min_max_abs("abs",x_step,0), min_max_abs("abs",y_step,0));
 	x_step /= max_steps;
 	y_step /= max_steps;
-	color = 16777215;
-	// color= C_RED;	
-	// if (!color)
-		// close_all(fdf, 8);
+
+
 	i_line = 0;
 	while (i_line < max_steps)
 	{
-		// start.color = get_color(color, i_line++, max_steps);
 		if (start.x > 0 && start.y > 0 && start.x < WINDOW_WIDTH && start.y < \
 				WINDOW_HEIGHT)
-
-				// mlx_pixel_put(fdf->,start.x, start.x, 0x00FF0000);
 
 			pixel_to_image(fdf->image, start.x, start.y, color);
 		start.x += x_step;
@@ -532,11 +525,9 @@ t_line	*init_line(t_point start, t_point end, t_win *fdf)
 	line->start.x = start.x;
 	line->start.y = start.y;
 	line->start.z = start.z;
-	line->start.color = start.color;
 	line->end.x = end.x;
 	line->end.y = end.y;
 	line->end.z = end.z;
-	line->end.color = end.color;
 	line->transform_z = min_max_abs("max",(fdf->map->max_z - fdf->map->min_z), \
 		min_max_abs("max",fdf->map->max_x, fdf->map->max_y));
 	return (line);
@@ -546,13 +537,17 @@ static void	render_line(t_win *fdf, t_point start, t_point end)
 {
 	start.z *= fdf->cam->scale_z;
 	end.z *= fdf->cam->scale_z;
-	apply_colors(fdf, &start);
-	apply_colors(fdf, &end);
+	// apply_colors(fdf, &start);
+	// apply_colors(fdf, &end);
 	fdf->image->line = init_line(start, end, fdf);
 	rotate(fdf->cam, fdf->image->line);
 	project(fdf->cam, fdf->image->line);
 	transform(fdf->cam, fdf->image->line);
-	bresenham(fdf, fdf->image->line->start, fdf->image->line->end);
+	if (end.z>0|| start.z>0)
+		bresenham(fdf, fdf->image->line->start, fdf->image->line->end,8421376);
+	else
+		bresenham(fdf, fdf->image->line->start, fdf->image->line->end,16777215);
+
 	free(fdf->image->line);
 
 }
@@ -621,9 +616,7 @@ void	print_menu(t_win *fdf)
 	mlx_string_put(mlx, win, 50, y += 20, C_TEXT, "(Z scale limited to 100%)");
 	mlx_string_put(mlx, win, 50, y += 35, C_TEXT, "To change projection view:");
 	mlx_string_put(mlx, win, 50, y += 20, C_TEXT, "Isometric: press 'I'");
-	mlx_string_put(mlx, win, 50, y += 20, C_TEXT, "Perspective: press 'P'");
 	mlx_string_put(mlx, win, 50, y += 20, C_TEXT, "Top View: press 'O'");
-	mlx_string_put(mlx, win, 50, y += 35, C_TEXT, "Colors: press 'SPACE'");
 	mlx_string_put(mlx, win, 50, y += 35, C_TEXT, "Reset view: press 'R'");
 }
 
@@ -697,9 +690,8 @@ static void	key_rotate(int keycode, t_win *fdf)
 
 static void	key_project(int keycode, t_win *fdf)
 {
-	if (keycode == KEY_P)
-		fdf->cam->projection = PERSPECTIVE;
-	else if (keycode == KEY_I)
+	
+	if (keycode == KEY_I)
 		fdf->cam->projection = ISOMETRIC;
 	else if (keycode == KEY_O)
 		fdf->cam->projection = TOP;
@@ -737,13 +729,6 @@ int	key_handle(int keycode, t_win *fdf)
 		key_rotate(keycode, fdf);
 	else if (keycode == KEY_P || keycode == KEY_I || keycode == KEY_O)
 		key_project(keycode, fdf);
-	else if (keycode == KEY_SPACE)
-	{
-		if (fdf->cam->color_pallet == FALSE)
-			fdf->cam->color_pallet = TRUE;
-		else
-			fdf->cam->color_pallet = FALSE;
-	}
 	else if (keycode == KEY_R)
 		reset(fdf);
 	render_img(fdf);
@@ -796,14 +781,14 @@ int		mouse_released_hook(int button, int x, int y, t_win *fdf)
 	return (x+y+button);
 }
 
-int main()
+int main(int argc, char **argv)
 {
 	char	*file_name;
 	t_win	*fdf;
-	file_name="42.fdf";
-	// if (argc != 2)
-	// 	error(1);
-	// file_name = argv[1];
+	// file_name="42.fdf";
+	if (argc != 2)
+		ft_errexit("ERRor!!",1);
+	file_name = argv[1];
 	fdf = init_fdf(file_name);
 
 	render_img(fdf);

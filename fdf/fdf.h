@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/18 23:37:26 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/23 13:32:33 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/23 14:50:54 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,20 +85,6 @@ typedef struct s_line
 /*
 ** Color struct: valid for line.
 */
-typedef struct s_color
-{
-	int	start_color;
-	int	start_r;
-	int	start_g;
-	int	start_b;
-	int	end_color;
-	int	end_r;
-	int	end_g;
-	int	end_b;
-	int	delta_r;
-	int	delta_g;
-	int	delta_b;
-}	t_color;
 
 /*
 ** Image data structure: holds information on the image pointers given by 
@@ -123,7 +109,7 @@ typedef struct s_image
 typedef struct s_cam
 {
 	int		projection;
-	int		color_pallet;
+	// int		color_pallet;
 	float	scale_factor;
 	float	scale_z;
 	float	move_x;
@@ -180,7 +166,6 @@ typedef struct s_win
 enum e_projection
 {
 	ISOMETRIC,
-	PERSPECTIVE,
 	TOP
 };
 
