@@ -29,7 +29,7 @@ all: $(NAME)
 
 $(NAME): $(OBJS) $(LIB)
 
-	@$(CC) $(CFLAGS) $(OBJS) $(LIB) -o ${NAME} ../../minilibx-linux/libmlx.a -lX11 -lXext -lm -lbsd
+	@$(CC) $(CFLAGS) $(OBJS) $(LIB) -o ${NAME} minilibx-linux/libmlx.a -lX11 -lXext -lm -lbsd
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@

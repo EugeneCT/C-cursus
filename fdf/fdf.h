@@ -6,14 +6,14 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/18 23:37:26 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/23 21:48:47 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/23 21:58:24 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FDF_H
 # define FDF_H
 
-# include "../../minilibx-linux/mlx.h"
+# include "minilibx-linux/mlx.h"
 # include "./libft_max/getnextline/gnl.h"
 # include "./libft_max/libft/libft.h"
 # include "./libft_max/printf/printf.h"
