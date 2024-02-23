@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/23 21:03:25 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/23 21:47:26 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/23 21:51:14 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,6 @@ int	mouse_released_hook(int button, int x, int y, t_win *fdf)
 
 int	esc_window(t_win *fdf)
 {
-	exit_prog(fdf, "all", "Goodbye and have agood day!", 0);
+	exit_prog(fdf, "all", "Goodbye and have a good day!", 0);
 	return (1);
 }
