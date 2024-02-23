@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 19:21:44 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/22 10:25:30 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/23 10:50:11 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -304,25 +304,25 @@ int fill_coors( t_map *map,int max_x,int max_y,char *file_name)
 	int x;
 	int y;
 
-	x=0;
+	y=0;
 	fd = open(file_name, O_RDONLY, 0);
-	while (x <= max_x)
+	while (y <= max_y)
 	{
 		line=get_next_line(fd);
 		if (line==NULL)
 			break;
 		split=ft_split(line,' ');
-		y=0;
-		while (y <= max_y)
+		x=0;
+		while (x < max_x)
 		{
 			map->coordinates[x][y].x=x;
 			map->coordinates[x][y].y=y;
-			map->coordinates[x][y].z=ft_atoi(split[y]);
-			y++;
+			map->coordinates[x][y].z=ft_atoi(split[x]);
+			x++;
 		}
 		free(line);
 		free(split);
-		x++;
+		y++;
 	}
 	return (0);
 }
@@ -387,7 +387,7 @@ t_cam	*init_cam(t_map *map)
 	cam->projection = ISOMETRIC;
 	cam->color_pallet = FALSE;
 	cam->scale_factor = scale_to_fit(map);
-	cam->scale_z = 1;
+	cam->scale_z = 0.5;
 	cam->move_x = WINDOW_WIDTH / 2;
 	cam->move_y = WINDOW_HEIGHT / 2;
 	cam->alpha = 0;
@@ -410,6 +410,7 @@ t_win	*init_fdf(char *file_name)
 	fdf->mlx = mlx_init();
 	fdf->win_x = WINDOW_WIDTH;
 	fdf->win_y = WINDOW_HEIGHT;
+	center_to_origin(fdf->map);
 	fdf->win = mlx_new_window(fdf->mlx, fdf->win_x, fdf->win_y, WINDOW_NAME);
 	fdf->image = init_image(fdf->mlx);
 	if (!fdf->image)
@@ -493,6 +494,7 @@ void	bresenham(t_win *fdf, t_point start, t_point end)
 			pixel_to_image(fdf->image, start.x, start.y, color);
 		start.x += x_step;
 		start.y += y_step;
+		i_line++;
 	}
 	// free(color);
 }
@@ -560,6 +562,97 @@ void	render_img(t_win *fdf)
 	mlx_put_image_to_window(fdf->mlx, fdf->win, fdf->image->image, 0, 0);
 	// print_menu(fdf);
 }
+
+
+static void	key_translate(int keycode, t_win *fdf)
+{
+	if (keycode == KEY_RIGHT)
+		fdf->cam->move_x += 10;
+	else if (keycode == KEY_LEFT)
+		fdf->cam->move_x -= 10;
+	else if (keycode == KEY_DOWN)
+		fdf->cam->move_y += 10;
+	else if (keycode == KEY_UP)
+		fdf->cam->move_y -= 10;
+}
+
+static void	key_scale(int keycode, t_win *fdf)
+{
+	if (keycode == KEY_PLUS)
+		fdf->cam->scale_factor += 1;
+	else if (keycode == KEY_MINUS)
+		fdf->cam->scale_factor -= 1;
+	else if (keycode == KEY_Z && fdf->cam->scale_z > -1)
+		fdf->cam->scale_z -= 0.1;
+	else if (keycode == KEY_X && fdf->cam->scale_z < 1)
+		fdf->cam->scale_z += 0.1;
+}
+
+static void	key_rotate(int keycode, t_win *fdf)
+{
+	if (keycode == KEY_S)
+		fdf->cam->alpha -= (5 * ANG_1);
+	else if (keycode == KEY_W)
+		fdf->cam->alpha += (5 * ANG_1);
+	else if (keycode == KEY_A)
+		fdf->cam->gamma -= (5 * ANG_1);
+	else if (keycode == KEY_D)
+		fdf->cam->gamma += (5 * ANG_1);
+	else if (keycode == KEY_Q)
+		fdf->cam->beta -= (5 * ANG_1);
+	else if (keycode == KEY_E)
+		fdf->cam->beta += (5 * ANG_1);
+}
+
+static void	key_project(int keycode, t_win *fdf)
+{
+	if (keycode == KEY_P)
+		fdf->cam->projection = PERSPECTIVE;
+	else if (keycode == KEY_I)
+		fdf->cam->projection = ISOMETRIC;
+	else if (keycode == KEY_O)
+		fdf->cam->projection = TOP;
+}
+
+void	reset(t_win *fdf)
+{
+	fdf->cam->scale_factor = scale_to_fit(fdf->map);
+	fdf->cam->scale_z = 1;
+	fdf->cam->move_x = WINDOW_WIDTH / 2;
+	fdf->cam->move_y = WINDOW_HEIGHT / 2;
+	fdf->cam->alpha = 0;
+	fdf->cam->beta = 0;
+	fdf->cam->gamma = 0;
+}
+
+int	key_handle(int keycode, t_win *fdf)
+{
+	if (keycode == KEY_ESC)
+		exit_prog(fdf,"all","Bye!",0);
+	else if (keycode == KEY_RIGHT || keycode == KEY_LEFT || keycode == KEY_UP \
+		|| keycode == KEY_DOWN)
+		key_translate(keycode, fdf);
+	else if (keycode == KEY_PLUS || keycode == KEY_MINUS || keycode == KEY_Z \
+		|| keycode == KEY_X)
+		key_scale(keycode, fdf);
+	else if (keycode == KEY_A || keycode == KEY_S || keycode == KEY_D \
+		|| keycode == KEY_Q || keycode == KEY_W || keycode == KEY_E)
+		key_rotate(keycode, fdf);
+	else if (keycode == KEY_P || keycode == KEY_I || keycode == KEY_O)
+		key_project(keycode, fdf);
+	else if (keycode == KEY_SPACE)
+	{
+		if (fdf->cam->color_pallet == FALSE)
+			fdf->cam->color_pallet = TRUE;
+		else
+			fdf->cam->color_pallet = FALSE;
+	}
+	else if (keycode == KEY_R)
+		reset(fdf);
+	render_img(fdf);
+	return (0);
+}
+
 int main()
 {
 	char	*file_name;
@@ -576,7 +669,7 @@ int main()
 	// else
 	// 	printf("%s",argv[1]);
 	// printf("%s",argv[0]);
-
+	mlx_key_hook(fdf->win, &key_handle, fdf);
 	mlx_loop(fdf->mlx);
 
 	// printf("map-max x is %d and max_y is %d",fdf->map->max_x,fdf->map->max_y);
