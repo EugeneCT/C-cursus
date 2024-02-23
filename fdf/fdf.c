@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 19:21:44 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/23 10:50:11 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/23 13:45:23 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -396,6 +396,24 @@ t_cam	*init_cam(t_map *map)
 	return (cam);
 }
 
+t_mouse	*init_mouse()
+{
+
+	t_mouse *mousey;
+
+	mousey = malloc(sizeof(t_mouse));
+	mousey->mouse_x=0;
+	mousey->mouse_y=0;
+	mousey->prev_mouse_x=0;
+	mousey->prev_mouse_y=0;
+	mousey->mouse_x_diff=0;
+	mousey->mouse_y_diff=0;
+	mousey->is_pressed=0;
+	return mousey;
+}
+
+
+
 
 t_win	*init_fdf(char *file_name)
 {
@@ -418,6 +436,10 @@ t_win	*init_fdf(char *file_name)
 	fdf->cam = init_cam(fdf->map);
 	if (!fdf->cam)
 		exit_prog(fdf,"all","Camera initialize Failed!",1);
+
+	fdf->mouse = init_mouse();
+	if (!fdf->mouse)
+		exit_prog(fdf,"all","Mouse initialize Failed!",1);
 	return fdf;
 }
 
@@ -535,6 +557,75 @@ static void	render_line(t_win *fdf, t_point start, t_point end)
 
 }
 
+void	print_menu(t_win *fdf)
+{
+	int		y;
+	// char	*projection;
+	void	*mlx;
+	void	*win;
+	char	*str;
+
+	y = 0;
+	mlx = fdf->mlx;
+	win = fdf->win;
+	// projection = get_projection_name(fdf);
+	// mlx_string_put(mlx, win, 50, y += 50, C_TEXT, projection);
+	str=ft_strjoin("Alpha is : ",ft_itoa(fdf->cam->alpha));
+	mlx_string_put(mlx, win, 50, y += 35, C_TEXT,str );
+	free(str);
+
+	str=ft_strjoin("Beta is : ",ft_itoa(fdf->cam->beta));
+	mlx_string_put(mlx, win, 50, y += 35, C_TEXT,str );
+	free(str);
+	str=ft_strjoin("Gamma is : ",ft_itoa(fdf->cam->gamma));
+	mlx_string_put(mlx, win, 50, y += 35, C_TEXT,str );
+	free(str);
+
+	str=ft_strjoin("Mouse x is : ",ft_itoa(fdf->mouse->mouse_x));
+	mlx_string_put(mlx, win, 50, y += 35, C_TEXT,str );
+	free(str);
+
+	str=ft_strjoin("Mouse y is : ",ft_itoa(fdf->mouse->mouse_y));
+	mlx_string_put(mlx, win, 50, y += 35, C_TEXT,str );
+	free(str);
+
+	str=ft_strjoin("Mouse pressed is : ",ft_itoa(fdf->mouse->is_pressed));
+	mlx_string_put(mlx, win, 50, y += 35, C_TEXT,str );
+	free(str);
+
+	str=ft_strjoin("Prev Mouse x is : ",ft_itoa(fdf->mouse->prev_mouse_x));
+	mlx_string_put(mlx, win, 50, y += 35, C_TEXT,str );
+	free(str);
+
+	str=ft_strjoin("Prev Mouse y is : ",ft_itoa(fdf->mouse->prev_mouse_y));
+	mlx_string_put(mlx, win, 50, y += 35, C_TEXT,str );
+	free(str);
+
+	str=ft_strjoin("x_diff pressed is : ",ft_itoa(fdf->mouse->mouse_x_diff));
+	mlx_string_put(mlx, win, 50, y += 35, C_TEXT,str );
+	free(str);
+	str=ft_strjoin("y_diff pressed is : ",ft_itoa(fdf->mouse->mouse_y_diff));
+	mlx_string_put(mlx, win, 50, y += 35, C_TEXT,str );
+	free(str);
+
+
+
+	
+	mlx_string_put(mlx, win, 50, y += 35, C_TEXT, "Press 'ESC' to close");
+	mlx_string_put(mlx, win, 50, y += 35, C_TEXT, "Zoom: press '-' or '+'");
+	mlx_string_put(mlx, win, 50, y += 20, C_TEXT, "Move: press arrow keys");
+	mlx_string_put(mlx, win, 50, y += 20, C_TEXT, "Rotate X: press 'S' or 'W'");
+	mlx_string_put(mlx, win, 50, y += 20, C_TEXT, "Rotate Y: press 'Q' or 'E'");
+	mlx_string_put(mlx, win, 50, y += 20, C_TEXT, "Rotate Z: press 'A' or 'D'");
+	mlx_string_put(mlx, win, 50, y += 20, C_TEXT, "Scale Z: press 'Z' or 'X'");
+	mlx_string_put(mlx, win, 50, y += 20, C_TEXT, "(Z scale limited to 100%)");
+	mlx_string_put(mlx, win, 50, y += 35, C_TEXT, "To change projection view:");
+	mlx_string_put(mlx, win, 50, y += 20, C_TEXT, "Isometric: press 'I'");
+	mlx_string_put(mlx, win, 50, y += 20, C_TEXT, "Perspective: press 'P'");
+	mlx_string_put(mlx, win, 50, y += 20, C_TEXT, "Top View: press 'O'");
+	mlx_string_put(mlx, win, 50, y += 35, C_TEXT, "Colors: press 'SPACE'");
+	mlx_string_put(mlx, win, 50, y += 35, C_TEXT, "Reset view: press 'R'");
+}
 
 
 void	render_img(t_win *fdf)
@@ -560,7 +651,7 @@ void	render_img(t_win *fdf)
 		y++;
 	}
 	mlx_put_image_to_window(fdf->mlx, fdf->win, fdf->image->image, 0, 0);
-	// print_menu(fdf);
+	print_menu(fdf);
 }
 
 
@@ -625,6 +716,12 @@ void	reset(t_win *fdf)
 	fdf->cam->gamma = 0;
 }
 
+
+
+
+
+
+
 int	key_handle(int keycode, t_win *fdf)
 {
 	if (keycode == KEY_ESC)
@@ -653,26 +750,79 @@ int	key_handle(int keycode, t_win *fdf)
 	return (0);
 }
 
+
+int p_mouse_mos(int x, int y, t_win *fdf)
+{
+
+	if (fdf->mouse->is_pressed==0)
+	{
+		(fdf->mouse->prev_mouse_x)=x;
+		(fdf->mouse->prev_mouse_y)=y;
+	}
+	else if (fdf->mouse->is_pressed==1)
+	{
+		(fdf->mouse->mouse_x)=x;
+		(fdf->mouse->mouse_y)=y;
+		fdf->mouse->mouse_x_diff=fdf->mouse->mouse_x-fdf->mouse->prev_mouse_x;
+		fdf->mouse->mouse_y_diff=fdf->mouse->mouse_y-fdf->mouse->prev_mouse_y;
+		// fdf->cam->alpha -= (fdf->mouse->mouse_x_diff * ANG_1);
+		fdf->cam->gamma += ((fdf->mouse->mouse_x_diff/100) * ANG_1);
+		// fdf->cam->gamma -= (y_diff * ANG_1);
+		fdf->cam->alpha -= ((fdf->mouse->mouse_y_diff/100) * ANG_1);
+		render_img(fdf);
+
+	}
+	// render_img(fdf);
+
+	return 1;
+
+}
+
+int		mouse_pressed_hook(int button, int x, int y, t_win *fdf)
+{
+	if (button==1)
+		fdf->mouse->is_pressed = 1;
+	render_img(fdf);
+	return x+y;
+
+
+}
+
+int		mouse_released_hook(int button, int x, int y, t_win *fdf)
+{
+	fdf->mouse->is_pressed = 0;
+	render_img(fdf);
+
+	return (x+y+button);
+}
+
 int main()
 {
 	char	*file_name;
 	t_win	*fdf;
-	
 	file_name="42.fdf";
 	// if (argc != 2)
 	// 	error(1);
 	// file_name = argv[1];
 	fdf = init_fdf(file_name);
+
 	render_img(fdf);
 	// if (argc!=2)
 	// 	ft_errexit("ERRor!!",1);
 	// else
 	// 	printf("%s",argv[1]);
 	// printf("%s",argv[0]);
-	mlx_key_hook(fdf->win, &key_handle, fdf);
-	mlx_loop(fdf->mlx);
 
-	// printf("map-max x is %d and max_y is %d",fdf->map->max_x,fdf->map->max_y);
+
+	
+
+	mlx_key_hook(fdf->win, &key_handle, fdf);
+
+	mlx_hook(fdf->win, 6, (1L<<6), &p_mouse_mos, fdf);
+
+	mlx_hook(fdf->win, 4, (1L<<2), &mouse_pressed_hook, fdf);
+	mlx_hook(fdf->win, 5, (1L<<3), &mouse_released_hook, fdf);
+	mlx_loop(fdf->mlx);
 	
 }
 

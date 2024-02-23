@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/18 23:37:26 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/22 08:51:49 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/23 13:32:33 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,21 @@ typedef struct s_map
 	int		max_z;
 	int		min_z;
 }	t_map;
+
+typedef struct s_mouse
+{
+
+	int		mouse_x;
+	int		mouse_y;
+	int		prev_mouse_x;
+	int		prev_mouse_y;
+	int 	is_pressed;
+	int 	mouse_x_diff;
+	int 	mouse_y_diff;
+
+}	t_mouse;
+
+
 
 /*
 ** Current line being printed
@@ -131,6 +146,7 @@ typedef struct s_win
 	void	*win;
 	t_image	*image;
 	t_cam	*cam;
+	t_mouse *mouse;
 }	t_win;
 
 /*-----MACROS---------*/
