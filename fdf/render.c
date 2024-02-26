@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/23 21:31:18 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/23 21:48:11 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/26 09:12:35 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,10 @@ void	render_line(t_win *fdf, t_point start, t_point end)
 	project(fdf->cam, fdf->image->line);
 	transform(fdf->cam, fdf->image->line);
 	if (end.z > 0 || start.z > 0)
-		bresenham(fdf, fdf->image->line->start, fdf->image->line->end, 8421376);
+		bresenham(fdf, fdf->image->line->start, fdf->image->line->end, C_GREEN);
 	else
 		bresenham(fdf, fdf->image->line->start, fdf->image->line->end,
-			16777215);
+			C_WHITE);
 	free(fdf->image->line);
 }
 
@@ -116,7 +116,7 @@ int	fill_coors(t_map *map, int max_x, int max_y, int fd)
 			break ;
 		split = ft_split(line, ' ');
 		x = 0;
-		while (x < max_x)
+		while (x < max_x && split[x])
 		{
 			map->coordinates[x][y].x = x;
 			map->coordinates[x][y].y = y;
