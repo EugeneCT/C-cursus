@@ -3,64 +3,87 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 22:39:55 by cliew             #+#    #+#             */
-/*   Updated: 2024/03/03 12:36:30 by cliew            ###   ########.fr       */
+/*   Updated: 2024/03/03 15:44:18 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+long ms_since_start(struct timeval start_time)
+{
+	struct timeval  end_time;
+	long elapsed_seconds;
+	long elapsed_microseconds;
+	long elapsed_total_milliseconds;
+	
+	gettimeofday(&end_time,NULL);
+
+	elapsed_seconds = end_time.tv_sec - start_time.tv_sec;
+    elapsed_microseconds = end_time.tv_usec - start_time.tv_usec;
+    elapsed_total_milliseconds = (elapsed_seconds * 1000000 + elapsed_microseconds)/1000;
+
+	return elapsed_total_milliseconds;
+}
+
 void * thread_function(void *arg){
 	t_data *data = (t_data *)arg;
-	int i;
 
-	while (&data->fork[i]){
-		printf("fork %d have a mutex of  %lu \n",i,(unsigned long)&data->fork[i]);
-		i++;
+	// printf("fork %d have a mutex of  %lu and %lu \n",data->philo,(unsigned long)data->fork_0,(unsigned long)data->fork_1);
+
+	
+
+
+
+	while (data->meals_ate <data->meals_to_eat && ms_since_start(data->start_time)<data->time_last_eat + data->time_to_eat )
+	{
+		if (pthread_mutex_lock(data->fork_0)==0 && pthread_mutex_lock(data->fork_1) ==0)
+		{
+				printf("MS %ld fork %lu and %lu is taken for by philo %d!!\n",ms_since_start(data->start_time),(unsigned long)data->fork_0,(unsigned long)data->fork_1,data->philo);
+				printf("MS %ld philo %d starts to eat!!\n",ms_since_start(data->start_time),data->philo);
+				ft_usleep((data->time_to_eat)*1000);
+				data->meals_ate++;
+				data->time_last_eat=ms_since_start(data->start_time);
+				pthread_mutex_unlock(data->fork_0);
+				pthread_mutex_unlock(data->fork_1);
+				printf("MS %ld philo %d is sleeping!!\n",ms_since_start(data->start_time),data->philo);
+				ft_usleep((data->time_to_sleep)*1000);
+				printf("MS %ld philo %d is thinking!!\n",ms_since_start(data->start_time),data->philo);
+
+
+
+				
+	// 				int time_last_eat;
+	// int awake;
+	// int meals_ate ;
+
+		}
+		data->life=0;
+		printf("MS %ld philo %d is Dead!!\n",ms_since_start(data->start_time),data->philo);
+		return 1;
+
+
+		// printf("fork %lu is taken for by philo %d!!\n",(unsigned long)data->fork_1,data->philo);
+
+		// printf("in thread where j = %d !\n",data->philo);
+
+		// printf("starttime_ms is : %ld!\n",data->start_time.tv_usec);
+		// printf("data numb_phil is %d !\n",data->numb_philo);
+		// ft_usleep((data->time_to_eat)*100000);
+		// printf("mutex numb is %lu and %lu!\n",(unsigned long)&data->fork_0,(unsigned long)&data->fork_1);
+		// data->meals_ate++;
+
+		// pthread_mutex_unlock(data->fork_0);
+		// printf("fork %lu is release for by philo %d!!\n",(unsigned long)&data->fork[0],data->philo);
+
+		// pthread_mutex_unlock(data->fork_1);
+		// printf("fork %lu is release for by philo %d!!\n",(unsigned long)&data->fork_1,data->philo);
+
+		// printf("j = %d done eat!!\n",data->philo);
 
 	}
-	// if (data->philo == 0)
-	// 	{
-	// 		data->fork_0= data->fork[0];
-	// 		data->fork_1= data->fork[data->philo];
-	// 	}
-	// 	else
-	// 	{
-	// 		data->fork[0]= data->fork[data->philo];
-	// 		data->fork[1]= data->fork[data->philo-1];
-	// 	}
-
-	printf("mutex numb  for philo %d is %lu and %lu!\n",data->philo,(unsigned long)&data->fork_0,(unsigned long)&data->fork_1);
-
-	// printf("mutex numb  for philo %d is %lu and %lu!\n",data->philo,(unsigned long)&data->fork[0],(unsigned long)&data->fork[1]);
-
-	// while (data->meals_ate <data->meals_to_eat )
-	// {
-	// 	pthread_mutex_lock(&data->fork[0]);
-	// 	printf("fork %lu is taken for by philo %d!!\n",(unsigned long)&data->fork[0],data->philo);
-
-	// 	pthread_mutex_lock(&data->fork[1]);
-	// 	printf("fork %lu is taken for by philo %d!!\n",(unsigned long)&data->fork[1],data->philo);
-
-	// 	// printf("in thread where j = %d !\n",data->philo);
-	// 		printf("j = %d starts to eat!!\n",data->philo);
-
-	// 	// printf("starttime_ms is : %ld!\n",data->start_time.tv_usec);
-	// 	// printf("data numb_phil is %d !\n",data->numb_philo);
-	// 	ft_usleep((data->time_to_eat)*100000);
-	// 	// printf("mutex numb is %lu and %lu!\n",(unsigned long)&data->fork[0],(unsigned long)&data->fork[1]);
-	// 	data->meals_ate++;
-
-	// 	pthread_mutex_unlock(&data->fork[0]);
-	// 	printf("fork %lu is release for by philo %d!!\n",(unsigned long)&data->fork[0],data->philo);
-
-	// 	pthread_mutex_unlock(&data->fork[1]);
-	// 	printf("fork %lu is release for by philo %d!!\n",(unsigned long)&data->fork[1],data->philo);
-
-	// 	printf("j = %d done eat!!\n",data->philo);
-
-	// }
 
 
 
@@ -124,17 +147,17 @@ int	main()
 		data[j].time_last_eat=1;
 		data[j].meals_ate=0;
 
-		data[j].fork=&fork;
-		// if (j == 0)
-		// {
-		// 	data[j].fork[0]= fork[0];
-		// 	data[j].fork[1]= fork[numb_philo-1];
-		// }
-		// else
-		// {
-		// 	data[j].fork[0]= fork[j];
-		// 	data[j].fork[1]= fork[j-1];
-		// }
+		if (j == 0)
+		{
+			
+			data[j].fork_0= &fork[0];
+			data[j].fork_1= &fork[numb_philo-1];
+		}
+		else
+		{
+			data[j].fork_0= &fork[j];
+			data[j].fork_1= &fork[j-1];
+		}
 
         if (pthread_create(&philo[j], NULL, &thread_function, &(data[j])) != 0) {
             printf( "Error creating thread %d\n", j);
@@ -155,7 +178,12 @@ int	main()
 		j2++;
     }
 
-
+	int times=0;
+	while (times < numb_philo)
+	{
+		printf("times aten by thread %d is %d\n",times,data[times].meals_ate);
+		times++;
+	}
 
  	while (i2 < numb_philo)
 	{
@@ -195,5 +223,4 @@ int	main()
 
 
 	// }
-
 

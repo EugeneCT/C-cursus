@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 22:35:07 by cliew             #+#    #+#             */
-/*   Updated: 2024/03/03 12:36:00 by cliew            ###   ########.fr       */
+/*   Updated: 2024/03/03 15:43:23 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@
 typedef struct s_params
 {
 	pthread_mutex_t		**fork;
-	pthread_mutex_t		fork_0;
-		pthread_mutex_t		fork_1;
+	pthread_mutex_t		*fork_0;
+	pthread_mutex_t		*fork_1;
 
 
 	int numb_philo;
@@ -41,6 +41,7 @@ typedef struct s_params
 	int time_last_eat;
 	int awake;
 	int meals_ate ;
+	int life;
 
 }			t_data;
 
