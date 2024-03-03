@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mouse_events.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/23 21:03:25 by cliew             #+#    #+#             */
-/*   Updated: 2024/02/23 21:51:14 by cliew            ###   ########.fr       */
+/*   Updated: 2024/02/27 19:49:03 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ int	p_mouse_mos(int x, int y, t_win *fdf)
 			- fdf->mouse->prev_mouse_y;
 		fdf->cam->gamma -= ((fdf->mouse->mouse_x_diff / 100) * ANG_1);
 	}
+		render_img(fdf);
+
 	return (1);
 }
 
@@ -58,7 +60,7 @@ int	mouse_pressed_hook(int button, int x, int y, t_win *fdf)
 int	mouse_released_hook(int button, int x, int y, t_win *fdf)
 {
 	fdf->mouse->is_pressed = 0;
-	render_img(fdf);
+	// render_img(fdf);
 	return (x + y + button);
 }
 
