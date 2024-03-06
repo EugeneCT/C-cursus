@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 22:39:55 by cliew             #+#    #+#             */
-/*   Updated: 2024/03/06 14:07:01 by cliew            ###   ########.fr       */
+/*   Updated: 2024/03/06 16:16:31 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,34 +52,55 @@ void * thread_function(void *arg){
 	printf("MS %ld thread %d initiated! \n",ms_since_start(data->start_time),data->philo);
 	if (data->philo+1 % 2 == 0)
 		ft_usleep(1);
-	while ( (ms_since_start(data->start_time)<(data->time_last_eat + data->time_to_die)) || data->life!=0 )
+
+	printf("MS %ld thread %d life = %d before lock! \n",ms_since_start(data->start_time),data->philo,data->life);
+
+	pthread_mutex_lock(&data->dead_lock);
+	// while ( (ms_since_start(data->start_time)<(data->time_last_eat + data->time_to_die)) && data->life!=0 )
+	pthread_mutex_unlock(&data->dead_lock);
+
+	while ( data->life!=0 )
 	{
 		// pthread_mutex_lock(data->dead_lock);
 
 		lock_both_mutexes(data->fork_0,data->fork_1);
+		// printf("MS %ld philo %d have life %d!!\n",ms_since_start(data->start_time),
+		// data->philo,data->life);
 
+		pthread_mutex_lock(&data->dead_lock);
+		if (data->life!=0)
+		{
+			printf("MS %ld fork %lu and %lu is taken for by philo %d!!\n",ms_since_start(data->start_time),(unsigned long)data->fork_0,(unsigned long)data->fork_1,data->philo);
+			printf("MS %ld philo %d starts to eat!!\n",ms_since_start(data->start_time),data->philo);
+			data->time_last_eat=ms_since_start(data->start_time);
+			data->dieing_time=data->time_last_eat+data->time_to_die;
+		}
+		pthread_mutex_unlock(&data->dead_lock);
 
-		printf("MS %ld fork %lu and %lu is taken for by philo %d!!\n",ms_since_start(data->start_time),(unsigned long)data->fork_0,(unsigned long)data->fork_1,data->philo);
-		printf("MS %ld philo %d starts to eat!!\n",ms_since_start(data->start_time),data->philo);
-		data->time_last_eat=ms_since_start(data->start_time);
-		data->dieing_time=data->time_last_eat+data->time_to_die;
-		printf("MS %ld philo %d dieing time is %d!!\n",ms_since_start(data->start_time),data->philo,data->dieing_time);
+		// printf("MS %ld philo %d dieing time is %d!!\n",ms_since_start(data->start_time),data->philo,data->dieing_time);
 
 		ft_usleep((data->time_to_eat)*1000);
 		data->meals_ate++;
 		pthread_mutex_unlock(data->fork_1);
 
 		pthread_mutex_unlock(data->fork_0);
-		printf("MS %ld philo %d is sleeping!!\n",ms_since_start(data->start_time),data->philo);
-		ft_usleep((data->time_to_sleep)*1000);
-		printf("MS %ld philo %d is thinking!!\n",ms_since_start(data->start_time),data->philo);
-		// pthread_mutex_unlock(data->dead_lock);
+		pthread_mutex_lock(&data->dead_lock);
+		if (data->life!=0)
+			printf("MS %ld philo %d is sleeping!!\n",ms_since_start(data->start_time),data->philo);
+		pthread_mutex_unlock(&data->dead_lock);
 
+		ft_usleep((data->time_to_sleep)*1000);
+		pthread_mutex_lock(&data->dead_lock);
+		if (data->life!=0)
+			printf("MS %ld philo %d is thinking!!\n",ms_since_start(data->start_time),data->philo);
+		// pthread_mutex_unlock(data->dead_lock);
+		pthread_mutex_unlock(&data->dead_lock);
+
+		printf("\nEND\n");
 
 	}
 		// data->life=0;
-		printf("MS %ld philo %d is DEAD!! because time last_eat is %d and time to eat is %d \n",ms_since_start(data->start_time),
-		data->philo,data->time_last_eat,data->time_to_die);
+		// printf("MS %ld philo %d is DEAD!! because time last_eat is %d and time to eat is %d and life is %d\n",ms_since_start(data->start_time),
 
 
 
@@ -112,12 +133,18 @@ void * observe(void *arg){
 	// printf("fork %d have a mutex of  %lu and %lu \n",data->philo,(unsigned long)data->fork_0,(unsigned long)data->fork_1);
 	int i =0;
 	int j=0;
+	int k =0;
+	// int mutex_error=0;
+	int life =1;
     // pthread_mutex_lock(&(program->dead_lock)); // Use -> instead of .
-	while (j==0){
+	// while (j==0){
+	while (life)
+	{
 		i=0;
 		while (i<program->data[0].numb_philo)
 		{		
 			// printf("IM AN OBSERVER ");
+			k=0;
 
 			// 
 			if (   (program->data[i].dieing_time !=-1) && (program->data[i].dieing_time <=ms_since_start(program->data[i].start_time)))
@@ -126,10 +153,20 @@ void * observe(void *arg){
 					printf("MS %ld DEATH triggered! for phili %d because dieing time is %d",
 					ms_since_start(program->data[i].start_time),program->data[i].philo,program->data[i].dieing_time);
 					while (j<program->data[0].numb_philo)
-					{
-						program->data[i].life=0;
+					{	
+						printf("KILLLL \n");
+						program->data[j].life=0;
+						life=0;
 						j++;
 					}
+			}
+			
+			while (k<program->data[0].numb_philo)
+			{
+	
+						pthread_mutex_unlock(&program->data[k].dead_lock);
+						// printf("UNLOCKED TRHEAD %d and mutex error is %d\n ",k,mutex_error);
+						k++;
 			}
 			// else
 			// pthread_mutex_unlock(&(program->dead_lock)); // Use -> instead of .
@@ -137,6 +174,21 @@ void * observe(void *arg){
 			i++;
 		}
 	}
+
+	// int l = 0;
+	// int l2=0;
+	// while (l<10)
+	// {
+	// 	l2=0;
+	// 		while (l2<program->data[0].numb_philo)
+	// 		{
+	
+	// 					mutex_error=pthread_mutex_unlock(&program->data[l2].dead_lock);
+	// 					printf("UNLOCKED TRHEAD %d and mutex error is %d\n ",l2,mutex_error);
+	// 					l2++;
+	// 		}
+	// 	l++;
+	// }
 	return NULL;
 }
 
@@ -198,7 +250,9 @@ int	main()
 
 		i++;
 	}
-	if (pthread_mutex_init(&program.dead_lock, NULL) != 0 || pthread_mutex_init(&program.eat_lock, NULL) ||pthread_mutex_init(&program.write_lock, NULL) )
+	// if (pthread_mutex_init(&program.dead_lock, NULL) != 0 || pthread_mutex_init(&program.eat_lock, NULL) ||pthread_mutex_init(&program.write_lock, NULL) )
+		if (pthread_mutex_init(&program.eat_lock, NULL) ||pthread_mutex_init(&program.write_lock, NULL) )
+
 	{
 			printf("Error initializting mutex!");
 			return 1;
@@ -232,7 +286,8 @@ int	main()
 		data[j].dieing_time=-1;
 		data[j].life=1;
 
-		data[j].dead_lock=&program.dead_lock;
+		pthread_mutex_init(&data[j].dead_lock,NULL);
+	
 		data[j].write_lock=&program.write_lock;
 		data[j].eat_lock=&program.eat_lock;
 
@@ -283,9 +338,18 @@ int	main()
             // Handle error as needed
             return 1;
         }
+		else
+		{
+			printf( "done joining thread %d\n", j2);
+
+		}
 		j2++;
     }
-
+	if (pthread_join(observer, NULL) != 0) 
+	{
+            printf( "Error joining thread %d\n", j2);
+            return 1;
+	}
 	int times=0;
 	while (times < numb_philo)
 	{

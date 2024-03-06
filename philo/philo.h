@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 22:35:07 by cliew             #+#    #+#             */
-/*   Updated: 2024/03/06 12:50:11 by cliew            ###   ########.fr       */
+/*   Updated: 2024/03/06 14:08:03 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ typedef struct s_data
 {
 	pthread_mutex_t		*fork_0;
 	pthread_mutex_t		*fork_1;
-	pthread_mutex_t *dead_lock;
+	pthread_mutex_t dead_lock;
 	pthread_mutex_t *write_lock;
 	pthread_mutex_t *eat_lock;
 
