@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 22:35:07 by cliew             #+#    #+#             */
-/*   Updated: 2024/03/03 15:43:23 by cliew            ###   ########.fr       */
+/*   Updated: 2024/03/06 12:50:11 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,14 @@
 #include <sys/time.h>
 #include <time.h>
 
-typedef struct s_params
+#define MAX_PHILO 250
+typedef struct s_data
 {
-	pthread_mutex_t		**fork;
 	pthread_mutex_t		*fork_0;
 	pthread_mutex_t		*fork_1;
-
+	pthread_mutex_t *dead_lock;
+	pthread_mutex_t *write_lock;
+	pthread_mutex_t *eat_lock;
 
 	int numb_philo;
 	int time_to_die;
@@ -41,10 +43,21 @@ typedef struct s_params
 	int time_last_eat;
 	int awake;
 	int meals_ate ;
+	int dieing_time;
 	int life;
 
 }			t_data;
 
+typedef struct s_program
+{
+
+	pthread_mutex_t dead_lock;
+	pthread_mutex_t write_lock;
+	pthread_mutex_t eat_lock;
+
+	int dead;
+	t_data* data;
+} t_program;
 
 
 void ft_usleep( long int microseconds);

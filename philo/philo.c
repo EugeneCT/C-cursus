@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 22:39:55 by cliew             #+#    #+#             */
-/*   Updated: 2024/03/03 19:04:34 by cliew            ###   ########.fr       */
+/*   Updated: 2024/03/06 14:07:01 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,31 +50,34 @@ void * thread_function(void *arg){
 	// printf("fork %d have a mutex of  %lu and %lu \n",data->philo,(unsigned long)data->fork_0,(unsigned long)data->fork_1);
 
 	printf("MS %ld thread %d initiated! \n",ms_since_start(data->start_time),data->philo);
-
-	while ( (ms_since_start(data->start_time)<(data->time_last_eat + data->time_to_die)))
+	if (data->philo+1 % 2 == 0)
+		ft_usleep(1);
+	while ( (ms_since_start(data->start_time)<(data->time_last_eat + data->time_to_die)) || data->life!=0 )
 	{
+		// pthread_mutex_lock(data->dead_lock);
+
 		lock_both_mutexes(data->fork_0,data->fork_1);
-		printf("MS %ld while loop for thread %d activated! \n",ms_since_start(data->start_time),data->philo);
-
-		
-			printf("MS %ld left mutex for thread %d activated! \n",ms_since_start(data->start_time),data->philo);
-
-				printf("MS %ld fork %lu and %lu is taken for by philo %d!!\n",ms_since_start(data->start_time),(unsigned long)data->fork_0,(unsigned long)data->fork_1,data->philo);
-				printf("MS %ld philo %d starts to eat!!\n",ms_since_start(data->start_time),data->philo);
-				data->time_last_eat=ms_since_start(data->start_time);
-
-				ft_usleep((data->time_to_eat)*1000);
-				data->meals_ate++;
-				pthread_mutex_unlock(data->fork_1);
-
-				pthread_mutex_unlock(data->fork_0);
-				printf("MS %ld philo %d is sleeping!!\n",ms_since_start(data->start_time),data->philo);
-				ft_usleep((data->time_to_sleep)*1000);
-				printf("MS %ld philo %d is thinking!!\n",ms_since_start(data->start_time),data->philo);
 
 
-		}
-		data->life=0;
+		printf("MS %ld fork %lu and %lu is taken for by philo %d!!\n",ms_since_start(data->start_time),(unsigned long)data->fork_0,(unsigned long)data->fork_1,data->philo);
+		printf("MS %ld philo %d starts to eat!!\n",ms_since_start(data->start_time),data->philo);
+		data->time_last_eat=ms_since_start(data->start_time);
+		data->dieing_time=data->time_last_eat+data->time_to_die;
+		printf("MS %ld philo %d dieing time is %d!!\n",ms_since_start(data->start_time),data->philo,data->dieing_time);
+
+		ft_usleep((data->time_to_eat)*1000);
+		data->meals_ate++;
+		pthread_mutex_unlock(data->fork_1);
+
+		pthread_mutex_unlock(data->fork_0);
+		printf("MS %ld philo %d is sleeping!!\n",ms_since_start(data->start_time),data->philo);
+		ft_usleep((data->time_to_sleep)*1000);
+		printf("MS %ld philo %d is thinking!!\n",ms_since_start(data->start_time),data->philo);
+		// pthread_mutex_unlock(data->dead_lock);
+
+
+	}
+		// data->life=0;
 		printf("MS %ld philo %d is DEAD!! because time last_eat is %d and time to eat is %d \n",ms_since_start(data->start_time),
 		data->philo,data->time_last_eat,data->time_to_die);
 
@@ -86,22 +89,56 @@ void * thread_function(void *arg){
 	}
 
 
+// void * observe(void *arg){
+// 	t_data *data = (t_data *)arg;
 
+// 	// printf("fork %d have a mutex of  %lu and %lu \n",data->philo,(unsigned long)data->fork_0,(unsigned long)data->fork_1);
+// 	int i =0;
+// 	while (i<4)
+// 	{
+//     	printf("In observe function, philo is: %d \n", (data[i].philo));
+// 	// printf("In observe function, address of data is philo is: %p \n", (void*)(program->data));
+// 	// printf("In observe function, address of program is philo is: %p \n", (void*)(program));
+// 	printf("In observe function, address of data is philo is: %p \n", (void*)(data));
 
-// data->meals_ate <data->meals_to_eat &&
-	// while ( data->meals_ate <data->meals_to_eat && (ms_since_start(data->start_time)<(data->time_last_eat + data->time_to_die)))
-	// {
-	// 	printf("MS %ld while loop for thread %d activated! \n",ms_since_start(data->start_time),data->philo);
+// 		i++;
+// 	}
+// 	return NULL;
+// }
 
-	// 	if (pthread_mutex_lock(data->fork_0)==0 )
-	// 	{
-	// 		printf("MS %ld left mutex for thread %d activated! \n",ms_since_start(data->start_time),data->philo);
+void * observe(void *arg){
+	t_program *program = (t_program *)arg;
 
-	// 		if(pthread_mutex_lock(data->fork_1) ==0)
-	// 		{
-	// 			printf("MS %ld fork %lu and %lu is taken for by philo %d!!\n",ms_since_start(data->start_time),(unsigned long)data->fork_0,(unsigned long)data->fork_1,data->philo);
-	// 			printf("MS %ld philo %d starts to eat!!\n",ms_since_start(data->start_time),data->philo);
-	// 			data->time_last_eat=ms_since_start(data->start_time);
+	// printf("fork %d have a mutex of  %lu and %lu \n",data->philo,(unsigned long)data->fork_0,(unsigned long)data->fork_1);
+	int i =0;
+	int j=0;
+    // pthread_mutex_lock(&(program->dead_lock)); // Use -> instead of .
+	while (j==0){
+		i=0;
+		while (i<program->data[0].numb_philo)
+		{		
+			// printf("IM AN OBSERVER ");
+
+			// 
+			if (   (program->data[i].dieing_time !=-1) && (program->data[i].dieing_time <=ms_since_start(program->data[i].start_time)))
+			{		
+
+					printf("MS %ld DEATH triggered! for phili %d because dieing time is %d",
+					ms_since_start(program->data[i].start_time),program->data[i].philo,program->data[i].dieing_time);
+					while (j<program->data[0].numb_philo)
+					{
+						program->data[i].life=0;
+						j++;
+					}
+			}
+			// else
+			// pthread_mutex_unlock(&(program->dead_lock)); // Use -> instead of .
+		// printf("In observe function, philo is: %d \n", (program->data[i].philo));
+			i++;
+		}
+	}
+	return NULL;
+}
 
 	// 			ft_usleep((data->time_to_eat)*1000);
 	// 			data->meals_ate++;
@@ -135,10 +172,12 @@ int	main()
 	int meals_to_eat=5;
 
 	pthread_t philo[numb_philo];
+	pthread_t observer;
 	pthread_mutex_t fork[numb_philo];
-	
+
 	t_data *data = (t_data *)malloc(numb_philo * sizeof(t_data));
-    
+    t_program program;
+	
 	struct timeval start_time;
 
 
@@ -159,11 +198,20 @@ int	main()
 
 		i++;
 	}
-	// data.fork=fork;
+	if (pthread_mutex_init(&program.dead_lock, NULL) != 0 || pthread_mutex_init(&program.eat_lock, NULL) ||pthread_mutex_init(&program.write_lock, NULL) )
+	{
+			printf("Error initializting mutex!");
+			return 1;
+		}
 
+	// Point program to data
+	// data.forks will point to forks array
+	// Program.data will point to data arrays
 
-
+	program.data=data;
     // Create threads
+	printf("Address of before data  is: %p \n", (void*)(data));
+	printf("Address of before program  is: %p \n", (void*)(program.data));
 
 
     while (j < numb_philo)
@@ -180,7 +228,15 @@ int	main()
 		data[j].start_time=start_time;
 		data[j].time_last_eat=0;
 		data[j].meals_ate=0;
+
+		data[j].dieing_time=-1;
 		data[j].life=1;
+
+		data[j].dead_lock=&program.dead_lock;
+		data[j].write_lock=&program.write_lock;
+		data[j].eat_lock=&program.eat_lock;
+
+
 
 		if (j == 0)
 		{
@@ -193,9 +249,22 @@ int	main()
 			data[j].fork_0= &fork[j-1];
 			data[j].fork_1= &fork[j];
 		}
+
+		// printf("Philo is : %d \n", program->data[j]->philo);
+		// printf("Address of data dead_lock is :%p \n", (void*) program->data[j].dead_lock);
+		// printf("Address of program dead_lock is: %p \n", (void*)&(program->dead_lock));
+
 		j++;
 	}
+	// printf("Address of data  is: %p \n", (void*)(data));
+	// printf("Address of program  is: %p \n", (void*)(program.data));
+
 	j=0;
+	
+   if (pthread_create(&observer, NULL, &observe, (&program)) != 0) {
+            printf( "Error creating thread %d\n", j);
+            return 1;
+        }
 	
     while (j < numb_philo){
         if (pthread_create(&philo[j], NULL, &thread_function, &(data[j])) != 0) {
