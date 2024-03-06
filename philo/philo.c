@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 22:39:55 by cliew             #+#    #+#             */
-/*   Updated: 2024/03/06 16:16:31 by cliew            ###   ########.fr       */
+/*   Updated: 2024/03/06 17:18:41 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,15 @@ void lock_both_mutexes(pthread_mutex_t *mutex1, pthread_mutex_t *mutex2) {
 }
 void * thread_function(void *arg){
 	t_data *data = (t_data *)arg;
+	struct timeval start_time;
 
+	gettimeofday(&start_time,NULL);
+	data->start_time=start_time;
 	// printf("fork %d have a mutex of  %lu and %lu \n",data->philo,(unsigned long)data->fork_0,(unsigned long)data->fork_1);
 
 	printf("MS %ld thread %d initiated! \n",ms_since_start(data->start_time),data->philo);
 	if (data->philo+1 % 2 == 0)
-		ft_usleep(1);
+		ft_usleep(0.1);
 
 	printf("MS %ld thread %d life = %d before lock! \n",ms_since_start(data->start_time),data->philo,data->life);
 
@@ -96,8 +99,6 @@ void * thread_function(void *arg){
 		// pthread_mutex_unlock(data->dead_lock);
 		pthread_mutex_unlock(&data->dead_lock);
 
-		printf("\nEND\n");
-
 	}
 		// data->life=0;
 		// printf("MS %ld philo %d is DEAD!! because time last_eat is %d and time to eat is %d and life is %d\n",ms_since_start(data->start_time),
@@ -133,7 +134,7 @@ void * observe(void *arg){
 	// printf("fork %d have a mutex of  %lu and %lu \n",data->philo,(unsigned long)data->fork_0,(unsigned long)data->fork_1);
 	int i =0;
 	int j=0;
-	int k =0;
+	// int k =0;
 	// int mutex_error=0;
 	int life =1;
     // pthread_mutex_lock(&(program->dead_lock)); // Use -> instead of .
@@ -144,33 +145,37 @@ void * observe(void *arg){
 		while (i<program->data[0].numb_philo)
 		{		
 			// printf("IM AN OBSERVER ");
-			k=0;
+			// k=0;
 
 			// 
-			if (   (program->data[i].dieing_time !=-1) && (program->data[i].dieing_time <=ms_since_start(program->data[i].start_time)))
+			pthread_mutex_lock(&program->data[i].dead_lock);
+
+			if (   (program->data[i].dieing_time !=-1) && (program->data[i].dieing_time <ms_since_start(program->data[i].start_time)))
 			{		
 
 					printf("MS %ld DEATH triggered! for phili %d because dieing time is %d",
 					ms_since_start(program->data[i].start_time),program->data[i].philo,program->data[i].dieing_time);
 					while (j<program->data[0].numb_philo)
 					{	
-						printf("KILLLL \n");
+						// printf("KILLLL \n");
 						program->data[j].life=0;
 						life=0;
 						j++;
 					}
 			}
 			
-			while (k<program->data[0].numb_philo)
-			{
+			// while (k<program->data[0].numb_philo)
+			// {
 	
-						pthread_mutex_unlock(&program->data[k].dead_lock);
-						// printf("UNLOCKED TRHEAD %d and mutex error is %d\n ",k,mutex_error);
-						k++;
-			}
+			// 			pthread_mutex_unlock(&program->data[k].dead_lock);
+			// 			// printf("UNLOCKED TRHEAD %d and mutex error is %d\n ",k,mutex_error);
+			// 			k++;
+			// }
 			// else
 			// pthread_mutex_unlock(&(program->dead_lock)); // Use -> instead of .
 		// printf("In observe function, philo is: %d \n", (program->data[i].philo));
+			pthread_mutex_unlock(&program->data[i].dead_lock);
+
 			i++;
 		}
 	}
@@ -217,10 +222,10 @@ void * observe(void *arg){
 
 int	main()
 {
-	int numb_philo=4;
-	int time_to_die=310;
+	int numb_philo=5;
+	int time_to_die=800;
 	int time_to_eat=200;
-	int time_to_sleep=100;
+	int time_to_sleep=200;
 	int meals_to_eat=5;
 
 	pthread_t philo[numb_philo];
@@ -230,7 +235,6 @@ int	main()
 	t_data *data = (t_data *)malloc(numb_philo * sizeof(t_data));
     t_program program;
 	
-	struct timeval start_time;
 
 
 	int i = 0;
@@ -238,7 +242,6 @@ int	main()
 	int j=0;
 	int j2=0;
 
-	gettimeofday(&start_time,NULL);
 	while (i < numb_philo)
 	{
 		if (pthread_mutex_init(&fork[i], NULL) != 0)
@@ -279,7 +282,9 @@ int	main()
 
     	// data[j].fork = (pthread_mutex_t **)malloc(2 * sizeof(pthread_mutex_t *));
 
-		data[j].start_time=start_time;
+
+ 		memset(&data[j].start_time, 0, sizeof(struct timeval));
+		
 		data[j].time_last_eat=0;
 		data[j].meals_ate=0;
 
