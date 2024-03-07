@@ -49,6 +49,11 @@ void ft_usleep( long int microseconds) {
     gettimeofday(&start_time, NULL);
     gettimeofday(&current_time, NULL);
 
+
+    // start_time.tv_usec = (start_time.tv_usec / 1000) * 1000;
+    // current_time.tv_usec = (current_time.tv_usec / 1000) * 1000;
+
+
     while (((((current_time.tv_sec - start_time.tv_sec) * 1000000) + (current_time.tv_usec - start_time.tv_usec))) <= microseconds) {
         // Get the current time
         gettimeofday(&current_time, NULL);

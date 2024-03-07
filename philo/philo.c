@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 22:39:55 by cliew             #+#    #+#             */
-/*   Updated: 2024/03/07 16:17:24 by cliew            ###   ########.fr       */
+/*   Updated: 2024/03/07 17:22:16 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ long ms_since_start(struct timeval start_time)
 	elapsed_seconds = end_time.tv_sec - start_time.tv_sec;
     elapsed_microseconds = end_time.tv_usec - start_time.tv_usec;
     elapsed_total_milliseconds = (elapsed_seconds * 1000000 + elapsed_microseconds)/1000;
-
+	elapsed_total_milliseconds=(elapsed_total_milliseconds/100)*100;
 	return elapsed_total_milliseconds;
 }
 
@@ -443,14 +443,18 @@ void	eat(t_data *data)
 	lock_both_mutexes( data->fork_0,data->fork_1,data);
 
 	// pthread_mutex_lock(data->fork_0);
-	data->eating = 1;
-	print_message("is eating", data, data->philo);
+
 	pthread_mutex_lock(data->eat_lock);
+	data->eating = 1;
+
+	print_message("is EATING", data, data->philo);
 	data->time_last_eat = ms_since_start(data->start_time);
 	data->meals_ate++;
-	pthread_mutex_unlock(data->eat_lock);
-	ft_usleep(data->time_to_eat*1000);
 	data->eating = 0;
+
+	pthread_mutex_unlock(data->eat_lock);
+
+	ft_usleep(data->time_to_eat*1000);
 	pthread_mutex_unlock(data->fork_0);
 	pthread_mutex_unlock(data->fork_1);
 }
@@ -660,7 +664,15 @@ int	check_if_dead(t_data *data,int numb_philo)
 	{
 		if (philosopher_dead(&data[i], data[i].time_to_die))
 		{
-			print_message("died", &data[i], data[i].philo);
+			// printf("time to die of philo %d is %d",i+1,data[i].time_to_die);
+			pthread_mutex_lock(data->write_lock);
+
+			if (!dead_loop(data))
+				printf("MS %u Philo %d died!\n", data->time_last_eat+data->time_to_die, data[i].philo);
+			pthread_mutex_unlock(data->write_lock);
+
+
+			// print_message("died", &data[i], data[i].philo);
 			pthread_mutex_lock(data[0].dead_lock);
 			*data->life = 0;
 			pthread_mutex_unlock(data[0].dead_lock);
@@ -709,8 +721,12 @@ void	*monitor(void *pointer,int numb_philo)
 	data = (t_data *)pointer;
 	// printf("start monitor!");
 	while (1)
+	{
+		// printf("time is %ld",ms_since_start(data->start_time));
 		if (check_if_dead(data,numb_philo) == 1 || check_if_all_ate(data,numb_philo) == 1)
 			break ;
+		// ft_usleep(1);
+	}
 	return (pointer);
 }
 
@@ -737,7 +753,8 @@ int	main(int argc, char**argv)
 	monitor(program.data,ft_atoi(argv[1]));
 	join_thread(&program,fork);
 
-
+	free(data);
+	free(fork);
 	printf("Done initi!");
 	// int i = 0;
 	// int i2=0;
