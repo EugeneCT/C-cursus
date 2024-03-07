@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
+/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 22:39:55 by cliew             #+#    #+#             */
-/*   Updated: 2024/03/06 17:18:41 by cliew            ###   ########.fr       */
+/*   Updated: 2024/03/07 09:31:41 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,66 @@ void lock_both_mutexes(pthread_mutex_t *mutex1, pthread_mutex_t *mutex2) {
         ft_usleep(1000);
     }
 }
+
+
+// Thread function to lock a mutex
+void* lock_mutex(void* arg) {
+    pthread_mutex_t* mutex = (pthread_mutex_t*)arg;
+	// printf("Mutex Address in lock all: %p\n", mutex);
+
+    pthread_mutex_lock(mutex);
+    return NULL;
+}
+
+void* unlock_mutex(void* arg) {
+    pthread_mutex_t* mutex = (pthread_mutex_t*)arg;
+    pthread_mutex_unlock(mutex);
+    return NULL;
+}
+
+// Function to lock all mutexes simultaneously
+void lock_all_mutexes(t_data* data, int n) {
+    pthread_t threads[n];
+    int i = 0;
+
+    // Create threads to lock each mutex
+    while (i < n) {
+        pthread_create(&threads[i], NULL, lock_mutex, &(data[i].dead_lock));
+        i++;
+    }
+
+    // Wait for all threads to finish
+    i = 0;
+    while (i < n) {
+        pthread_join(threads[i], NULL);
+        i++;
+    }
+}
+
+void unlock_all_mutexes(t_data* data, int n) {
+    pthread_t threads[n];
+    int i = 0;
+
+    // Create threads to lock each mutex
+    while (i < n) {
+        pthread_create(&threads[i], NULL, unlock_mutex, &(data[i].dead_lock));
+        i++;
+    }
+
+    // Wait for all threads to finish
+    i = 0;
+    while (i < n) {
+        pthread_join(threads[i], NULL);
+        i++;
+    }
+}
+
+
 void * thread_function(void *arg){
 	t_data *data = (t_data *)arg;
 	struct timeval start_time;
+
+	pthread_mutex_lock(&data->dead_lock);
 
 	gettimeofday(&start_time,NULL);
 	data->start_time=start_time;
@@ -56,14 +113,23 @@ void * thread_function(void *arg){
 	if (data->philo+1 % 2 == 0)
 		ft_usleep(0.1);
 
-	printf("MS %ld thread %d life = %d before lock! \n",ms_since_start(data->start_time),data->philo,data->life);
 
-	pthread_mutex_lock(&data->dead_lock);
 	// while ( (ms_since_start(data->start_time)<(data->time_last_eat + data->time_to_die)) && data->life!=0 )
 	pthread_mutex_unlock(&data->dead_lock);
+	// printf("Mutex Address of pphilo %d is: %p\n", data->philo,(void*)&data->dead_lock);
 
-	while ( data->life!=0 )
-	{
+	while ( 1)
+	{	printf("MS %ld thread %d life = %d before lock! \n",ms_since_start(data->start_time),data->philo,data->life);
+
+		pthread_mutex_lock(&data->dead_lock);
+		if (data->life==0)
+		{
+			pthread_mutex_unlock(&data->dead_lock);
+			break;
+		}
+		else 
+			pthread_mutex_unlock(&data->dead_lock);
+
 		// pthread_mutex_lock(data->dead_lock);
 
 		lock_both_mutexes(data->fork_0,data->fork_1);
@@ -81,11 +147,12 @@ void * thread_function(void *arg){
 		pthread_mutex_unlock(&data->dead_lock);
 
 		// printf("MS %ld philo %d dieing time is %d!!\n",ms_since_start(data->start_time),data->philo,data->dieing_time);
-
+		pthread_mutex_lock(&data->dead_lock);
 		ft_usleep((data->time_to_eat)*1000);
 		data->meals_ate++;
-		pthread_mutex_unlock(data->fork_1);
+		pthread_mutex_unlock(&data->dead_lock);
 
+		pthread_mutex_unlock(data->fork_1);
 		pthread_mutex_unlock(data->fork_0);
 		pthread_mutex_lock(&data->dead_lock);
 		if (data->life!=0)
@@ -128,6 +195,8 @@ void * thread_function(void *arg){
 // 	return NULL;
 // }
 
+
+
 void * observe(void *arg){
 	t_program *program = (t_program *)arg;
 
@@ -137,65 +206,140 @@ void * observe(void *arg){
 	// int k =0;
 	// int mutex_error=0;
 	int life =1;
+	int numb_philo=program->data[0].numb_philo;
     // pthread_mutex_lock(&(program->dead_lock)); // Use -> instead of .
 	// while (j==0){
 	while (life)
 	{
-		i=0;
-		while (i<program->data[0].numb_philo)
-		{		
-			// printf("IM AN OBSERVER ");
-			// k=0;
-
-			// 
-			pthread_mutex_lock(&program->data[i].dead_lock);
-
+		lock_all_mutexes(program->data,numb_philo);
+		while (i < numb_philo)
+		{
+		
 			if (   (program->data[i].dieing_time !=-1) && (program->data[i].dieing_time <ms_since_start(program->data[i].start_time)))
 			{		
 
-					printf("MS %ld DEATH triggered! for phili %d because dieing time is %d",
-					ms_since_start(program->data[i].start_time),program->data[i].philo,program->data[i].dieing_time);
-					while (j<program->data[0].numb_philo)
+					printf("MS %ld DEATH triggered! for phili %d because dieing time is %d",ms_since_start(program->data[i].start_time),program->data[i].philo,program->data[i].dieing_time);
+					program->data[i].life=0;
+					life=0;
+
+					while (j<numb_philo) 
 					{	
-						// printf("KILLLL \n");
 						program->data[j].life=0;
-						life=0;
 						j++;
 					}
-			}
-			
-			// while (k<program->data[0].numb_philo)
-			// {
-	
-			// 			pthread_mutex_unlock(&program->data[k].dead_lock);
-			// 			// printf("UNLOCKED TRHEAD %d and mutex error is %d\n ",k,mutex_error);
-			// 			k++;
-			// }
-			// else
-			// pthread_mutex_unlock(&(program->dead_lock)); // Use -> instead of .
-		// printf("In observe function, philo is: %d \n", (program->data[i].philo));
-			pthread_mutex_unlock(&program->data[i].dead_lock);
+					break;
 
-			i++;
+
+			}
+			else
+	
+
+				i++;
 		}
+		unlock_all_mutexes(program->data,numb_philo);
+
 	}
 
-	// int l = 0;
-	// int l2=0;
-	// while (l<10)
-	// {
-	// 	l2=0;
-	// 		while (l2<program->data[0].numb_philo)
-	// 		{
-	
-	// 					mutex_error=pthread_mutex_unlock(&program->data[l2].dead_lock);
-	// 					printf("UNLOCKED TRHEAD %d and mutex error is %d\n ",l2,mutex_error);
-	// 					l2++;
-	// 		}
-	// 	l++;
-	// }
+
 	return NULL;
 }
+
+
+
+
+// void * observe(void *arg){
+// 	t_program *program = (t_program *)arg;
+
+// 	// printf("fork %d have a mutex of  %lu and %lu \n",data->philo,(unsigned long)data->fork_0,(unsigned long)data->fork_1);
+// 	int i =0;
+// 	int j=0;
+// 	// int k =0;
+// 	// int mutex_error=0;
+// 	int life =1;
+// 	int numb_philo=program->data[0].numb_philo;
+//     // pthread_mutex_lock(&(program->dead_lock)); // Use -> instead of .
+// 	// while (j==0){
+// 	while (life)
+// 	{
+// 		i=0;
+// 		while (i<numb_philo)
+// 		{		
+// 			// printf("IM AN OBSERVER ");
+// 			// k=0;
+
+// 			// 
+// 			pthread_mutex_lock(&program->data[i].dead_lock);
+
+// 			if (   (program->data[i].dieing_time !=-1) && (program->data[i].dieing_time <ms_since_start(program->data[i].start_time)))
+// 			{		
+
+// 					printf("MS %ld DEATH triggered! for phili %d because dieing time is %d",
+// 					ms_since_start(program->data[i].start_time),program->data[i].philo,program->data[i].dieing_time);
+// 					program->data[i].life=0;
+// 					pthread_mutex_unlock(&program->data[i].dead_lock);
+
+// 					lock_all_mutexes(program->data,numb_philo);
+
+// 					while (j<numb_philo)
+// 					{	
+// 						printf("KILLLL %d \n",j);
+// 						program->data[j].life=0;
+// 						life=0;
+// 						j++;
+// 					}
+// 					unlock_all_mutexes(program->data,numb_philo);
+
+// 					// while (j<program->data[0].numb_philo && j != i)
+// 					// {	
+// 					// 	printf("KILLLL %d \n",j);
+// 					// 	pthread_mutex_lock(&program->data[j].dead_lock);
+
+// 					// 	program->data[j].life=0;
+// 					// 	pthread_mutex_unlock(&program->data[j].dead_lock);
+// 					// 	life=0;
+// 					// 	j++;
+// 					// }
+// 			}
+// 			else
+// 				pthread_mutex_unlock(&program->data[i].dead_lock);
+
+// 			// while (k<program->data[0].numb_philo)
+// 			// {
+	
+// 			// 			pthread_mutex_unlock(&program->data[k].dead_lock);
+// 			// 			// printf("UNLOCKED TRHEAD %d and mutex error is %d\n ",k,mutex_error);
+// 			// 			k++;
+// 			// }
+// 			// else
+// 			// pthread_mutex_unlock(&(program->dead_lock)); // Use -> instead of .
+// 		// printf("In observe function, philo is: %d \n", (program->data[i].philo));
+
+// 			i++;
+// 		}
+// 	}
+
+// 	// int l = 0;
+// 	// int l2=0;
+// 	// while (l<10)
+// 	// {
+// 	// 	l2=0;
+// 	// 		while (l2<program->data[0].numb_philo)
+// 	// 		{
+	
+// 	// 					mutex_error=pthread_mutex_unlock(&program->data[l2].dead_lock);
+// 	// 					printf("UNLOCKED TRHEAD %d and mutex error is %d\n ",l2,mutex_error);
+// 	// 					l2++;
+// 	// 		}
+// 	// 	l++;
+// 	// }
+// 	return NULL;
+// }
+
+
+
+
+
+
 
 	// 			ft_usleep((data->time_to_eat)*1000);
 	// 			data->meals_ate++;
@@ -223,9 +367,9 @@ void * observe(void *arg){
 int	main()
 {
 	int numb_philo=5;
-	int time_to_die=800;
+	int time_to_die=391;
 	int time_to_eat=200;
-	int time_to_sleep=200;
+	int time_to_sleep=100;
 	int meals_to_eat=5;
 
 	pthread_t philo[numb_philo];
