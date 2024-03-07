@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
+/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 22:35:07 by cliew             #+#    #+#             */
-/*   Updated: 2024/03/06 14:08:03 by cliew            ###   ########.fr       */
+/*   Updated: 2024/03/07 16:02:45 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,23 +28,24 @@ typedef struct s_data
 {
 	pthread_mutex_t		*fork_0;
 	pthread_mutex_t		*fork_1;
-	pthread_mutex_t dead_lock;
+	pthread_mutex_t *dead_lock;
 	pthread_mutex_t *write_lock;
 	pthread_mutex_t *eat_lock;
-
-	int numb_philo;
+	pthread_t		thread;
 	int time_to_die;
 	int time_to_eat;
 	int time_to_sleep;
 	int meals_to_eat;
 	int philo;
+	int solo_philo;
+
 	
 	struct timeval start_time;
 	int time_last_eat;
-	int awake;
+	int eating;
 	int meals_ate ;
 	int dieing_time;
-	int life;
+	int *life;
 
 }			t_data;
 
@@ -54,11 +55,17 @@ typedef struct s_program
 	pthread_mutex_t dead_lock;
 	pthread_mutex_t write_lock;
 	pthread_mutex_t eat_lock;
+	int numb_philo;
 
-	int dead;
+	int life;
 	t_data* data;
 } t_program;
 
 
+void	ft_putstr_fd(char const *s, int fd);
+int	ft_puterr(char const *s, int ret);
+int	ft_atoi(const char *str);
 void ft_usleep( long int microseconds);
+void	destory_all(char *str, t_program *program, pthread_mutex_t *forks);
+int	ft_strlen(char *str);
 #endif
