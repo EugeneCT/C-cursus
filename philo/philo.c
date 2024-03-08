@@ -6,22 +6,11 @@
 /*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 22:39:55 by cliew             #+#    #+#             */
-/*   Updated: 2024/03/08 16:10:25 by cliew            ###   ########.fr       */
+/*   Updated: 2024/03/08 16:22:37 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-
-
-
-
-
-
-
-
-
-// Thread routine
 
 void	*routine(void *pointer)
 {
@@ -68,11 +57,6 @@ int	join_thread(t_program *program, pthread_mutex_t *forks)
 	return (0);
 }
 
-
-
-
-// Monitor thread routine
-
 void	*monitor(void *pointer, int numb_philo)
 {
 	t_data	*data;
@@ -95,7 +79,7 @@ int	main(int argc, char **argv)
 	t_program		program;
 
 	if (argc != 5 && argc != 6)
-		return (ft_puterr(2,"Please enter between argument numbers of 4 or 5",
+		return (ft_puterr(2 , "Please enter between argument numbers of 4 or 5",
 				1));
 	if (check_valid_args(argv) == 1)
 		return (1);

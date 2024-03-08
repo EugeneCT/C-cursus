@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 22:35:07 by cliew             #+#    #+#             */
-/*   Updated: 2024/03/08 16:10:45 by cliew            ###   ########.fr       */
+/*   Updated: 2024/03/08 16:23:18 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,16 +58,14 @@ typedef struct s_program
 	t_data			*data;
 }					t_program;
 
-
 //utilities.c
 void				ft_usleep(long int microseconds);
 long				ms(struct timeval start_time);
-void	print_message(char *str, t_data *data, int id);
-void	lock_both_mutexes(pthread_mutex_t *mutex1, pthread_mutex_t *mutex2,
-		t_data *data);
+void				print_message(char *str, t_data *data, int id);
+void				lock_both_mutexes(pthread_mutex_t *mutex1, pthread_mutex_t *mutex2,
+					t_data *data);
 
 // Argument.c
-// void				ft_putstr_fd(char const *s, int fd);
 int					ft_puterr(int fd,char const *s, int ret);
 int					ft_atoi(const char *str);
 int					ft_strlen(char *str);
