@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utilities.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/08 10:43:27 by cliew             #+#    #+#             */
+/*   Updated: 2024/03/08 10:44:10 by cliew            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "philo.h"
 
@@ -42,22 +53,20 @@ int	ft_atoi(const char *str)
 	return ((int)num);
 }
 
-void ft_usleep( long int microseconds) {
-    struct timeval start_time, current_time;
+void	ft_usleep(long int microseconds)
+{
+	struct timeval	start_time;
+	struct timeval	current_time;
 
-    // Get the start time
-    gettimeofday(&start_time, NULL);
-    gettimeofday(&current_time, NULL);
-
-
-    // start_time.tv_usec = (start_time.tv_usec / 1000) * 1000;
-    // current_time.tv_usec = (current_time.tv_usec / 1000) * 1000;
-
-
-    while (((((current_time.tv_sec - start_time.tv_sec) * 1000000) + (current_time.tv_usec - start_time.tv_usec))) <= microseconds) {
-        // Get the current time
-        gettimeofday(&current_time, NULL);
-    }
+	gettimeofday(&start_time, NULL);
+	gettimeofday(&current_time, NULL);
+	// start_time.tv_usec = (start_time.tv_usec / 1000) * 1000;
+	// current_time.tv_usec = (current_time.tv_usec / 1000) * 1000;
+	while (((((current_time.tv_sec - start_time.tv_sec) * 1000000)
+				+ (current_time.tv_usec - start_time.tv_usec))) <= microseconds)
+	{
+		gettimeofday(&current_time, NULL);
+	}
 }
 
 int	ft_strlen(char *str)
@@ -82,7 +91,7 @@ void	destory_all(char *str, t_program *program, pthread_mutex_t *forks)
 		write(2, str, ft_strlen(str));
 		write(2, "\n", 1);
 	}
-    pthread_mutex_destroy(&program->eat_lock);
+	pthread_mutex_destroy(&program->eat_lock);
 	pthread_mutex_destroy(&program->write_lock);
 	pthread_mutex_destroy(&program->dead_lock);
 	while (i < program->numb_philo)
@@ -91,4 +100,3 @@ void	destory_all(char *str, t_program *program, pthread_mutex_t *forks)
 		i++;
 	}
 }
-

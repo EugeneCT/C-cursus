@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 22:39:55 by cliew             #+#    #+#             */
-/*   Updated: 2024/03/08 10:17:03 by cliew            ###   ########.fr       */
+/*   Updated: 2024/03/08 10:42:21 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,7 @@ void	print_message(char *str, t_data *data, int id)
 {
 	pthread_mutex_lock(data->write_lock);
 	if (!dead_loop(data))
-		printf("MS %zu Philo %d %s\n", ms(data->start_time), id,
-			str);
+		printf("MS %zu Philo %d %s\n", ms(data->start_time), id, str);
 	pthread_mutex_unlock(data->write_lock);
 }
 
@@ -82,8 +81,8 @@ void	think(t_data *data)
 {
 	pthread_mutex_lock(data->write_lock);
 	if (!dead_loop(data))
-		printf("MS %zu Philo %d is thinking\n",
-			ms(data->start_time), data->philo);
+		printf("MS %zu Philo %d is thinking\n", ms(data->start_time),
+			data->philo);
 	pthread_mutex_unlock(data->write_lock);
 }
 
@@ -91,8 +90,8 @@ void	sleeep(t_data *data)
 {
 	pthread_mutex_lock(data->write_lock);
 	if (!dead_loop(data))
-		printf("MS %zu Philo %d is sleeping\n",
-			ms(data->start_time), data->philo);
+		printf("MS %zu Philo %d is sleeping\n", ms(data->start_time),
+			data->philo);
 	pthread_mutex_unlock(data->write_lock);
 	ft_usleep(data->time_to_sleep * 1000);
 }
@@ -102,17 +101,17 @@ void	lock_both_mutexes(pthread_mutex_t *mutex1, pthread_mutex_t *mutex2,
 {
 	while (1)
 	{
-		if (pthread_mutex_lock(mutex2) == 0)
+		if (pthread_mutex_lock(mutex1) == 0)
 		{
 			print_message("has taken a fork", data, data->philo);
-			if (pthread_mutex_lock(mutex1) == 0)
+			if (pthread_mutex_lock(mutex2) == 0)
 			{
 				print_message("has taken a fork", data, data->philo);
 				return ;
 			}
 			else
 			{
-				pthread_mutex_unlock(mutex2);
+				pthread_mutex_unlock(mutex1);
 			}
 		}
 		ft_usleep(1);
@@ -135,7 +134,8 @@ void	eat(t_data *data)
 	data->time_last_eat = ms(data->start_time);
 	pthread_mutex_lock(data->write_lock);
 	if (!dead_loop(data))
-		printf("MS %zu Philo %d is EATing\n", ms(data->start_time), data->philo);
+		printf("MS %zu Philo %d is EATing\n", ms(data->start_time),
+			data->philo);
 	pthread_mutex_unlock(data->write_lock);
 	data->meals_ate++;
 	data->eating = 0;
@@ -147,7 +147,8 @@ void	eat(t_data *data)
 
 void	init_input(t_data *data, char **argv)
 {
-	int	i;
+	int				i;
+	struct timeval	start_time;
 
 	i = 0;
 	while (i < ft_atoi(argv[1]))
@@ -159,14 +160,22 @@ void	init_input(t_data *data, char **argv)
 			data[i].meals_to_eat = ft_atoi(argv[5]);
 		else
 			data[i].meals_to_eat = -1;
+		data[i].time_last_eat = 0;
+		data[i].eating = 0;
+		data[i].meals_ate = 0;
+		data[i].dieing_time = -1;
+		data[i].solo_philo = 0;
+		if (ft_atoi(argv[1]) == 1)
+			data[i].solo_philo = 1;
+		gettimeofday(&start_time, NULL);
+		data[i].start_time = start_time;
 		i++;
 	}
 }
 
 void	init_philo(t_data *data, t_program *program, pthread_mutex_t *fork)
 {
-	int				i;
-	struct timeval	start_time;
+	int	i;
 
 	i = 0;
 	while (i < program->numb_philo)
@@ -175,33 +184,18 @@ void	init_philo(t_data *data, t_program *program, pthread_mutex_t *fork)
 		data[i].write_lock = &program->write_lock;
 		data[i].dead_lock = &program->dead_lock;
 		data[i].eat_lock = &program->eat_lock;
-		gettimeofday(&start_time, NULL);
-		data[i].start_time = start_time;
-		data[i].time_last_eat = 0;
-		data[i].eating = 0;
-		data[i].meals_ate = 0;
-		data[i].dieing_time = -1;
 		data[i].life = &program->life;
 		data[i].fork_1 = &fork[i];
-		data[i].solo_philo = 0;
-		if (program->numb_philo == 1)
-			data[i].solo_philo = 1;
-		data[i].fork_0 = &fork[i];
 		if (i == 0)
-			data[i].fork_1= &fork[program->numb_philo - 1];
+		{
+			data[i].fork_0 = &fork[0];
+			data[i].fork_1 = &fork[program->numb_philo - 1];
+		}
 		else
-		data[i].fork_1= &fork[i-1];
-
-		// if (i == 0)
-		// {
-		// 	data[i].fork_0 = &fork[0];
-		// 	data[i].fork_1 = &fork[program->numb_philo - 1];
-		// }
-		// else
-		// {
-		// 	data[i].fork_0 = &fork[i - 1];
-		// 	data[i].fork_1 = &fork[i];
-		// }
+		{
+			data[i].fork_0 = &fork[i - 1];
+			data[i].fork_1 = &fork[i];
+		}
 		i++;
 	}
 }
@@ -308,10 +302,7 @@ int	check_if_dead(t_data *data, int numb_philo)
 			pthread_mutex_unlock((data)[i].eat_lock);
 			pthread_mutex_lock((data)[i].write_lock);
 			if (!dead_loop(&data[i]))
-			{
-				printf("MS %u Philo %d died!\n",
-				dead_time,data[i].philo);
-			}
+				printf("MS %u Philo %d died!\n", dead_time, data[i].philo);
 			pthread_mutex_unlock(data->write_lock);
 			pthread_mutex_lock(data[0].dead_lock);
 			*data->life = 0;
