@@ -1,57 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utilities.c                                        :+:      :+:    :+:   */
+/*   time_thread.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/08 10:43:27 by cliew             #+#    #+#             */
-/*   Updated: 2024/03/08 10:44:10 by cliew            ###   ########.fr       */
+/*   Created: 2024/03/08 14:54:22 by cliew             #+#    #+#             */
+/*   Updated: 2024/03/08 15:55:09 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-void	ft_putstr_fd(char const *s, int fd)
-{
-	if (!s)
-		return ;
-	write(fd, s, ft_strlen((char *)s));
-}
-
-int	ft_puterr(char const *s, int ret)
-{
-	ft_putstr_fd(s, 2);
-	ft_putstr_fd("\n", 2);
-	return (ret);
-}
-
-int	ft_atoi(const char *str)
-{
-	int		i;
-	int		sign;
-	long	num;
-
-	i = 0;
-	num = 0;
-	sign = 1;
-	while ((str[i] >= 9 && str[i] <= 13) || str[i] == ' ')
-		i++;
-	if (str[i] == '-')
-	{
-		sign = sign * -1;
-		i++;
-	}
-	else if (str[i] == '+')
-		i++;
-	while (str[i] != '\0' && (str[i] >= '0' && str[i] <= '9'))
-	{
-		num = (num * 10) + (str[i] - '0');
-		i++;
-	}
-	num = num * sign;
-	return ((int)num);
-}
 
 void	ft_usleep(long int microseconds)
 {
@@ -60,43 +19,60 @@ void	ft_usleep(long int microseconds)
 
 	gettimeofday(&start_time, NULL);
 	gettimeofday(&current_time, NULL);
-	// start_time.tv_usec = (start_time.tv_usec / 1000) * 1000;
-	// current_time.tv_usec = (current_time.tv_usec / 1000) * 1000;
 	while (((((current_time.tv_sec - start_time.tv_sec) * 1000000)
-				+ (current_time.tv_usec - start_time.tv_usec))) <= microseconds)
+				+ (current_time.tv_usec - start_time.tv_usec))) <= microseconds-60)
 	{
+		usleep(10);
 		gettimeofday(&current_time, NULL);
 	}
 }
-
-int	ft_strlen(char *str)
+long	ms(struct timeval start_time)
 {
-	int	i;
+	struct timeval	end_time;
+	long			elapsed_seconds;
+	long			elapsed_microseconds;
+	long			elapsed_total_milliseconds;
 
-	if (str == NULL)
-		return (0);
-	i = 0;
-	while (str[i] != '\0')
-		i++;
-	return (i);
+	gettimeofday(&end_time, NULL);
+	elapsed_total_milliseconds = ((end_time.tv_sec - start_time.tv_sec)*1000000) + ((end_time.tv_usec - start_time.tv_usec)/1000);
+	elapsed_seconds = end_time.tv_sec - start_time.tv_sec;
+	elapsed_microseconds = end_time.tv_usec - start_time.tv_usec;
+	elapsed_total_milliseconds = (elapsed_seconds * 1000000
+			+ elapsed_microseconds) / 1000;
+	return (elapsed_total_milliseconds);
 }
 
-void	destory_all(char *str, t_program *program, pthread_mutex_t *forks)
+void	print_message(char *str, t_data *data, int id)
 {
-	int	i;
+	pthread_mutex_lock(data->write_lock);
+	if (!dead_loop(data))
+		printf("MS %zu Philo %d %s\n", ms(data->start_time), id, str);
+	pthread_mutex_unlock(data->write_lock);
+}
+void	lock_both_mutexes(pthread_mutex_t *mutex1, pthread_mutex_t *mutex2,
+		t_data *data)
+{
+	int lock_1;
+	int lock_2;
+	
+	while (1)
+	{
+		lock_1=pthread_mutex_lock(mutex1);
+		if (lock_1 == 0)
+		{
+			print_message("has taken a fork", data, data->philo);
 
-	i = 0;
-	if (str)
-	{
-		write(2, str, ft_strlen(str));
-		write(2, "\n", 1);
-	}
-	pthread_mutex_destroy(&program->eat_lock);
-	pthread_mutex_destroy(&program->write_lock);
-	pthread_mutex_destroy(&program->dead_lock);
-	while (i < program->numb_philo)
-	{
-		pthread_mutex_destroy(&forks[i]);
-		i++;
+			lock_2=pthread_mutex_lock(mutex2);
+			if (lock_2 == 0)
+			{
+				print_message("has taken a fork", data, data->philo);
+				return ;
+			}
+			else
+			{
+				print_message("has FAIL TO TAKE FORK", data, data->philo);
+				pthread_mutex_unlock(mutex1);
+			}
+		}
 	}
 }
