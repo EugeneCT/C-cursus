@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 22:35:07 by cliew             #+#    #+#             */
-/*   Updated: 2024/03/09 08:51:44 by cliew            ###   ########.fr       */
+/*   Updated: 2024/03/09 09:08:04 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,18 +31,18 @@ typedef struct s_data
 	pthread_mutex_t	*write_lock;
 	pthread_mutex_t	*eat_lock;
 	pthread_t		thread;
-	int				time_to_die;
-	int				time_to_eat;
-	int				time_to_sleep;
+	size_t			time_to_die;
+	size_t			time_to_eat;
+	size_t			time_to_sleep;
 	int				meals_to_eat;
 	int				philo;
 	int				solo_philo;
 
 	struct timeval	start_time;
-	int				time_last_eat;
+	size_t			time_last_eat;
 	int				eating;
 	int				meals_ate;
-	int				dieing_time;
+	size_t			dieing_time;
 	int				*life;
 
 }					t_data;
@@ -59,8 +59,8 @@ typedef struct s_program
 }					t_program;
 
 // utilities.c
-void				ft_usleep(long int microseconds);
-long				ms(struct timeval start_time);
+void				ft_usleep(size_t microseconds);
+size_t				ms(struct timeval start_time);
 void				print_message(char *str, t_data *data, int id);
 void				lock_both_mutexes(pthread_mutex_t *mutex1,
 						pthread_mutex_t *mutex2, t_data *data);
@@ -84,7 +84,7 @@ void				sleeep(t_data *data);
 void				think(t_data *data);
 void				eat(t_data *data);
 // check_dead.c
-int					philosopher_dead(t_data *data, int time_to_die);
+int					philosopher_dead(t_data *data, size_t time_to_die);
 int					dead_loop(t_data *philo);
 int					check_if_all_ate(t_data *data, int numb_philo);
 int					check_if_dead(t_data *data, int numb_philo);

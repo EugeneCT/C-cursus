@@ -6,13 +6,13 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 14:54:22 by cliew             #+#    #+#             */
-/*   Updated: 2024/03/09 08:52:50 by cliew            ###   ########.fr       */
+/*   Updated: 2024/03/09 09:08:19 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	ft_usleep(long int microseconds)
+void	ft_usleep(size_t microseconds)
 {
 	struct timeval	start_time;
 	struct timeval	current_time;
@@ -20,15 +20,15 @@ void	ft_usleep(long int microseconds)
 	gettimeofday(&start_time, NULL);
 	gettimeofday(&current_time, NULL);
 	while (((((current_time.tv_sec - start_time.tv_sec) * 1000000)
-				+ (current_time.tv_usec - start_time.tv_usec))) <= microseconds
-		- 60)
+				+ (current_time.tv_usec
+					- start_time.tv_usec))) <= (long int)microseconds - 60)
 	{
 		usleep(10);
 		gettimeofday(&current_time, NULL);
 	}
 }
 
-long	ms(struct timeval start_time)
+size_t	ms(struct timeval start_time)
 {
 	struct timeval	end_time;
 	long			elapsed_seconds;

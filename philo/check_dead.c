@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 15:58:08 by cliew             #+#    #+#             */
-/*   Updated: 2024/03/09 08:50:51 by cliew            ###   ########.fr       */
+/*   Updated: 2024/03/09 09:07:56 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ int	dead_loop(t_data *philo)
 	return (0);
 }
 
-int	philosopher_dead(t_data *data, int time_to_die)
+int	philosopher_dead(t_data *data, size_t time_to_die)
 {
 	pthread_mutex_lock(data->eat_lock);
 	if (ms(data->start_time) - data->time_last_eat >= time_to_die
