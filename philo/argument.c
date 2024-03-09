@@ -3,17 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   argument.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
+/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 10:43:27 by cliew             #+#    #+#             */
-/*   Updated: 2024/03/08 16:13:03 by cliew            ###   ########.fr       */
+/*   Updated: 2024/03/09 08:50:32 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-
-int	ft_puterr(int fd,char const *s, int ret)
+int	ft_puterr(int fd, char const *s, int ret)
 {
 	write(fd, s, ft_strlen((char *)s));
 	write(fd, "\n", ft_strlen((char *)"\n"));
@@ -47,7 +46,6 @@ int	ft_atoi(const char *str)
 	return ((int)num);
 }
 
-
 int	ft_strlen(char *str)
 {
 	int	i;
@@ -78,18 +76,15 @@ int	check_valid_args(char **argv)
 {
 	if (ft_atoi(argv[1]) > 200 || ft_atoi(argv[1]) <= 0
 		|| check_arg_content(argv[1]) == 1)
-		return(ft_puterr(2,"Invalid philosophers number", 1));
+		return (ft_puterr(2, "Invalid philosophers number", 1));
 	if (ft_atoi(argv[2]) <= 0 || check_arg_content(argv[2]) == 1)
-		return(ft_puterr(2,"Invalid time to die", 1));
-
+		return (ft_puterr(2, "Invalid time to die", 1));
 	if (ft_atoi(argv[3]) <= 0 || check_arg_content(argv[3]) == 1)
-		return(ft_puterr(2,"Invalid time to eat", 1));
-
+		return (ft_puterr(2, "Invalid time to eat", 1));
 	if (ft_atoi(argv[4]) <= 0 || check_arg_content(argv[4]) == 1)
-		return(ft_puterr(2,"Invalid time to sleep", 1));
+		return (ft_puterr(2, "Invalid time to sleep", 1));
 	if (argv[5] && (ft_atoi(argv[5]) < 0 || check_arg_content(argv[5]) == 1))
-			return(ft_puterr(2,"Invalid number of times each philosopher must eat", 1));
-
-
+		return (ft_puterr(2,
+				"Invalid number of times each philosopher must eat", 1));
 	return (0);
 }

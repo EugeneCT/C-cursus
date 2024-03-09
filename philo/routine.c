@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
+/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 15:51:55 by cliew             #+#    #+#             */
-/*   Updated: 2024/03/08 15:58:20 by cliew            ###   ########.fr       */
+/*   Updated: 2024/03/09 08:52:58 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
 
 void	eat(t_data *data)
 {
@@ -39,6 +38,7 @@ void	eat(t_data *data)
 	pthread_mutex_unlock(data->fork_1);
 	pthread_mutex_unlock(data->fork_0);
 }
+
 void	think(t_data *data)
 {
 	pthread_mutex_lock(data->write_lock);

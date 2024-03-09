@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
+/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 22:39:55 by cliew             #+#    #+#             */
-/*   Updated: 2024/03/08 16:22:37 by cliew            ###   ########.fr       */
+/*   Updated: 2024/03/09 08:49:43 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ int	main(int argc, char **argv)
 	t_program		program;
 
 	if (argc != 5 && argc != 6)
-		return (ft_puterr(2 , "Please enter between argument numbers of 4 or 5",
+		return (ft_puterr(2, "Please enter between argument numbers of 4 or 5",
 				1));
 	if (check_valid_args(argv) == 1)
 		return (1);

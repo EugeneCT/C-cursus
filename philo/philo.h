@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
+/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 22:35:07 by cliew             #+#    #+#             */
-/*   Updated: 2024/03/08 16:23:18 by cliew            ###   ########.fr       */
+/*   Updated: 2024/03/09 08:51:44 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,46 +58,39 @@ typedef struct s_program
 	t_data			*data;
 }					t_program;
 
-//utilities.c
+// utilities.c
 void				ft_usleep(long int microseconds);
 long				ms(struct timeval start_time);
 void				print_message(char *str, t_data *data, int id);
-void				lock_both_mutexes(pthread_mutex_t *mutex1, pthread_mutex_t *mutex2,
-					t_data *data);
-
+void				lock_both_mutexes(pthread_mutex_t *mutex1,
+						pthread_mutex_t *mutex2, t_data *data);
 // Argument.c
-int					ft_puterr(int fd,char const *s, int ret);
+int					ft_puterr(int fd, char const *s, int ret);
 int					ft_atoi(const char *str);
 int					ft_strlen(char *str);
 int					check_arg_content(char *arg);
 int					check_valid_args(char **argv);
-
-
-//init.c
-void	init_program(t_program *program, t_data *data, int numb_philo);
-void	init_mutex(pthread_mutex_t *fork, int numb_philo);
-void	init_philo(t_data *data, t_program *program, pthread_mutex_t *fork);
-void	init_input(t_data *data, char **argv);
-void	destory_all(char *str, t_program *program,
+// init.c
+void				init_program(t_program *program, t_data *data,
+						int numb_philo);
+void				init_mutex(pthread_mutex_t *fork, int numb_philo);
+void				init_philo(t_data *data, t_program *program,
+						pthread_mutex_t *fork);
+void				init_input(t_data *data, char **argv);
+void				destory_all(char *str, t_program *program,
 						pthread_mutex_t *forks);
-
-//routine.c
-
-void	sleeep(t_data *data);
-void	think(t_data *data);
-void	eat(t_data *data);
-
-
-//check_dead.c
-int	philosopher_dead(t_data *data, int time_to_die);
-int	dead_loop(t_data *philo);
-int	check_if_all_ate(t_data *data, int numb_philo);
-int	check_if_dead(t_data *data, int numb_philo);
-
-//main
-int	join_thread(t_program *program, pthread_mutex_t *forks);
-int	create_thread(t_program *program, pthread_mutex_t *forks);
-void	*monitor(void *pointer, int numb_philo);
-void	*routine(void *pointer);
-
+// routine.c
+void				sleeep(t_data *data);
+void				think(t_data *data);
+void				eat(t_data *data);
+// check_dead.c
+int					philosopher_dead(t_data *data, int time_to_die);
+int					dead_loop(t_data *philo);
+int					check_if_all_ate(t_data *data, int numb_philo);
+int					check_if_dead(t_data *data, int numb_philo);
+// main
+int					join_thread(t_program *program, pthread_mutex_t *forks);
+int					create_thread(t_program *program, pthread_mutex_t *forks);
+void				*monitor(void *pointer, int numb_philo);
+void				*routine(void *pointer);
 #endif

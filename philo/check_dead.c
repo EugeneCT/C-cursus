@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_dead.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
+/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 15:58:08 by cliew             #+#    #+#             */
-/*   Updated: 2024/03/08 15:59:35 by cliew            ###   ########.fr       */
+/*   Updated: 2024/03/09 08:50:51 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ int	check_if_all_ate(t_data *data, int numb_philo)
 	}
 	return (0);
 }
+
 int	dead_loop(t_data *philo)
 {
 	pthread_mutex_lock(philo->dead_lock);
@@ -74,7 +75,6 @@ int	dead_loop(t_data *philo)
 	pthread_mutex_unlock(philo->dead_lock);
 	return (0);
 }
-
 
 int	philosopher_dead(t_data *data, int time_to_die)
 {

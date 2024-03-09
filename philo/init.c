@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cliew <cliew@student.42.fr>                +#+  +:+       +#+        */
+/*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 14:57:05 by cliew             #+#    #+#             */
-/*   Updated: 2024/03/08 15:00:57 by cliew            ###   ########.fr       */
+/*   Updated: 2024/03/09 08:53:42 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	init_program(t_program *program, t_data *data, int numb_philo)
 	pthread_mutex_init(&program->write_lock, NULL);
 	pthread_mutex_init(&program->dead_lock, NULL);
 }
+
 void	init_mutex(pthread_mutex_t *fork, int numb_philo)
 {
 	int	i;
@@ -33,7 +34,7 @@ void	init_mutex(pthread_mutex_t *fork, int numb_philo)
 			printf("Error initializting mutex!");
 			return ;
 		}
-		printf("fork %d is %lu \n", i+1, (unsigned long)&fork[i]);
+		printf("fork %d is %lu \n", i + 1, (unsigned long)&fork[i]);
 		i++;
 	}
 }
@@ -51,7 +52,7 @@ void	init_philo(t_data *data, t_program *program, pthread_mutex_t *fork)
 		data[i].eat_lock = &program->eat_lock;
 		data[i].life = &program->life;
 		data[i].fork_1 = &fork[i];
-		if ((i)== 0 )
+		if ((i) == 0)
 		{
 			data[i].fork_0 = &fork[program->numb_philo - 1];
 			data[i].fork_1 = &fork[0];
@@ -92,6 +93,7 @@ void	init_input(t_data *data, char **argv)
 		i++;
 	}
 }
+
 void	destory_all(char *str, t_program *program, pthread_mutex_t *forks)
 {
 	int	i;
