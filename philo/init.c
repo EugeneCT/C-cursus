@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 14:57:05 by cliew             #+#    #+#             */
-/*   Updated: 2024/03/09 08:53:42 by cliew            ###   ########.fr       */
+/*   Updated: 2024/04/14 07:50:57 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ void	init_mutex(pthread_mutex_t *fork, int numb_philo)
 			printf("Error initializting mutex!");
 			return ;
 		}
-		printf("fork %d is %lu \n", i + 1, (unsigned long)&fork[i]);
 		i++;
 	}
 }
