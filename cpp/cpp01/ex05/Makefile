@@ -1,5 +1,5 @@
 SRC = *.cpp
-NAME = PhoneBook
+NAME = harl
 CC = c++ -Wall -Wextra -Werror -std=c++98
 
 all: $(NAME)
