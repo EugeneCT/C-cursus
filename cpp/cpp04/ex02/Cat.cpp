@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/03 13:45:36 by cliew             #+#    #+#             */
-/*   Updated: 2024/11/03 14:34:29 by cliew            ###   ########.fr       */
+/*   Updated: 2024/11/08 21:45:46 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,15 @@ void Cat::makeSound(void) const {
 }
 
 Cat &Cat::operator=(Cat const &src) {
-std::cout << "Cat assignment operator called" << std::endl;
+    std::cout << "Cat assignment operator called" << std::endl;
 
-  if (this != &src)
-    this->_type = src.getType();
-  this->_brain->operator=(*src._brain);
+    if (this != &src) {
+        this->_type = src.getType();  
+        if (this->_brain) {
+            delete this->_brain;  
+        }
+        this->_brain = new Brain(*src._brain); 
+    }
 
-  return (*this);
+    return *this;
 }
-

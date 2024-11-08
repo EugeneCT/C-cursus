@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/03 13:45:46 by cliew             #+#    #+#             */
-/*   Updated: 2024/11/03 14:34:26 by cliew            ###   ########.fr       */
+/*   Updated: 2024/11/08 21:48:37 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,14 @@ void Dog::makeSound(void) const {
 }
 
 Dog &Dog::operator=(Dog const &src) {
-std::cout << "Dog assignment operator called" << std::endl;
+    std::cout << "Dog assignment operator called" << std::endl;
 
-  if (this != &src)
-    this->_type = src.getType();
-  this->_brain->operator=(*src._brain);
-
-  return (*this);
+    if (this != &src) { 
+        this->_type = src.getType();  
+        if (this->_brain) {
+            delete this->_brain;  
+        }
+        this->_brain = new Brain(*src._brain); 
+    }
+    return *this;
 }
-

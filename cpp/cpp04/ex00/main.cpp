@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/03 12:50:43 by cliew             #+#    #+#             */
-/*   Updated: 2024/11/03 13:43:52 by cliew            ###   ########.fr       */
+/*   Updated: 2024/11/08 21:36:01 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,7 @@ int main( void )
 	const WrongAnimal* wrong_cat = new WrongCat();
 	std::cout << "wrong_cat Type: " << wrong_cat->getType() << " " << std::endl;
     wrong_cat->makeSound();
-
-
+	delete wrong_cat;
 
 
 }
