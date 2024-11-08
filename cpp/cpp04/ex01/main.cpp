@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/03 12:50:43 by cliew             #+#    #+#             */
-/*   Updated: 2024/11/08 21:49:37 by cliew            ###   ########.fr       */
+/*   Updated: 2024/11/08 21:57:22 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,14 +40,14 @@ int main( void )
     for ( int i = 0; i < 4; i++ ) {
         delete animals[i];
     }
-	Dog basic;
-	{
-	Dog tmp = basic;
-	}
-	Cat basic2;
-	{
-	Cat tmp2 = basic2;
-	}
+	// Dog basic;
+	// {
+	// Dog tmp = basic;
+	// }
+	// Cat basic2;
+	// {
+	// Cat tmp2 = basic2;
+	// }
 
     return 0;
 

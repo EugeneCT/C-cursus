@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/03 12:50:43 by cliew             #+#    #+#             */
-/*   Updated: 2024/11/08 21:52:41 by cliew            ###   ########.fr       */
+/*   Updated: 2024/11/08 21:58:41 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int main( void )
 	 const Animal* cat = new Cat();
 	 std::cout << "cat Type: " << cat->getType() << " " << std::endl;
      cat->makeSound();
-
+	 delete cat;
 	// const Animal* animal = new Animal();
 	// std::cout << "animal Type: " << animal->getType() << " " << std::endl;
     //  animal->makeSound();

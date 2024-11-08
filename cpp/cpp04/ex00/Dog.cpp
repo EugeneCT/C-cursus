@@ -6,7 +6,7 @@
 /*   By: cliew <cliew@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/03 13:45:46 by cliew             #+#    #+#             */
-/*   Updated: 2024/11/08 21:47:16 by cliew            ###   ########.fr       */
+/*   Updated: 2024/11/08 21:55:45 by cliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ std::cout << "Dog Copy Constructor called" << std::endl;
 }
 
 Dog::~Dog(void) {
+
 std::cout << "Dog  Destructor called" << std::endl;
 }
 
