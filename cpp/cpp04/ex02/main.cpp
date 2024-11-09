@@ -37,6 +37,7 @@ int main( void )
 	// const Animal* animal = new Animal();
 	// std::cout << "animal Type: " << animal->getType() << " " << std::endl;
     //  animal->makeSound();
+
 	// Dog basic;
 	// {
 	// Dog tmp = basic;

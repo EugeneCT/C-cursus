@@ -22,7 +22,7 @@ public:
 	Animal(void);                   // Default constructor
 
 	Animal(const Animal &src);      // Copy constructor
-	virtual Animal &operator=(Animal const &src);   // Copy assignment
+	Animal &operator=(Animal const &src);   // Copy assignment
 
 	virtual ~Animal(void);          // Desctructor
 
