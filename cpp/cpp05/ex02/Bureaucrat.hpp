@@ -5,14 +5,16 @@
 // Includes
 #include <string>
 #include <iostream>
+#include "AForm.hpp"
 
 // classes
+class AForm;
 
 class Bureaucrat
 {
 	private:
 		const std::string _name;
-		size_t _grade;
+		int _grade;
 		// Setter
 		void setGrade(int grade);
 
@@ -33,9 +35,13 @@ class Bureaucrat
 	// Public Methods
 		void incrementGrade(void);
 		void decrementGrade(void);
+		static std::exception* validateGrade(int grade);
+		void		signForm(AForm &form);
+
+
 	// Getter
 		const std::string getName(void)const;
-		size_t getGrade(void)const;
+		int getGrade(void)const;
 
 	//Exceptions
 	class GradeTooLowException : public std::exception
@@ -50,7 +56,6 @@ class Bureaucrat
 		virtual const char *what() const throw();
 	};
 
-	static std::exception* validateGrade(int grade);
 
 };
 

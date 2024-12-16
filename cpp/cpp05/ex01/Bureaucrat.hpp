@@ -5,8 +5,10 @@
 // Includes
 #include <string>
 #include <iostream>
+# include "Form.hpp"
 
 // classes
+class Form;
 
 class Bureaucrat
 {
@@ -33,6 +35,10 @@ class Bureaucrat
 	// Public Methods
 		void incrementGrade(void);
 		void decrementGrade(void);
+		static std::exception* validateGrade(int grade);
+		void		signForm(Form &form);
+
+
 	// Getter
 		const std::string getName(void)const;
 		size_t getGrade(void)const;
@@ -50,7 +56,6 @@ class Bureaucrat
 		virtual const char *what() const throw();
 	};
 
-	static std::exception* validateGrade(int grade);
 
 };
 

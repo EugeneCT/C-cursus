@@ -1,5 +1,6 @@
 #include "Bureaucrat.hpp"
 
+#include "AForm.hpp"
 
 // Exceptions
 const char *Bureaucrat::GradeTooLowException::what(void) const throw()
@@ -122,12 +123,28 @@ void	Bureaucrat::decrementGrade(void)
     // }
 
 }
+
+
+void Bureaucrat::signForm(AForm &form)
+{
+	try
+	{
+		form.beSigned(*this);
+	}
+	catch(const std::exception& e)
+	{
+		std::cout << _name << " couldn't sign " << form.getName() << " because " << e.what() << std::endl;
+		return;
+	}
+	std::cout << _name << " signed " << form.getName() << std::endl;
+}
+
 // Getter
 const std::string	Bureaucrat::getName(void)const
 {
 	return (this->_name);
 }
-size_t	Bureaucrat::getGrade(void)const
+int	Bureaucrat::getGrade(void)const
 {
 	return (this->_grade);
 }
@@ -140,6 +157,11 @@ void	Bureaucrat::setGrade(int grade)
 
 
 // ostream Overload
+// std::ostream	&operator<<(std::ostream &o, Bureaucrat *a)
+// {
+// 	o << "Bureaucrat " << a->getName() << ":\n\tgrade: " << a->getGrade() << std::endl;
+// 	return (o);
+// }
 
 std::ostream &operator<<(std::ostream &os, Bureaucrat const &other)
 {
