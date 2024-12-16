@@ -44,7 +44,6 @@ Bureaucrat::Bureaucrat(int grade): _name("default")
 	" with grade of " << grade << std::endl;
 	validateGrade(grade);
 	this->setGrade(grade);
-
 }
 
 Bureaucrat::Bureaucrat(const std::string name): _name(name), _grade(150)
@@ -83,31 +82,18 @@ Bureaucrat &Bureaucrat::operator=(const Bureaucrat &src)
 // Public Methods
 void	Bureaucrat::incrementGrade(void)
 {
-	// try{
-	// 	std::cout << "Trying to increment grade of " << this->getName() << std::endl;
-
 		validateGrade(this->_grade - 1);
 		this->setGrade(this->_grade - 1);
-	// }
-	// catch (const std::exception& e) {
-    //     std::cerr << "Fail to increase grade: " << e.what() << std::endl;
 
-    // }
 
 }
 
 void	Bureaucrat::decrementGrade(void)
 {
-	// try{
-	// 	std::cout << "Trying to decrement grade of " << this->getName() << std::endl;
 
 		validateGrade(this->_grade + 1);
 		this->setGrade(this->_grade + 1);
-	// }
-	// catch (const std::exception& e) {
-    //     std::cerr << "Fail to decrease grade: " << e.what() << std::endl;
 
-    // }
 
 }
 
@@ -156,14 +142,6 @@ void	Bureaucrat::setGrade(int grade)
 	this->_grade = grade;
 }
 
-
-
-// ostream Overload
-// std::ostream	&operator<<(std::ostream &o, Bureaucrat *a)
-// {
-// 	o << "Bureaucrat " << a->getName() << ":\n\tgrade: " << a->getGrade() << std::endl;
-// 	return (o);
-// }
 
 std::ostream &operator<<(std::ostream &os, Bureaucrat const &other)
 {

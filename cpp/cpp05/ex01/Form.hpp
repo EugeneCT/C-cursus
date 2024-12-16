@@ -23,9 +23,7 @@ class Form
 		Form(void);
   		Form(const std::string& name = "default", int sign_grade = 70, int exec_grade = 150);
 		Form(const Form &src);
-		// Form(int sign_grade, int exec_grade);
-		// Form(const std::string name);
-		// Form(const std::string name, int sign_grade, int exec_grade);
+
 
 	// Deconstructors
 		~Form();
@@ -56,5 +54,4 @@ class Form
 };
 
 // ostream Overload
-// std::ostream	&operator<<(std::ostream &o, Form *a);
 std::ostream &operator<<(std::ostream &os,  Form const &form);

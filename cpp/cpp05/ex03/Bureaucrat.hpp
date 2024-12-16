@@ -61,5 +61,4 @@ class Bureaucrat
 };
 
 // ostream Overload
-// std::ostream	&operator<<(std::ostream &o, Bureaucrat *a);
 std::ostream &operator<<(std::ostream & os, Bureaucrat const &other);

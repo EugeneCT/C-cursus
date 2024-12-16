@@ -32,7 +32,7 @@ class AForm
 		// Form(const std::string name, int sign_grade, int exec_grade);
 
 	// Deconstructors
-		~AForm();
+		virtual ~AForm();
 
 	// Overloaded Operators
 		AForm &operator=(const AForm &src);
@@ -41,7 +41,6 @@ class AForm
 		void beSigned(Bureaucrat &signer);
 	// Getter
 		const std::string getName(void)const;
-
 		bool getIsSigned(void)const;
 		int getSignGrade(void)const;
 		int getExecGrade(void)const;
@@ -70,5 +69,4 @@ class AForm
 };
 
 // ostream Overload
-// std::ostream	&operator<<(std::ostream &o, Form *a);
 std::ostream &operator<<(std::ostream &os,  AForm const &form);

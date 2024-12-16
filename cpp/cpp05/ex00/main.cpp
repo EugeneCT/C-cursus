@@ -4,9 +4,11 @@ int main(void)
 {	
 
 	try{
-		Bureaucrat b("Alien",150);
+		Bureaucrat b("Alien",1);
 		std::cout << b;
 		b.incrementGrade();
+		std::cout << b;
+		b.decrementGrade();
 		std::cout << b;
 		b.decrementGrade();
 		std::cout << b;
